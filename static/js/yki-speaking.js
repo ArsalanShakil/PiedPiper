@@ -313,9 +313,9 @@ function initYkiSpeakingView() {
                 rec.start();
                 activeRecorders[id] = rec;
             } catch(e) {
-                alert('Microphone access denied.');
+                alert('Microphone access denied. If using the desktop app, try opening http://localhost:5123 in Chrome instead.');
                 recBtn.classList.remove('recording');
-                status.textContent = 'Mic error';
+                status.textContent = 'Mic error — try Chrome browser';
                 return;
             }
 
