@@ -1,5 +1,5 @@
 <section class="panel">
-    <h2>Generate Speech</h2>
+    <h2>Text to Speech</h2>
 
     <div class="form-group">
         <label for="tts-text-input">Text</label>
@@ -7,42 +7,57 @@
         <div class="char-count"><span id="tts-char-count">0</span> characters</div>
     </div>
 
-    <div class="form-row">
-        <div class="form-group">
-            <label for="tts-voice-select">Voice</label>
-            <select id="tts-voice-select"></select>
-        </div>
-        <div class="form-group">
-            <label for="tts-format-select">Format</label>
-            <select id="tts-format-select">
-                <option value="wav">WAV (lossless)</option>
-                <option value="mp3">MP3</option>
-                <option value="ogg">OGG Vorbis</option>
-                <option value="flac">FLAC</option>
-            </select>
-        </div>
-    </div>
-
     <div class="form-group">
-        <label>Save to</label>
-        <div class="save-location">
-            <select id="tts-quick-folder"></select>
-            <span class="save-or">or</span>
-            <button id="tts-browse-btn" class="btn btn-small">Browse...</button>
-        </div>
-        <div class="current-path" id="tts-current-save-path"></div>
+        <label for="tts-voice-select">Voice</label>
+        <select id="tts-voice-select"></select>
     </div>
 
-    <div class="form-group">
-        <label for="tts-filename-input">Filename <span class="optional">(optional)</span></label>
-        <input type="text" id="tts-filename-input" placeholder="Auto-generated if empty">
-    </div>
-
-    <div class="actions">
-        <button id="tts-generate-btn" class="btn btn-primary">
-            <span class="btn-text">Generate Speech</span>
+    <div class="actions" style="display:flex;gap:10px;">
+        <button id="tts-listen-btn" class="btn btn-primary" style="flex:1;">
+            <span class="btn-text">Listen</span>
             <span class="btn-loading" style="display:none;">Generating...</span>
         </button>
+        <button id="tts-save-toggle" class="btn" style="flex-shrink:0;">Save to File &darr;</button>
+    </div>
+
+    <div id="tts-listen-player" style="display:none;margin-top:16px;">
+        <audio id="tts-listen-audio" controls style="width:100%;"></audio>
+    </div>
+
+    <!-- Save options (collapsed by default) -->
+    <div id="tts-save-section" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--border-light);">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="tts-format-select">Format</label>
+                <select id="tts-format-select">
+                    <option value="wav">WAV (lossless)</option>
+                    <option value="mp3">MP3</option>
+                    <option value="ogg">OGG Vorbis</option>
+                    <option value="flac">FLAC</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="tts-filename-input">Filename <span class="optional">(optional)</span></label>
+                <input type="text" id="tts-filename-input" placeholder="Auto-generated if empty">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Save to</label>
+            <div class="save-location">
+                <select id="tts-quick-folder"></select>
+                <span class="save-or">or</span>
+                <button id="tts-browse-btn" class="btn btn-small">Browse...</button>
+            </div>
+            <div class="current-path" id="tts-current-save-path"></div>
+        </div>
+
+        <div class="actions">
+            <button id="tts-generate-btn" class="btn btn-primary">
+                <span class="btn-text">Save Speech to File</span>
+                <span class="btn-loading" style="display:none;">Saving...</span>
+            </button>
+        </div>
     </div>
 
     <div id="tts-result-area" style="display:none;">
@@ -67,7 +82,7 @@
         </div>
     </div>
     <div id="tts-files-list" class="files-list">
-        <p class="empty-state">No files yet. Generate some speech!</p>
+        <p class="empty-state">No files yet.</p>
     </div>
 </section>
 

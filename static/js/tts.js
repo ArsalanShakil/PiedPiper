@@ -30,10 +30,66 @@ function initTtsView() {
     const browserCancel = document.getElementById('tts-browser-cancel');
     const browserSelect = document.getElementById('tts-browser-select');
 
+    const listenBtn = document.getElementById('tts-listen-btn');
+    const listenPlayer = document.getElementById('tts-listen-player');
+    const listenAudio = document.getElementById('tts-listen-audio');
+    const saveToggle = document.getElementById('tts-save-toggle');
+    const saveSection = document.getElementById('tts-save-section');
+
     if (!textInput) return {};
 
     textInput.addEventListener('input', () => {
         charCount.textContent = textInput.value.length;
+    });
+
+    // Listen button — play without saving
+    listenBtn.addEventListener('click', async () => {
+        const text = textInput.value.trim();
+        if (!text) { alert('Please enter some text.'); return; }
+
+        const btnText = listenBtn.querySelector('.btn-text');
+        const btnLoading = listenBtn.querySelector('.btn-loading');
+        listenBtn.disabled = true;
+        btnText.style.display = 'none';
+        btnLoading.style.display = 'inline';
+
+        try {
+            const { ok, data } = await Api.post('/api/synthesize', {
+                text,
+                voice_id: voiceSelect.value,
+                format: 'wav',
+                save_path: '',
+                filename: '',
+            });
+            if (!ok) { alert(data.error || 'Failed'); return; }
+
+            const url = `/api/files/play?folder=${encodeURIComponent(data.folder)}&name=${encodeURIComponent(data.filename)}`;
+            listenAudio.src = url;
+            listenPlayer.style.display = 'block';
+            listenAudio.play();
+            // Clean up temp file after playing
+            listenAudio.onended = () => {
+                Api.post('/api/files/delete', { folder: data.folder, name: data.filename });
+            };
+        } catch (err) {
+            alert('Error: ' + err.message);
+        } finally {
+            listenBtn.disabled = false;
+            btnText.style.display = 'inline';
+            btnLoading.style.display = 'none';
+        }
+    });
+
+    // Ctrl/Cmd+Enter to listen
+    textInput.addEventListener('keydown', e => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') listenBtn.click();
+    });
+
+    // Toggle save section
+    saveToggle.addEventListener('click', () => {
+        const visible = saveSection.style.display !== 'none';
+        saveSection.style.display = visible ? 'none' : 'block';
+        saveToggle.innerHTML = visible ? 'Save to File &darr;' : 'Hide Save Options &uarr;';
     });
 
     async function loadVoices() {
