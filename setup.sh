@@ -33,7 +33,7 @@ fi
 if command -v claude &> /dev/null; then
     echo "[OK] Claude Code CLI found"
 else
-    echo "[!!] Claude Code CLI not found — AI features (translation, exam generation) won't work"
+    echo "[!!] Claude Code CLI not found — AI features (exam generation, evaluation) won't work"
     echo "     Install from: https://claude.ai/code"
 fi
 
@@ -69,18 +69,98 @@ mkdir -p "$APP_DIR/knowledge"
 cd "$APP_DIR" && python3 -c "from db import init_db; init_db()"
 echo "[OK] Database initialized"
 
-# --- Add shell alias ---
-ALIAS_LINE="alias start-tts='python3 $APP_DIR/app.py & sleep 1 && open http://localhost:5123'"
+# --- Create macOS Desktop App ---
+if [[ "$(uname)" == "Darwin" ]]; then
+    APP_BUNDLE="$HOME/Desktop/PiedPiper.app"
+    mkdir -p "$APP_BUNDLE/Contents/MacOS"
+    mkdir -p "$APP_BUNDLE/Contents/Resources"
+
+    # Launcher script
+    cat > "$APP_BUNDLE/Contents/MacOS/PiedPiper" << LAUNCHER
+#!/bin/bash
+cd "$APP_DIR"
+exec python3 desktop.py
+LAUNCHER
+    chmod +x "$APP_BUNDLE/Contents/MacOS/PiedPiper"
+
+    # Info.plist
+    cat > "$APP_BUNDLE/Contents/Info.plist" << 'PLIST'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleExecutable</key>
+    <string>PiedPiper</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.piedpiper.app</string>
+    <key>CFBundleName</key>
+    <string>PiedPiper</string>
+    <key>CFBundleDisplayName</key>
+    <string>PiedPiper</string>
+    <key>CFBundleVersion</key>
+    <string>1.0</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>11.0</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>PiedPiper needs microphone access for speaking practice.</string>
+</dict>
+</plist>
+PLIST
+
+    # Generate icon
+    python3 -c "
+import subprocess, os, tempfile
+svg = '''<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"512\" height=\"512\" viewBox=\"0 0 512 512\">
+  <rect width=\"512\" height=\"512\" rx=\"100\" fill=\"#5b5fc7\"/>
+  <text x=\"256\" y=\"200\" font-family=\"Helvetica\" font-size=\"180\" font-weight=\"bold\" fill=\"white\" text-anchor=\"middle\">PP</text>
+  <text x=\"256\" y=\"340\" font-family=\"Helvetica\" font-size=\"48\" fill=\"rgba(255,255,255,0.8)\" text-anchor=\"middle\">PiedPiper</text>
+</svg>'''
+tmp = tempfile.mkdtemp()
+with open(f'{tmp}/icon.svg', 'w') as f: f.write(svg)
+# Try qlmanage for SVG to PNG
+os.system(f'qlmanage -t -s 512 -o {tmp} {tmp}/icon.svg 2>/dev/null')
+png = f'{tmp}/icon.svg.png'
+if not os.path.exists(png):
+    # Fallback: create a simple colored PNG
+    os.system(f'sips -s format png --resampleWidth 512 {tmp}/icon.svg --out {png} 2>/dev/null')
+if os.path.exists(png):
+    iconset = f'{tmp}/icon.iconset'
+    os.makedirs(iconset, exist_ok=True)
+    for s in [16,32,64,128,256,512]:
+        os.system(f'sips -z {s} {s} {png} --out {iconset}/icon_{s}x{s}.png 2>/dev/null')
+        d = s*2
+        if d <= 512:
+            os.system(f'sips -z {d} {d} {png} --out {iconset}/icon_{s}x{s}@2x.png 2>/dev/null')
+    os.system(f'iconutil -c icns {iconset} -o \"$APP_BUNDLE/Contents/Resources/AppIcon.icns\" 2>/dev/null')
+" 2>/dev/null
+
+    echo "[OK] Desktop app created at ~/Desktop/PiedPiper.app"
+fi
+
+# --- Add shell aliases ---
+ALIAS_TTS="alias start-tts='cd $APP_DIR && python3 app.py & sleep 1 && open http://localhost:5123'"
+ALIAS_PP="alias piedpiper='cd $APP_DIR && python3 desktop.py'"
 
 for RC_FILE in "$HOME/.zshrc" "$HOME/.bashrc"; do
     if [ -f "$RC_FILE" ]; then
         if ! grep -q "start-tts" "$RC_FILE" 2>/dev/null; then
-            printf '\n# PiedPiper\n%s\n' "$ALIAS_LINE" >> "$RC_FILE"
-            echo "[OK] Added 'start-tts' alias to $RC_FILE"
+            printf '\n# PiedPiper\n%s\n%s\n' "$ALIAS_TTS" "$ALIAS_PP" >> "$RC_FILE"
+            echo "[OK] Added aliases to $RC_FILE"
         else
             sed -i.bak "/alias start-tts=/c\\
-$ALIAS_LINE" "$RC_FILE" && rm -f "${RC_FILE}.bak"
-            echo "[OK] Updated 'start-tts' alias in $RC_FILE"
+$ALIAS_TTS" "$RC_FILE" && rm -f "${RC_FILE}.bak"
+            if ! grep -q "alias piedpiper=" "$RC_FILE" 2>/dev/null; then
+                echo "$ALIAS_PP" >> "$RC_FILE"
+            fi
+            echo "[OK] Updated aliases in $RC_FILE"
         fi
     fi
 done
@@ -88,6 +168,9 @@ done
 echo ""
 echo "=== Setup complete! ==="
 echo ""
-echo "Start the app:  start-tts"
-echo "Or run directly: python3 $APP_DIR/app.py"
+echo "Launch options:"
+echo "  1. Double-click PiedPiper.app on your Desktop"
+echo "  2. Run: piedpiper     (native window)"
+echo "  3. Run: start-tts     (browser mode)"
+echo ""
 echo "(open a new terminal first, or run: source ~/.zshrc)"

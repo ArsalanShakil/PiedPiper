@@ -2,3 +2,4 @@ flask
 piper-tts
 pathvalidate
 deep-translator
+pywebview
