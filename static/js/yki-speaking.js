@@ -19,10 +19,13 @@ function initYkiSpeakingView() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     // --- Load options ---
+    let allTests = [];
     (async () => {
-        const tests = await Api.get('/api/speaking/tests');
+        allTests = await Api.get('/api/speaking/tests');
         const sel = document.getElementById('sp-test-select');
-        sel.innerHTML = tests.map(t => `<option value="${t.number}">Prov ${t.number} — ${t.topic}</option>`).join('');
+        sel.innerHTML = '<option value="random">Random (full exam)</option>' +
+            '<option value="mix">Random Mix (parts from different tests)</option>' +
+            allTests.map(t => `<option value="${t.number}">Prov ${t.number} — ${t.topic}</option>`).join('');
 
         const topics = await Api.get('/api/speaking/topics');
         const topicSel = document.getElementById('sp-topic-select');
@@ -43,18 +46,30 @@ function initYkiSpeakingView() {
 
     // --- Start Mock Test ---
     document.getElementById('sp-mock-go').addEventListener('click', async () => {
-        const testNum = document.getElementById('sp-test-select').value;
+        const choice = document.getElementById('sp-test-select').value;
         menu.style.display = 'none';
         loading.style.display = 'block';
 
-        const data = await Api.get(`/api/speaking/test/${testNum}`);
+        let data;
+        if (choice === 'random') {
+            // Pick a random full test
+            data = await Api.get('/api/speaking/random');
+        } else if (choice === 'mix') {
+            // Pick each part from a different random test
+            data = await Api.get('/api/speaking/mix');
+        } else {
+            data = await Api.get(`/api/speaking/test/${choice}`);
+        }
+
         if (data.error) { alert(data.error); loading.style.display = 'none'; menu.style.display = 'block'; return; }
 
         isMockMode = true;
         testData = data;
         currentPartIndex = 0;
         allResponses = [];
-        document.getElementById('sp-exam-title').textContent = `Prov ${data.number} — ${data.topic}`;
+        document.getElementById('sp-exam-title').textContent = data.number
+            ? `Prov ${data.number} — ${data.topic}`
+            : `Mock Test — ${data.topic || 'Mixed Topics'}`;
 
         loading.style.display = 'none';
         examDiv.style.display = 'block';

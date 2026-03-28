@@ -162,6 +162,36 @@ def random_test():
     return jsonify({"error": "No tests available"}), 404
 
 
+@bp.route("/mix")
+def mix_test():
+    """Create a mixed mock test — each part from a different random test."""
+    tests = get_tests()
+    if not tests:
+        return jsonify({"error": "No tests available"}), 404
+
+    parts = []
+    part_types = ["dialogues", "react", "narrate", "opinion"]
+    topics_used = []
+
+    for pt in part_types:
+        # Collect all parts of this type from all tests
+        candidates = []
+        for t in tests:
+            for p in t["parts"]:
+                if p["type"] == pt:
+                    candidates.append({**p, "source_topic": t["topic"]})
+        if candidates:
+            chosen = random.choice(candidates)
+            parts.append(chosen)
+            topics_used.append(chosen.get("source_topic", ""))
+
+    return jsonify({
+        "number": 0,
+        "topic": "Mixed: " + ", ".join(dict.fromkeys(topics_used)),
+        "parts": parts,
+    })
+
+
 @bp.route("/practice")
 def practice_part():
     """Get a random part of a specific type for practice mode."""
