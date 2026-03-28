@@ -65,8 +65,9 @@ mkdir -p "$APP_DIR/output/recordings"
 mkdir -p "$APP_DIR/output/audio_cache"
 mkdir -p "$APP_DIR/knowledge"
 
-# --- Initialize database ---
+# --- Initialize database and import seed data ---
 cd "$APP_DIR" && python3 -c "from db import init_db; init_db()"
+cd "$APP_DIR" && python3 dbexport.py import
 echo "[OK] Database initialized"
 
 # --- Create macOS Desktop App ---
