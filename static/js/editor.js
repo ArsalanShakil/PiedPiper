@@ -188,8 +188,14 @@ function initEditorView() {
 
         if (data.word_by_word && data.word_by_word.length > 0) {
             html += '<div class="trans-words"><h4>Word by word</h4>';
-            data.word_by_word.forEach(w => {
-                html += `<div class="word-pair"><span class="word-sv">${escapeHtml(w.sv)}</span><span class="word-en">${escapeHtml(w.en)}</span></div>`;
+            data.word_by_word.forEach((w, i) => {
+                html += `<div class="word-pair">
+                    <span class="word-sv">${escapeHtml(w.sv)}</span>
+                    <span class="word-pair-right">
+                        <span class="word-en">${escapeHtml(w.en)}</span>
+                        <button class="word-add-btn" data-sv="${escapeHtml(w.sv)}" data-en="${escapeHtml(w.en)}" title="Add to vocabulary">+</button>
+                    </span>
+                </div>`;
             });
             html += '</div>';
         }
@@ -198,6 +204,16 @@ function initEditorView() {
         }
         transBody.innerHTML = html;
         transActions.style.display = 'flex';
+
+        // Add-to-vocab buttons on each word
+        transBody.querySelectorAll('.word-add-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                await saveVocab(btn.dataset.sv, btn.dataset.en);
+                btn.textContent = '✓';
+                btn.disabled = true;
+                btn.classList.add('word-added');
+            });
+        });
     });
 
     // --- Speak ---

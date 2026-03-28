@@ -308,13 +308,49 @@
 .word-pair {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 4px 0;
     font-size: 13px;
     border-bottom: 1px solid var(--border-light);
 }
 
+.word-pair-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .word-sv { font-weight: 500; }
 .word-en { color: var(--text-dim); }
+
+.word-add-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 600;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.1s;
+    flex-shrink: 0;
+}
+
+.word-add-btn:hover {
+    background: var(--primary-light);
+    border-color: var(--primary);
+}
+
+.word-add-btn.word-added {
+    background: #f0fdf4;
+    border-color: var(--success);
+    color: var(--success);
+    cursor: default;
+}
 
 .trans-grammar {
     font-size: 13px;
