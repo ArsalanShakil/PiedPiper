@@ -127,18 +127,22 @@ def translate():
 
     try:
         from deep_translator import GoogleTranslator
-        translation = GoogleTranslator(source='sv', target='en').translate(text)
+        translator = GoogleTranslator(source='sv', target='en')
+        translation = translator.translate(text)
 
-        # Word-by-word for multi-word text
+        # Word-by-word: batch translate all words in one call using newline separator
         words = text.split()
         word_by_word = []
         if len(words) > 1:
-            for w in words:
-                try:
-                    w_trans = GoogleTranslator(source='sv', target='en').translate(w)
-                    word_by_word.append({"sv": w, "en": w_trans})
-                except Exception:
-                    word_by_word.append({"sv": w, "en": "?"})
+            batch = "\n".join(words)
+            try:
+                batch_result = translator.translate(batch)
+                translated_words = batch_result.split("\n")
+                for i, w in enumerate(words):
+                    en = translated_words[i].strip() if i < len(translated_words) else "?"
+                    word_by_word.append({"sv": w, "en": en})
+            except Exception:
+                pass
 
         return jsonify({
             "translation": translation,
