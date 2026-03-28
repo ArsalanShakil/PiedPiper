@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify, request
 
 from db import get_db
-from blueprints.ai import ask_claude
 
 bp = Blueprint("editor", __name__, url_prefix="/api/editor")
 
@@ -42,7 +41,7 @@ def get_document(doc_id):
     return jsonify(dict(row))
 
 
-@bp.route("/documents/<int:doc_id>", methods=["PUT"])
+@bp.route("/documents/<int:doc_id>", methods=["PUT", "POST"])
 def update_document(doc_id):
     data = request.json
     conn = get_db()
@@ -104,36 +103,29 @@ def list_folders():
 def translate():
     data = request.json
     text = data.get("text", "").strip()
-    context = data.get("context", "")
 
     if not text:
         return jsonify({"error": "No text provided"}), 400
 
-    system = (
-        "You are a Swedish-English translation assistant. "
-        "Return ONLY valid JSON with this exact structure: "
-        '{"translation": "English translation", '
-        '"word_by_word": [{"sv": "Swedish word", "en": "English word"}], '
-        '"grammar_notes": "Brief grammar note if relevant, or empty string"}'
-    )
-    prompt = f"Translate this Swedish text to English:\n\n\"{text}\""
-    if context:
-        prompt += f"\n\nContext: \"{context}\""
-
-    result = ask_claude(prompt, system=system)
-
-    import json
     try:
-        start = result.find("{")
-        end = result.rfind("}") + 1
-        if start >= 0 and end > start:
-            parsed = json.loads(result[start:end])
-            return jsonify(parsed)
-    except (json.JSONDecodeError, ValueError):
-        pass
+        from deep_translator import GoogleTranslator
+        translation = GoogleTranslator(source='sv', target='en').translate(text)
 
-    return jsonify({
-        "translation": result,
-        "word_by_word": [],
-        "grammar_notes": "",
-    })
+        # Word-by-word for multi-word text
+        words = text.split()
+        word_by_word = []
+        if len(words) > 1:
+            for w in words:
+                try:
+                    w_trans = GoogleTranslator(source='sv', target='en').translate(w)
+                    word_by_word.append({"sv": w, "en": w_trans})
+                except Exception:
+                    word_by_word.append({"sv": w, "en": "?"})
+
+        return jsonify({
+            "translation": translation,
+            "word_by_word": word_by_word,
+            "grammar_notes": "",
+        })
+    except Exception as e:
+        return jsonify({"error": f"Translation error: {e}"}), 500

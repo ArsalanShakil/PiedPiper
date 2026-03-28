@@ -43,13 +43,12 @@ function initEditorView() {
     });
 
     titleInput.addEventListener('input', scheduleSave);
-    titleInput.addEventListener('change', () => saveNow()); // Save immediately on blur/enter
 
     function scheduleSave() {
         saveStatus.textContent = 'Saving...';
         saveStatus.style.color = 'var(--text-light)';
         clearTimeout(saveTimer);
-        saveTimer = setTimeout(saveNow, 800);
+        saveTimer = setTimeout(saveNow, 600);
     }
 
     async function saveNow() {
@@ -60,7 +59,23 @@ function initEditorView() {
         saveStatus.textContent = 'Auto-saved';
         saveStatus.style.color = 'var(--success)';
         isSaving = false;
-        loadDocList(); // Refresh sidebar to show updated title
+        loadDocList();
+    }
+
+    // Save synchronously before leaving (uses sendBeacon as fallback)
+    function saveSync() {
+        if (!currentDocId) return;
+        const payload = JSON.stringify({
+            title: titleInput.value.trim() || 'Untitled',
+            folder: (docFolder.value && docFolder.value !== '__new__') ? docFolder.value : 'General',
+            content_html: quill.root.innerHTML,
+            content_text: quill.getText().trim(),
+        });
+        // Use sendBeacon for guaranteed delivery even during page transition
+        navigator.sendBeacon(
+            `/api/editor/documents/${currentDocId}`,
+            new Blob([payload], { type: 'application/json' })
+        );
     }
 
     // --- Folders ---
@@ -393,7 +408,7 @@ function initEditorView() {
     return {
         destroy() {
             clearTimeout(saveTimer);
-            if (currentDocId) saveDocument();
+            saveSync(); // Guaranteed save before view is destroyed
             document.removeEventListener('mouseup', handleSelection);
             document.removeEventListener('keyup', handleSelection);
         }
