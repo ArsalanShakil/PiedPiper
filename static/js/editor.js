@@ -3,6 +3,7 @@ function initEditorView() {
     let currentDocId = null;
     let saveTimer = null;
     let lastTranslation = null;
+    let isSaving = false;
 
     const docList = document.getElementById('ed-doc-list');
     const newDocBtn = document.getElementById('ed-new-doc');
@@ -33,67 +34,82 @@ function initEditorView() {
         }
     });
 
-    // Auto-save on text change
+    // --- Auto-save ---
     quill.on('text-change', () => {
         const text = quill.getText().trim();
         const words = text ? text.split(/\s+/).length : 0;
         wordCount.textContent = words + ' words';
-        triggerAutoSave();
+        scheduleSave();
     });
 
-    titleInput.addEventListener('input', triggerAutoSave);
+    titleInput.addEventListener('input', scheduleSave);
+    titleInput.addEventListener('change', () => saveNow()); // Save immediately on blur/enter
 
-    docFolder.addEventListener('change', () => {
-        triggerAutoSave();
-        loadFolders();
-    });
-
-    function triggerAutoSave() {
+    function scheduleSave() {
         saveStatus.textContent = 'Saving...';
         saveStatus.style.color = 'var(--text-light)';
         clearTimeout(saveTimer);
-        saveTimer = setTimeout(async () => {
-            await saveDocument();
-            saveStatus.textContent = 'Auto-saved';
-            saveStatus.style.color = 'var(--success)';
-        }, 800);
+        saveTimer = setTimeout(saveNow, 800);
+    }
+
+    async function saveNow() {
+        clearTimeout(saveTimer);
+        if (!currentDocId || isSaving) return;
+        isSaving = true;
+        await saveDocument();
+        saveStatus.textContent = 'Auto-saved';
+        saveStatus.style.color = 'var(--success)';
+        isSaving = false;
+        loadDocList(); // Refresh sidebar to show updated title
     }
 
     // --- Folders ---
-    let currentFolderValue = 'General';
-
     async function loadFolders(selectValue) {
         const folders = await Api.get('/api/editor/folders');
         const opts = folders.map(f => `<option value="${escapeHtml(f)}">${escapeHtml(f)}</option>`).join('');
         docFolder.innerHTML = opts + '<option value="__new__">+ New folder...</option>';
-        folderFilter.innerHTML = '<option value="">All Folders</option>' + opts;
+
+        // Filter dropdown: include folders + delete option per folder
+        let filterHtml = '<option value="">All Folders</option>';
+        folders.forEach(f => {
+            filterHtml += `<option value="${escapeHtml(f)}">${escapeHtml(f)}</option>`;
+        });
+        folderFilter.innerHTML = filterHtml;
+
         if (selectValue) docFolder.value = selectValue;
     }
 
-    // Handle "new folder" selection — single listener, not inside loadFolders
+    // Single folder change handler
     docFolder.addEventListener('change', () => {
         if (docFolder.value === '__new__') {
             const name = prompt('New folder name:');
             if (name && name.trim()) {
-                // Add new option and select it
+                const trimmed = name.trim();
+                // Add to folder dropdown before __new__
                 const opt = document.createElement('option');
-                opt.value = name.trim();
-                opt.textContent = name.trim();
+                opt.value = trimmed;
+                opt.textContent = trimmed;
                 docFolder.insertBefore(opt, docFolder.querySelector('[value="__new__"]'));
-                docFolder.value = name.trim();
-                // Also add to filter dropdown
-                const filterOpt = document.createElement('option');
-                filterOpt.value = name.trim();
-                filterOpt.textContent = name.trim();
-                folderFilter.appendChild(filterOpt);
-                currentFolderValue = name.trim();
-                triggerAutoSave();
+                docFolder.value = trimmed;
+                // Add to filter dropdown
+                const fopt = document.createElement('option');
+                fopt.value = trimmed;
+                fopt.textContent = trimmed;
+                folderFilter.appendChild(fopt);
+                // Save immediately so folder persists
+                saveNow();
             } else {
-                docFolder.value = currentFolderValue;
+                // Revert to current doc's folder
+                if (currentDocId) {
+                    Api.get(`/api/editor/documents/${currentDocId}`).then(doc => {
+                        docFolder.value = doc.folder || 'General';
+                    });
+                } else {
+                    docFolder.value = 'General';
+                }
             }
         } else {
-            currentFolderValue = docFolder.value;
-            triggerAutoSave();
+            saveNow();
         }
     });
 
@@ -249,11 +265,14 @@ function initEditorView() {
         });
 
         let html = '';
-        for (const [folder, docs] of Object.entries(grouped)) {
+        for (const [folder, folderDocs] of Object.entries(grouped)) {
             if (!filterVal) {
-                html += `<div style="padding:6px 12px 2px;font-size:11px;color:var(--text-light);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">${escapeHtml(folder)}</div>`;
+                html += `<div class="doc-folder-header">
+                    <span>${escapeHtml(folder)}</span>
+                    ${folder !== 'General' ? `<button class="folder-delete-btn" data-folder="${escapeHtml(folder)}" title="Delete folder">&times;</button>` : ''}
+                </div>`;
             }
-            docs.forEach(d => {
+            folderDocs.forEach(d => {
                 html += `
                     <div class="doc-item ${d.id === currentDocId ? 'active' : ''}" data-id="${d.id}">
                         <span class="doc-item-name">${escapeHtml(d.title)}</span>
@@ -266,6 +285,7 @@ function initEditorView() {
         }
         docList.innerHTML = html;
 
+        // Click to open doc
         docList.querySelectorAll('.doc-item').forEach(el => {
             el.addEventListener('click', (e) => {
                 if (e.target.classList.contains('doc-delete-btn')) return;
@@ -273,6 +293,7 @@ function initEditorView() {
             });
         });
 
+        // Delete doc
         docList.querySelectorAll('.doc-delete-btn').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
@@ -285,14 +306,33 @@ function initEditorView() {
                     quill.setText('');
                 }
                 loadDocList();
-                loadFolders(docFolder.value);
+            });
+        });
+
+        // Delete folder (moves docs to General)
+        docList.querySelectorAll('.folder-delete-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const folder = btn.dataset.folder;
+                if (!confirm(`Delete folder "${folder}"? Documents will be moved to General.`)) return;
+                // Move all docs in this folder to General
+                const allDocs = await Api.get('/api/editor/documents');
+                for (const d of allDocs.filter(d => d.folder === folder)) {
+                    await fetch(`/api/editor/documents/${d.id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ folder: 'General' }),
+                    });
+                }
+                if (docFolder.value === folder) docFolder.value = 'General';
+                await loadFolders(docFolder.value);
+                loadDocList();
             });
         });
     }
 
     async function loadDocument(id) {
-        // Save current doc first
-        if (currentDocId) await saveDocument();
+        if (currentDocId && !isSaving) await saveDocument();
 
         const doc = await Api.get(`/api/editor/documents/${id}`);
         if (doc.error) return;
@@ -307,12 +347,13 @@ function initEditorView() {
 
     async function saveDocument() {
         if (!currentDocId) return;
+        const folderVal = docFolder.value;
         await fetch(`/api/editor/documents/${currentDocId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                title: titleInput.value || 'Untitled',
-                folder: docFolder.value === '__new__' ? 'General' : docFolder.value,
+                title: titleInput.value.trim() || 'Untitled',
+                folder: (folderVal && folderVal !== '__new__') ? folderVal : 'General',
                 content_html: quill.root.innerHTML,
                 content_text: quill.getText().trim(),
             }),
@@ -322,7 +363,7 @@ function initEditorView() {
     // New document
     newDocBtn.addEventListener('click', async () => {
         if (currentDocId) await saveDocument();
-        const folder = docFolder.value === '__new__' ? 'General' : (docFolder.value || 'General');
+        const folder = (docFolder.value && docFolder.value !== '__new__') ? docFolder.value : 'General';
         const { ok, data } = await Api.post('/api/editor/documents', { title: 'Untitled', folder });
         if (ok) {
             currentDocId = data.id;
