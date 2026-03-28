@@ -5,6 +5,7 @@ function initEditorView() {
     let lastTranslation = null;
     let isSaving = false;
     let isLoading = false;
+    let isDirty = false; // Track if user made any edits
 
     const docList = document.getElementById('ed-doc-list');
     const newDocBtn = document.getElementById('ed-new-doc');
@@ -41,12 +42,16 @@ function initEditorView() {
         const words = text ? text.split(/\s+/).length : 0;
         wordCount.textContent = words + ' words';
         if (source === 'user' && !isLoading) {
+            isDirty = true;
             scheduleSave();
         }
     });
 
     titleInput.addEventListener('input', () => {
-        if (!isLoading) scheduleSave();
+        if (!isLoading) {
+            isDirty = true;
+            scheduleSave();
+        }
     });
 
     function scheduleSave() {
@@ -61,30 +66,35 @@ function initEditorView() {
         if (!currentDocId || isSaving || isLoading) return;
         isSaving = true;
         await saveDocument();
+        isDirty = false;
         saveStatus.textContent = 'Auto-saved';
         saveStatus.style.color = 'var(--success)';
         isSaving = false;
         loadDocList();
     }
 
-    // FIX: Use fetch with keepalive instead of broken sendBeacon
+    // Save on navigation — only if user actually edited something
     function saveBeforeLeave() {
-        if (!currentDocId) return;
+        if (!currentDocId || !isDirty) {
+            // Nothing to save — just remember the doc ID
+            if (currentDocId) localStorage.setItem('piedpiper_last_doc_id', String(currentDocId));
+            return;
+        }
         const payload = JSON.stringify({
             title: titleInput.value.trim() || 'Untitled',
             folder: (docFolder.value && docFolder.value !== '__new__') ? docFolder.value : 'General',
             content_html: quill.root.innerHTML,
             content_text: quill.getText().trim(),
         });
-        // keepalive: true ensures the request completes even during page navigation
+        // keepalive ensures the request completes even during page navigation
         fetch(`/api/editor/documents/${currentDocId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: payload,
             keepalive: true,
         }).catch(() => {});
-        // Also store doc ID so we can resume on return
         localStorage.setItem('piedpiper_last_doc_id', String(currentDocId));
+        isDirty = false;
     }
 
     // --- Folders ---
