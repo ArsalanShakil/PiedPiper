@@ -287,17 +287,13 @@ function initYkiSpeakingView() {
                 <div id="flow-phase" style="font-size:14px;font-weight:600;color:var(--primary);margin-bottom:8px;">Listening...</div>
                 <div id="flow-timer" class="exam-timer" style="font-size:32px;">--:--</div>
             </div>
-            <div style="margin-top:12px;">
-                <audio id="flow-playback" controls style="display:none;width:100%;height:32px;"></audio>
-            </div>
-            <div class="transcript-box" id="flow-transcript" style="margin-top:8px;">Waiting...</div>
+            <div class="transcript-box" id="flow-transcript" style="margin-top:12px;">Waiting...</div>
         </div>`;
 
         currentPartDiv.innerHTML = html;
 
         const phaseEl = document.getElementById('flow-phase');
         const timerDisplay = document.getElementById('flow-timer');
-        const playbackEl = document.getElementById('flow-playback');
         const transcriptEl = document.getElementById('flow-transcript');
         const flowStatus = document.getElementById('flow-status');
 
@@ -395,17 +391,12 @@ function initYkiSpeakingView() {
         if (activeRecognition) { try { activeRecognition.stop(); } catch(e) {} activeRecognition = null; }
 
         if (activeRecorder) {
-            const blob = await activeRecorder.stop();
+            await activeRecorder.stop();
             activeRecorder.destroy();
             activeRecorder = null;
 
-            if (isMockMode) {
-                const blobUrl = URL.createObjectURL(blob);
-                playbackEl.src = blobUrl;
-                playbackEl.style.display = 'block';
-            }
-
-            allResponses.push({ id, transcript: transcript || transcriptEl.textContent || '', hasAudio: isMockMode });
+            // Only save transcript, don't keep audio blob (saves memory)
+            allResponses.push({ id, transcript: transcript || transcriptEl.textContent || '' });
         }
 
         transcriptEl.textContent = transcript || transcriptEl.textContent || '(no speech detected)';
