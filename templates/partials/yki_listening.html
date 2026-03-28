@@ -1,38 +1,55 @@
 <div id="yki-listening">
-    <div id="listening-setup" class="exam-setup">
-        <h2>&#127911; Listening Exam</h2>
-        <p>Talf&ouml;rst&aring;else — 40 minutes</p>
-        <div class="form-group">
-            <label>Topic (optional)</label>
-            <select id="listening-topic"><option value="">Random</option></select>
+    <div id="ls-menu">
+        <h2 style="font-size:22px;margin-bottom:4px;">Listening Exam</h2>
+        <p style="color:var(--text-dim);font-size:14px;margin-bottom:24px;">Talförståelse — Listen to audio and answer questions</p>
+
+        <div class="yki-dashboard">
+            <div class="yki-card" id="ls-start-mock">
+                <div class="yki-card-icon">&#127891;</div>
+                <h3>Mock Test</h3>
+                <p>2 clips, each played twice, timed (40 min)</p>
+            </div>
+            <div class="yki-card" id="ls-start-practice">
+                <div class="yki-card-icon">&#127911;</div>
+                <h3>Practice</h3>
+                <p>Pick a clip, listen and answer at your pace</p>
+            </div>
         </div>
-        <button class="btn btn-primary" id="listening-start">Generate & Start Exam</button>
+
+        <div id="ls-options" class="panel" style="display:none;">
+            <h2 id="ls-options-title">Options</h2>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="ls-category"><option value="">All</option></select>
+            </div>
+            <button class="btn btn-primary" id="ls-go">Start</button>
+        </div>
     </div>
 
-    <div id="listening-loading" class="generating-overlay" style="display:none;">
-        <h3>Generating listening exam...</h3>
-        <p>Creating scripts and synthesizing audio — this may take 30-60 seconds</p>
+    <div id="ls-loading" class="generating-overlay" style="display:none;">
+        <h3>Generating audio & questions...</h3>
+        <p>Synthesizing speech and creating questions — this may take 30-90 seconds</p>
     </div>
 
-    <div id="listening-exam" style="display:none;">
+    <div id="ls-exam" style="display:none;">
         <div class="exam-header">
             <h2>Listening Exam</h2>
-            <div class="exam-timer" id="listening-timer">40:00</div>
+            <div class="exam-timer" id="ls-timer">40:00</div>
         </div>
-        <div id="listening-clips"></div>
-        <button class="btn btn-primary" id="listening-submit">Submit Answers</button>
+        <div id="ls-clips"></div>
+        <button class="btn btn-primary" id="ls-submit">Submit Answers</button>
     </div>
 
-    <div id="listening-results" style="display:none;">
+    <div id="ls-results" style="display:none;">
         <div class="results-panel">
             <div class="score-display">
-                <div class="score-number" id="listening-score">0</div>
+                <div class="score-number" id="ls-score">-</div>
                 <div class="score-label">Score</div>
             </div>
-            <div class="feedback-text" id="listening-feedback"></div>
+            <div class="feedback-text" id="ls-feedback"></div>
         </div>
         <div style="margin-top:16px;text-align:center;">
-            <button class="btn" onclick="location.hash='#/yki'">Back to Dashboard</button>
+            <button class="btn" onclick="location.hash='#/yki/listening'">Back</button>
         </div>
     </div>
 </div>

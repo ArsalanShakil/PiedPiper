@@ -1,42 +1,59 @@
 <div id="yki-reading">
-    <!-- Setup -->
-    <div id="reading-setup" class="exam-setup">
-        <h2>&#128214; Reading Exam</h2>
-        <p>Textf&ouml;rst&aring;else — 60 minutes</p>
-        <div class="form-group">
-            <label>Topic (optional)</label>
-            <select id="reading-topic"><option value="">Random</option></select>
+    <!-- Menu -->
+    <div id="rd-menu">
+        <h2 style="font-size:22px;margin-bottom:4px;">Reading Exam</h2>
+        <p style="color:var(--text-dim);font-size:14px;margin-bottom:24px;">Textförståelse — Read passages and answer questions</p>
+
+        <div class="yki-dashboard">
+            <div class="yki-card" id="rd-start-mock">
+                <div class="yki-card-icon">&#127891;</div>
+                <h3>Mock Test</h3>
+                <p>3 passages, timed (60 min), scored</p>
+            </div>
+            <div class="yki-card" id="rd-start-practice">
+                <div class="yki-card-icon">&#128214;</div>
+                <h3>Practice</h3>
+                <p>Pick a passage or get a random one</p>
+            </div>
         </div>
-        <button class="btn btn-primary" id="reading-start">Generate & Start Exam</button>
+
+        <div id="rd-options" class="panel" style="display:none;">
+            <h2 id="rd-options-title">Options</h2>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="rd-category"><option value="">All</option></select>
+            </div>
+            <button class="btn btn-primary" id="rd-go">Start</button>
+        </div>
     </div>
 
     <!-- Loading -->
-    <div id="reading-loading" class="generating-overlay" style="display:none;">
-        <h3>Generating exam with AI...</h3>
-        <p>This may take 15-30 seconds</p>
+    <div id="rd-loading" class="generating-overlay" style="display:none;">
+        <h3>Generating questions with AI...</h3>
+        <p>This may take 30-60 seconds</p>
     </div>
 
     <!-- Exam -->
-    <div id="reading-exam" style="display:none;">
+    <div id="rd-exam" style="display:none;">
         <div class="exam-header">
             <h2>Reading Exam</h2>
-            <div class="exam-timer" id="reading-timer">60:00</div>
+            <div class="exam-timer" id="rd-timer">60:00</div>
         </div>
-        <div id="reading-passages"></div>
-        <button class="btn btn-primary" id="reading-submit">Submit Answers</button>
+        <div id="rd-passages"></div>
+        <button class="btn btn-primary" id="rd-submit">Submit Answers</button>
     </div>
 
     <!-- Results -->
-    <div id="reading-results" style="display:none;">
+    <div id="rd-results" style="display:none;">
         <div class="results-panel">
             <div class="score-display">
-                <div class="score-number" id="reading-score">0</div>
+                <div class="score-number" id="rd-score">-</div>
                 <div class="score-label">Score</div>
             </div>
-            <div class="feedback-text" id="reading-feedback"></div>
+            <div class="feedback-text" id="rd-feedback"></div>
         </div>
         <div style="margin-top:16px;text-align:center;">
-            <button class="btn" onclick="location.hash='#/yki'">Back to Dashboard</button>
+            <button class="btn" onclick="location.hash='#/yki/reading'">Back</button>
         </div>
     </div>
 </div>

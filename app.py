@@ -24,12 +24,18 @@ def create_app():
     from blueprints.vocabulary import bp as vocabulary_bp
     from blueprints.yki import bp as yki_bp
     from blueprints.speaking import bp as speaking_bp
+    from blueprints.reading import bp as reading_bp
+    from blueprints.listening import bp as listening_bp
+    from blueprints.writing import bp as writing_bp
     app.register_blueprint(tts_bp)
     app.register_blueprint(knowledge_bp)
     app.register_blueprint(editor_bp)
     app.register_blueprint(vocabulary_bp)
     app.register_blueprint(yki_bp)
     app.register_blueprint(speaking_bp)
+    app.register_blueprint(reading_bp)
+    app.register_blueprint(listening_bp)
+    app.register_blueprint(writing_bp)
 
     # SPA entry point
     @app.route("/")

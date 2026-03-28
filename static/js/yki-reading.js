@@ -1,137 +1,129 @@
 function initYkiReadingView() {
-    const setup = document.getElementById('reading-setup');
-    const loading = document.getElementById('reading-loading');
-    const exam = document.getElementById('reading-exam');
-    const results = document.getElementById('reading-results');
-    const topicSelect = document.getElementById('reading-topic');
-    const startBtn = document.getElementById('reading-start');
-    const passagesDiv = document.getElementById('reading-passages');
-    const submitBtn = document.getElementById('reading-submit');
-    let timer = null;
-    let examData = null;
-    let sessionId = null;
+    const menu = document.getElementById('rd-menu');
+    const loading = document.getElementById('rd-loading');
+    const exam = document.getElementById('rd-exam');
+    const results = document.getElementById('rd-results');
+    let timer = null, examData = null, isMock = false;
 
-    if (!setup) return {};
+    if (!menu) return {};
 
-    // Load topics
+    // Load categories
     (async () => {
-        const topics = await Api.get('/api/yki/topics');
-        topicSelect.innerHTML = '<option value="">Random</option>' +
-            topics.map(t => `<option value="${t}">${t}</option>`).join('');
+        const cats = await Api.get('/api/reading/categories');
+        const sel = document.getElementById('rd-category');
+        sel.innerHTML = '<option value="">All</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
     })();
 
-    startBtn.addEventListener('click', async () => {
-        setup.style.display = 'none';
+    document.getElementById('rd-start-mock').addEventListener('click', () => {
+        isMock = true;
+        document.getElementById('rd-options-title').textContent = 'Mock Test Settings';
+        document.getElementById('rd-options').style.display = 'block';
+    });
+    document.getElementById('rd-start-practice').addEventListener('click', () => {
+        isMock = false;
+        document.getElementById('rd-options-title').textContent = 'Practice Settings';
+        document.getElementById('rd-options').style.display = 'block';
+    });
+
+    document.getElementById('rd-go').addEventListener('click', async () => {
+        menu.style.display = 'none';
         loading.style.display = 'block';
 
-        const { ok, data } = await Api.post('/api/yki/generate', {
-            exam_type: 'reading',
-            topic: topicSelect.value,
+        const { ok, data } = await Api.post('/api/reading/generate', {
+            category: document.getElementById('rd-category').value,
+            num_passages: isMock ? 3 : 1,
+            mode: isMock ? 'mock' : 'practice',
         });
 
         loading.style.display = 'none';
+        if (!ok || data.error) { alert(data.error || 'Failed'); menu.style.display = 'block'; return; }
 
-        if (!ok || data.error) {
-            alert(data.error || 'Failed to generate exam');
-            setup.style.display = 'block';
-            return;
-        }
-
-        sessionId = data.session_id;
-        examData = data.data;
+        examData = data;
         renderExam();
     });
 
     function renderExam() {
         exam.style.display = 'block';
+        if (isMock) {
+            timer = new ExamTimer(document.getElementById('rd-timer'), 3600, null, () => submitExam());
+            timer.start();
+        } else {
+            document.getElementById('rd-timer').textContent = 'Practice';
+        }
 
-        timer = new ExamTimer(
-            document.getElementById('reading-timer'),
-            3600, null, () => submitExam()
-        );
-        timer.start();
-
-        const passages = examData.passages || [];
-        passagesDiv.innerHTML = passages.map((p, pi) => `
+        const div = document.getElementById('rd-passages');
+        div.innerHTML = (examData.passages || []).map((p, pi) => `
             <div class="passage-block">
+                <h3 style="margin-bottom:4px;">${escapeHtml(p.title)}</h3>
+                <p style="font-size:11px;color:var(--text-light);margin-bottom:12px;">${escapeHtml(p.source || '')}</p>
                 <div class="passage-text">${escapeHtml(p.text)}</div>
                 ${(p.questions || []).map((q, qi) => {
-                    const qid = `r-${pi}-${qi}`;
-                    if (q.type === 'multiple_choice' || q.options) {
-                        return `
-                            <div class="question-block">
-                                <div class="question-text">${pi + 1}.${qi + 1} ${escapeHtml(q.question)}</div>
-                                <div class="question-options">
-                                    ${(q.options || []).map((opt, oi) => `
-                                        <label class="option-label" data-qid="${qid}" data-val="${escapeHtml(opt)}">
-                                            <input type="radio" name="${qid}" value="${escapeHtml(opt)}">
-                                            <span>${escapeHtml(opt)}</span>
-                                        </label>
-                                    `).join('')}
-                                </div>
-                            </div>`;
+                    const qid = `rd-${pi}-${qi}`;
+                    if (q.type === 'mc') {
+                        return `<div class="question-block">
+                            <div class="question-text">${pi+1}.${qi+1} ${escapeHtml(q.question)}</div>
+                            <div class="question-options">
+                                ${(q.options || []).map(opt => `
+                                    <label class="option-label" data-qid="${qid}">
+                                        <input type="radio" name="${qid}" value="${escapeHtml(opt)}">
+                                        <span>${escapeHtml(opt)}</span>
+                                    </label>`).join('')}
+                            </div></div>`;
+                    } else if (q.type === 'tf') {
+                        return `<div class="question-block">
+                            <div class="question-text">${pi+1}.${qi+1} ${escapeHtml(q.question)}</div>
+                            <div class="question-options">
+                                <label class="option-label" data-qid="${qid}"><input type="radio" name="${qid}" value="sant"><span>Sant</span></label>
+                                <label class="option-label" data-qid="${qid}"><input type="radio" name="${qid}" value="falskt"><span>Falskt</span></label>
+                            </div></div>`;
                     } else {
-                        return `
-                            <div class="question-block">
-                                <div class="question-text">${pi + 1}.${qi + 1} ${escapeHtml(q.question)}</div>
-                                <textarea class="answer-textarea" data-qid="${qid}" rows="3" placeholder="Write your answer..."></textarea>
-                            </div>`;
+                        return `<div class="question-block">
+                            <div class="question-text">${pi+1}.${qi+1} ${escapeHtml(q.question)}</div>
+                            <textarea class="answer-textarea" data-qid="${qid}" rows="3" placeholder="Skriv ditt svar..."></textarea>
+                        </div>`;
                     }
                 }).join('')}
-            </div>
-        `).join('');
+            </div>`).join('');
 
-        // Selection styling for radio options
-        passagesDiv.querySelectorAll('.option-label').forEach(label => {
-            label.addEventListener('click', () => {
-                const qid = label.dataset.qid;
-                passagesDiv.querySelectorAll(`[data-qid="${qid}"]`).forEach(l => l.classList.remove('selected'));
-                label.classList.add('selected');
+        // Selection styling
+        div.querySelectorAll('.option-label').forEach(l => {
+            l.addEventListener('click', () => {
+                const qid = l.dataset.qid;
+                div.querySelectorAll(`[data-qid="${qid}"]`).forEach(x => x.classList.remove('selected'));
+                l.classList.add('selected');
             });
         });
     }
 
-    submitBtn.addEventListener('click', () => submitExam());
+    document.getElementById('rd-submit').addEventListener('click', submitExam);
 
     async function submitExam() {
         if (timer) timer.stop();
 
-        // Collect answers
         const answers = [];
-        const passages = examData.passages || [];
-        passages.forEach((p, pi) => {
+        const div = document.getElementById('rd-passages');
+        (examData.passages || []).forEach((p, pi) => {
             (p.questions || []).forEach((q, qi) => {
-                const qid = `r-${pi}-${qi}`;
-                const radio = passagesDiv.querySelector(`input[name="${qid}"]:checked`);
-                const textarea = passagesDiv.querySelector(`textarea[data-qid="${qid}"]`);
-                answers.push({
-                    passage: pi,
-                    question: qi,
-                    answer: radio ? radio.value : (textarea ? textarea.value : ''),
-                    correct_answer: q.correct || '',
-                });
+                const qid = `rd-${pi}-${qi}`;
+                const radio = div.querySelector(`input[name="${qid}"]:checked`);
+                const ta = div.querySelector(`textarea[data-qid="${qid}"]`);
+                answers.push(radio ? radio.value : (ta ? ta.value : ''));
             });
         });
 
         exam.style.display = 'none';
         loading.style.display = 'block';
-        loading.querySelector('h3').textContent = 'Evaluating answers...';
+        loading.querySelector('h3').textContent = 'Evaluating...';
 
-        const { ok, data } = await Api.post('/api/yki/evaluate', {
-            exam_type: 'reading',
-            answers,
-            exam_data: examData,
+        const { ok, data } = await Api.post('/api/reading/evaluate', {
+            answers, passages: examData.passages,
         });
 
         loading.style.display = 'none';
         results.style.display = 'block';
-
-        const score = data.score || 0;
-        document.getElementById('reading-score').textContent = score + '%';
-        document.getElementById('reading-feedback').textContent = data.feedback || 'No feedback available.';
+        document.getElementById('rd-score').textContent = (data.score || 0) + '%';
+        document.getElementById('rd-feedback').textContent = data.feedback || 'No feedback.';
     }
 
-    return {
-        destroy() { if (timer) timer.stop(); }
-    };
+    return { destroy() { if (timer) timer.stop(); } };
 }

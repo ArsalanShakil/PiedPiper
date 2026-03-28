@@ -1,38 +1,69 @@
 <div id="yki-writing">
-    <div id="writing-setup" class="exam-setup">
-        <h2>&#128221; Writing Exam</h2>
-        <p>Skriftlig framst&auml;llning — 3 tasks, 54 minutes total</p>
-        <div class="form-group">
-            <label>Topic (optional)</label>
-            <select id="writing-topic"><option value="">Random</option></select>
+    <div id="wr-menu">
+        <h2 style="font-size:22px;margin-bottom:4px;">Writing Exam</h2>
+        <p style="color:var(--text-dim);font-size:14px;margin-bottom:24px;">Skriftlig framställning — 3 writing tasks with timer</p>
+
+        <div class="yki-dashboard">
+            <div class="yki-card" id="wr-start-mock">
+                <div class="yki-card-icon">&#127891;</div>
+                <h3>Mock Test</h3>
+                <p>3 tasks (informal, formal, argumentative), 54 min total</p>
+            </div>
+            <div class="yki-card" id="wr-start-practice">
+                <div class="yki-card-icon">&#128221;</div>
+                <h3>Practice</h3>
+                <p>Pick a task type and practice with timer</p>
+            </div>
         </div>
-        <button class="btn btn-primary" id="writing-start">Generate & Start Exam</button>
+
+        <!-- Practice options -->
+        <div id="wr-practice-options" class="panel" style="display:none;">
+            <h2>Practice Settings</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Task Type</label>
+                    <select id="wr-type">
+                        <option value="">Random</option>
+                        <option value="informal">Informellt mejl (60-80 ord)</option>
+                        <option value="complaint">Klagomål (80-100 ord)</option>
+                        <option value="review">Recension (80-100 ord)</option>
+                        <option value="argumentative">Argumenterande text (100-120 ord)</option>
+                    </select>
+                </div>
+            </div>
+            <div id="wr-prompt-browser" style="display:none;max-height:300px;overflow-y:auto;margin-bottom:12px;"></div>
+            <div style="display:flex;gap:8px;">
+                <button class="btn btn-primary" id="wr-practice-random" style="flex:1;">Random Prompt</button>
+                <button class="btn" id="wr-practice-browse" style="flex:1;">Browse Prompts</button>
+            </div>
+        </div>
     </div>
 
-    <div id="writing-loading" class="generating-overlay" style="display:none;">
-        <h3>Generating writing prompts...</h3>
-        <p>This may take 15-30 seconds</p>
+    <div id="wr-loading" class="generating-overlay" style="display:none;">
+        <h3>Preparing...</h3>
     </div>
 
-    <div id="writing-exam" style="display:none;">
+    <!-- Exam -->
+    <div id="wr-exam" style="display:none;">
         <div class="exam-header">
-            <h2>Writing Exam</h2>
-            <div class="exam-timer" id="writing-timer">54:00</div>
+            <h2 id="wr-exam-title">Writing Exam</h2>
+            <div class="exam-timer" id="wr-timer">54:00</div>
         </div>
-        <div id="writing-tasks"></div>
-        <button class="btn btn-primary" id="writing-submit">Submit All Tasks</button>
+        <div id="wr-tasks"></div>
+        <button class="btn btn-primary" id="wr-submit">Submit</button>
     </div>
 
-    <div id="writing-results" style="display:none;">
+    <!-- Results -->
+    <div id="wr-results" style="display:none;">
         <div class="results-panel">
             <div class="score-display">
-                <div class="score-number" id="writing-score">0</div>
+                <div class="score-number" id="wr-score">-</div>
                 <div class="score-label">Score</div>
             </div>
-            <div class="feedback-text" id="writing-feedback"></div>
+            <div class="feedback-text" id="wr-feedback"></div>
         </div>
         <div style="margin-top:16px;text-align:center;">
-            <button class="btn" onclick="location.hash='#/yki'">Back to Dashboard</button>
+            <button class="btn" onclick="location.hash='#/yki/writing'">Back</button>
         </div>
     </div>
 </div>
