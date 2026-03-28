@@ -41,7 +41,7 @@
                 <div class="form-group">
                     <label>Part Type</label>
                     <select id="sp-part-type">
-                        <option value="">Random</option>
+                        <option value="">All</option>
                         <option value="dialogues">Del 1: Dialoger</option>
                         <option value="react">Del 2: Reagera</option>
                         <option value="narrate">Del 3: Ber&auml;tta</option>
@@ -51,11 +51,18 @@
                 <div class="form-group">
                     <label>Topic</label>
                     <select id="sp-topic-select">
-                        <option value="">Random</option>
+                        <option value="">All</option>
                     </select>
                 </div>
             </div>
-            <button class="btn btn-primary" id="sp-practice-go">Start Practice</button>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+                <button class="btn btn-primary" id="sp-practice-random" style="flex:1;">Random Question</button>
+                <button class="btn" id="sp-practice-browse" style="flex:1;">Browse Questions</button>
+            </div>
+
+            <!-- Question browser -->
+            <div id="sp-question-browser" style="display:none;margin-top:16px;max-height:400px;overflow-y:auto;">
+            </div>
         </div>
     </div>
 

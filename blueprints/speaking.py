@@ -212,6 +212,59 @@ def practice_part():
     return jsonify(random.choice(candidates))
 
 
+@bp.route("/browse")
+def browse_questions():
+    """Return all questions in a flat list for browsing."""
+    part_type = request.args.get("type", "")
+    topic = request.args.get("topic", "")
+    tests = get_tests()
+
+    items = []
+    for t in tests:
+        if topic and topic.lower() not in t["topic"].lower():
+            continue
+        for p in t["parts"]:
+            if part_type and p["type"] != part_type:
+                continue
+
+            if p["type"] == "dialogues":
+                for di, d in enumerate(p.get("items", [])):
+                    items.append({
+                        "id": f"t{t['number']}-d{di}",
+                        "test": t["number"], "topic": t["topic"],
+                        "part_type": "dialogues", "part_label": "Dialog",
+                        "title": d["title"],
+                        "preview": d["situation"],
+                        "data": {"items": [d], "part": p["part"], "type": "dialogues",
+                                 "title": "Dialoger", "instructions": p["instructions"],
+                                 "prep_seconds": p["prep_seconds"], "answer_seconds": p["answer_seconds"]},
+                    })
+            elif p["type"] == "react":
+                for ri, item in enumerate(p.get("items", [])):
+                    items.append({
+                        "id": f"t{t['number']}-r{ri}",
+                        "test": t["number"], "topic": t["topic"],
+                        "part_type": "react", "part_label": "Reagera",
+                        "title": item["situation"][:60] + ("..." if len(item["situation"]) > 60 else ""),
+                        "preview": item["instruction"],
+                        "data": {"items": [item], "part": p["part"], "type": "react",
+                                 "title": "Reagera", "instructions": p["instructions"],
+                                 "prep_seconds": p["prep_seconds"], "answer_seconds": p["answer_seconds"]},
+                    })
+            elif p["type"] in ("narrate", "opinion"):
+                items.append({
+                    "id": f"t{t['number']}-{p['type']}",
+                    "test": t["number"], "topic": t["topic"],
+                    "part_type": p["type"],
+                    "part_label": "Berätta" if p["type"] == "narrate" else "Din åsikt",
+                    "title": p.get("topic", p["title"]),
+                    "preview": ", ".join(p.get("prompts", [])[:2]),
+                    "data": p,
+                })
+
+    return jsonify(items)
+
+
 @bp.route("/tts", methods=["POST"])
 def synthesize_prompt():
     """Convert a speaking prompt to audio via Piper TTS with caching."""

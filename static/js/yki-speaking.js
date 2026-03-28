@@ -71,8 +71,8 @@ function initYkiSpeakingView() {
         runAllParts();
     });
 
-    // --- Start Practice ---
-    document.getElementById('sp-practice-go').addEventListener('click', async () => {
+    // --- Practice: Random ---
+    document.getElementById('sp-practice-random').addEventListener('click', async () => {
         const partType = document.getElementById('sp-part-type').value;
         const topic = document.getElementById('sp-topic-select').value;
         menu.style.display = 'none';
@@ -81,18 +81,85 @@ function initYkiSpeakingView() {
         const data = await Api.get(`/api/speaking/practice?type=${encodeURIComponent(partType)}&topic=${encodeURIComponent(topic)}`);
         if (data.error) { alert(data.error); loading.style.display = 'none'; menu.style.display = 'block'; return; }
 
+        startPractice(data);
+    });
+
+    // --- Practice: Browse questions ---
+    document.getElementById('sp-practice-browse').addEventListener('click', async () => {
+        const partType = document.getElementById('sp-part-type').value;
+        const topic = document.getElementById('sp-topic-select').value;
+        const browser = document.getElementById('sp-question-browser');
+
+        browser.innerHTML = '<p style="padding:12px;color:var(--text-light);">Loading questions...</p>';
+        browser.style.display = 'block';
+
+        const items = await Api.get(`/api/speaking/browse?type=${encodeURIComponent(partType)}&topic=${encodeURIComponent(topic)}`);
+
+        if (!items.length) {
+            browser.innerHTML = '<p class="empty-state">No questions found.</p>';
+            return;
+        }
+
+        // Group by topic
+        const grouped = {};
+        items.forEach(item => {
+            const key = `Prov ${item.test} — ${item.topic}`;
+            if (!grouped[key]) grouped[key] = [];
+            grouped[key].push(item);
+        });
+
+        let html = '';
+        for (const [group, questions] of Object.entries(grouped)) {
+            html += `<div style="margin-bottom:12px;">
+                <div style="font-size:12px;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px;padding:4px 0;">${escapeHtml(group)}</div>`;
+            questions.forEach(q => {
+                html += `<div class="sp-browse-item" data-id="${q.id}" style="padding:10px 12px;border:1px solid var(--border-light);border-radius:var(--radius-sm);margin-bottom:4px;cursor:pointer;transition:border-color 0.1s;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <div>
+                            <span class="badge" style="margin-right:6px;">${escapeHtml(q.part_label)}</span>
+                            <strong style="font-size:13px;">${escapeHtml(q.title)}</strong>
+                        </div>
+                        <button class="btn btn-small" style="flex-shrink:0;">Start</button>
+                    </div>
+                    <p style="font-size:12px;color:var(--text-light);margin-top:4px;">${escapeHtml(q.preview)}</p>
+                </div>`;
+            });
+            html += '</div>';
+        }
+        browser.innerHTML = html;
+
+        // Click handlers
+        browser.querySelectorAll('.sp-browse-item').forEach(el => {
+            el.addEventListener('click', () => {
+                const qId = el.dataset.id;
+                const item = items.find(i => i.id === qId);
+                if (item) startPractice(item.data);
+            });
+        });
+    });
+
+    // Update browser when filters change
+    document.getElementById('sp-part-type').addEventListener('change', () => {
+        document.getElementById('sp-question-browser').style.display = 'none';
+    });
+    document.getElementById('sp-topic-select').addEventListener('change', () => {
+        document.getElementById('sp-question-browser').style.display = 'none';
+    });
+
+    function startPractice(partData) {
         isMockMode = false;
-        testData = { number: 0, topic: data.test_topic || 'Practice', parts: [data] };
+        testData = { number: 0, topic: partData.test_topic || 'Practice', parts: [partData] };
         allResponses = [];
         aborted = false;
-        document.getElementById('sp-exam-title').textContent = `Practice — ${data.title}`;
+        document.getElementById('sp-exam-title').textContent = `Practice — ${partData.title || partData.topic || ''}`;
 
+        menu.style.display = 'none';
         loading.style.display = 'none';
         examDiv.style.display = 'block';
         document.getElementById('sp-next-part').textContent = 'Restart';
         document.getElementById('sp-next-part').style.display = 'inline-flex';
         runAllParts();
-    });
+    }
 
     // --- Exit / Restart ---
     document.getElementById('sp-back-menu').addEventListener('click', () => {
