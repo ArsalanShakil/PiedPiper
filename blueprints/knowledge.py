@@ -4,7 +4,7 @@ from pathlib import Path
 
 from flask import Blueprint, jsonify, request
 
-from config import KNOWLEDGE_DIR, BUNDLED_KNOWLEDGE
+from config import KNOWLEDGE_DIR, KNOWLEDGE_FOLDERS, BUNDLED_KNOWLEDGE
 
 bp = Blueprint("knowledge", __name__, url_prefix="/api/knowledge")
 
@@ -12,18 +12,19 @@ ALLOWED_EXTENSIONS = {".md", ".txt", ".pdf", ".docx"}
 MAX_FILE_SIZE = 20 * 1024 * 1024  # 20MB
 
 
-def _file_info(path):
-    """Build file info dict for a knowledge file."""
+def _file_info(path, folder):
+    rel = f"{folder}/{path.name}"
     return {
         "name": path.name,
+        "folder": folder,
+        "path": rel,
         "size": path.stat().st_size,
         "extension": path.suffix,
-        "bundled": path.name in BUNDLED_KNOWLEDGE,
+        "bundled": rel in BUNDLED_KNOWLEDGE,
     }
 
 
 def _extract_text(path):
-    """Extract readable text from a file for preview."""
     ext = path.suffix.lower()
     try:
         if ext in (".md", ".txt"):
@@ -37,7 +38,6 @@ def _extract_text(path):
                 return result.stdout
             return f"(Could not extract text from PDF: {result.stderr.strip()})"
         elif ext == ".docx":
-            # Basic extraction via python-docx if available, else just note it
             try:
                 import docx
                 doc = docx.Document(str(path))
@@ -49,33 +49,45 @@ def _extract_text(path):
         return f"(Error reading file: {e})"
 
 
+@bp.route("/folders")
+def list_folders():
+    # Ensure all folders exist
+    for f in KNOWLEDGE_FOLDERS:
+        (KNOWLEDGE_DIR / f).mkdir(parents=True, exist_ok=True)
+    return jsonify(KNOWLEDGE_FOLDERS)
+
+
 @bp.route("/")
 def list_files():
-    """List all files in the knowledge base."""
     KNOWLEDGE_DIR.mkdir(exist_ok=True)
-    files = []
-    for f in sorted(KNOWLEDGE_DIR.iterdir()):
-        if f.is_file() and f.suffix.lower() in ALLOWED_EXTENSIONS:
-            files.append(_file_info(f))
-    return jsonify(files)
+    result = {}
+    for folder in KNOWLEDGE_FOLDERS:
+        folder_path = KNOWLEDGE_DIR / folder
+        folder_path.mkdir(exist_ok=True)
+        files = []
+        for f in sorted(folder_path.iterdir()):
+            if f.is_file() and f.suffix.lower() in ALLOWED_EXTENSIONS:
+                files.append(_file_info(f, folder))
+        result[folder] = files
+    return jsonify(result)
 
 
 @bp.route("/preview")
 def preview_file():
-    """Preview a knowledge base file."""
+    folder = request.args.get("folder", "")
     name = request.args.get("name", "")
-    if not name or ".." in name or "/" in name:
-        return jsonify({"error": "Invalid filename"}), 400
+    if not folder or not name or ".." in folder or ".." in name:
+        return jsonify({"error": "Invalid path"}), 400
 
-    path = KNOWLEDGE_DIR / name
+    path = KNOWLEDGE_DIR / folder / name
     if not path.exists():
         return jsonify({"error": "File not found"}), 404
 
     text = _extract_text(path)
-    # Limit preview to first 5000 characters
     truncated = len(text) > 5000
     return jsonify({
         "name": name,
+        "folder": folder,
         "content": text[:5000],
         "truncated": truncated,
         "full_size": len(text),
@@ -84,59 +96,58 @@ def preview_file():
 
 @bp.route("/upload", methods=["POST"])
 def upload_file():
-    """Upload a file to the knowledge base."""
     if "file" not in request.files:
         return jsonify({"error": "No file provided"}), 400
 
     file = request.files["file"]
+    folder = request.form.get("folder", "Writing")
     if not file.filename:
         return jsonify({"error": "No filename"}), 400
+    if folder not in KNOWLEDGE_FOLDERS:
+        return jsonify({"error": "Invalid folder"}), 400
 
-    # Check extension
     ext = Path(file.filename).suffix.lower()
     if ext not in ALLOWED_EXTENSIONS:
-        return jsonify({"error": f"Unsupported file type: {ext}. Allowed: {', '.join(ALLOWED_EXTENSIONS)}"}), 400
+        return jsonify({"error": f"Unsupported file type: {ext}"}), 400
 
-    # Check size
     file.seek(0, os.SEEK_END)
     size = file.tell()
     file.seek(0)
     if size > MAX_FILE_SIZE:
         return jsonify({"error": "File too large (max 20MB)"}), 400
 
-    # Sanitize filename
     safe_name = "".join(c for c in file.filename if c.isalnum() or c in "-_. ").strip()
     if not safe_name:
         safe_name = "uploaded_file" + ext
 
-    KNOWLEDGE_DIR.mkdir(exist_ok=True)
-    dest = KNOWLEDGE_DIR / safe_name
+    dest_dir = KNOWLEDGE_DIR / folder
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    dest = dest_dir / safe_name
 
-    # Avoid overwriting
     if dest.exists():
         base = dest.stem
         i = 1
         while dest.exists():
-            dest = KNOWLEDGE_DIR / f"{base}_{i}{ext}"
+            dest = dest_dir / f"{base}_{i}{ext}"
             i += 1
 
     file.save(str(dest))
-    return jsonify(_file_info(dest))
+    return jsonify(_file_info(dest, folder))
 
 
 @bp.route("/delete", methods=["POST"])
 def delete_file():
-    """Delete a file from the knowledge base."""
     data = request.json
+    folder = data.get("folder", "")
     name = data.get("name", "")
-    if not name or ".." in name or "/" in name:
-        return jsonify({"error": "Invalid filename"}), 400
+    if not folder or not name or ".." in folder or ".." in name:
+        return jsonify({"error": "Invalid path"}), 400
 
-    # Don't allow deleting bundled files
-    if name in BUNDLED_KNOWLEDGE:
+    rel = f"{folder}/{name}"
+    if rel in BUNDLED_KNOWLEDGE:
         return jsonify({"error": "Cannot delete bundled files"}), 400
 
-    path = KNOWLEDGE_DIR / name
+    path = KNOWLEDGE_DIR / folder / name
     if path.exists():
         path.unlink()
     return jsonify({"ok": True})

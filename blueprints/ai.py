@@ -4,18 +4,22 @@ from pathlib import Path
 from config import KNOWLEDGE_DIR
 
 
-def load_knowledge_base():
-    """Load all files from the knowledge directory as context."""
+def load_knowledge_base(folder=None):
+    """Load files from the knowledge directory as context. Optionally filter by folder."""
     context_parts = []
     if not KNOWLEDGE_DIR.exists():
         return ""
-    for f in sorted(KNOWLEDGE_DIR.iterdir()):
-        if f.suffix in (".md", ".txt"):
-            try:
-                content = f.read_text(encoding="utf-8")
-                context_parts.append(f"--- {f.name} ---\n{content}")
-            except Exception:
-                continue
+    dirs = [KNOWLEDGE_DIR / folder] if folder else sorted(KNOWLEDGE_DIR.iterdir())
+    for d in dirs:
+        if not d.is_dir():
+            continue
+        for f in sorted(d.iterdir()):
+            if f.suffix in (".md", ".txt"):
+                try:
+                    content = f.read_text(encoding="utf-8")
+                    context_parts.append(f"--- {d.name}/{f.name} ---\n{content}")
+                except Exception:
+                    continue
     return "\n\n".join(context_parts)
 
 

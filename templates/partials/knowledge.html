@@ -4,13 +4,29 @@
             <h2>Knowledge Base</h2>
             <p class="page-description">Study materials used as context for AI-generated exams and evaluations.</p>
         </div>
-        <label class="btn btn-primary upload-btn">
-            Upload File
-            <input type="file" id="kb-file-input" accept=".md,.txt,.pdf,.docx" style="display:none">
-        </label>
+        <div style="display:flex;gap:8px;align-items:center;">
+            <select id="kb-upload-folder" style="width:130px;font-size:13px;padding:6px 10px;">
+                <option value="Writing">Writing</option>
+                <option value="Reading">Reading</option>
+                <option value="Listening">Listening</option>
+                <option value="Speaking">Speaking</option>
+            </select>
+            <label class="btn btn-primary upload-btn">
+                Upload File
+                <input type="file" id="kb-file-input" accept=".md,.txt,.pdf,.docx" style="display:none">
+            </label>
+        </div>
     </div>
 
     <div id="kb-upload-status" class="upload-status" style="display:none;"></div>
+
+    <!-- Folder Tabs -->
+    <div class="kb-tabs" id="kb-tabs">
+        <button class="kb-tab active" data-folder="Writing">Writing</button>
+        <button class="kb-tab" data-folder="Reading">Reading</button>
+        <button class="kb-tab" data-folder="Listening">Listening</button>
+        <button class="kb-tab" data-folder="Speaking">Speaking</button>
+    </div>
 
     <div class="kb-layout">
         <div class="kb-file-list" id="kb-file-list">

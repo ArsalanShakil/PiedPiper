@@ -53,6 +53,36 @@
     border: 1px solid #fecaca;
 }
 
+/* Folder Tabs */
+.kb-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0;
+}
+
+.kb-tab {
+    padding: 10px 20px;
+    border: none;
+    background: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-dim);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.12s;
+    font-family: inherit;
+}
+
+.kb-tab:hover { color: var(--text); }
+
+.kb-tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
 .kb-layout {
     display: flex;
     gap: 20px;
