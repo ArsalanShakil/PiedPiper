@@ -44,7 +44,6 @@ function initEditorView() {
         const items = await Api.get('/api/vocabulary/');
         vocabMap = {};
         items.forEach(v => {
-            // Store by lowercase, strip punctuation for matching
             const key = v.swedish_text.toLowerCase().replace(/[.,!?;:]/g, '').trim();
             if (key) vocabMap[key] = v.translation;
         });
@@ -53,66 +52,58 @@ function initEditorView() {
     function highlightVocabWords() {
         clearTimeout(highlightTimer);
         highlightTimer = setTimeout(() => {
-            const editor = document.querySelector('.ql-editor');
-            if (!editor || Object.keys(vocabMap).length === 0) return;
+            if (!quill || Object.keys(vocabMap).length === 0) return;
 
-            // Remove existing highlights
-            editor.querySelectorAll('.vocab-highlight').forEach(el => {
-                el.replaceWith(document.createTextNode(el.textContent));
-            });
-            editor.normalize();
+            const text = quill.getText();
+            const vocabKeys = Object.keys(vocabMap);
 
-            // Walk text nodes and wrap vocab words
-            const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
-            const matches = [];
-            let node;
-            while (node = walker.nextNode()) {
-                const text = node.textContent;
-                // Find vocab words in this text node
-                const wordRegex = /[\wåäöÅÄÖ]+/gi;
-                let match;
-                while (match = wordRegex.exec(text)) {
-                    const word = match[0].toLowerCase();
-                    if (vocabMap[word]) {
-                        matches.push({ node, start: match.index, end: match.index + match[0].length, word: match[0], translation: vocabMap[word] });
-                    }
-                }
+            // Build a regex that matches any vocab word (case-insensitive, word boundary)
+            // Escape special regex chars in vocab words
+            const escaped = vocabKeys.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+            const pattern = new RegExp('(?:^|[\\s.,;:!?()\\[\\]"\'—–-])(' + escaped.join('|') + ')(?=[\\s.,;:!?()\\[\\]"\'—–-]|$)', 'gi');
+
+            // First remove all existing vocab highlights
+            const fullLen = quill.getLength();
+            quill.formatText(0, fullLen, 'background', false, 'silent');
+            quill.formatText(0, fullLen, 'color', false, 'silent');
+
+            // Find and highlight each match
+            let match;
+            while (match = pattern.exec(text)) {
+                // match[1] is the captured word, match.index is for the full match including boundary char
+                const wordStart = match.index + match[0].indexOf(match[1]);
+                const wordLen = match[1].length;
+                quill.formatText(wordStart, wordLen, { 'color': '#dc2626' }, 'silent');
             }
-
-            // Apply highlights in reverse order to preserve positions
-            for (let i = matches.length - 1; i >= 0; i--) {
-                const m = matches[i];
-                const range = document.createRange();
-                range.setStart(m.node, m.start);
-                range.setEnd(m.node, m.end);
-                const span = document.createElement('span');
-                span.className = 'vocab-highlight';
-                span.dataset.translation = m.translation;
-                span.textContent = m.word;
-                range.deleteContents();
-                range.insertNode(span);
-            }
-        }, 300);
+        }, 400);
     }
 
-    // Tooltip on hover
+    // Tooltip on hover over red words
     const tooltip = document.createElement('div');
     tooltip.className = 'vocab-tooltip';
     tooltip.style.display = 'none';
     document.body.appendChild(tooltip);
 
     document.addEventListener('mouseover', (e) => {
-        if (e.target.classList && e.target.classList.contains('vocab-highlight')) {
-            tooltip.textContent = e.target.dataset.translation;
-            tooltip.style.display = 'block';
-            const rect = e.target.getBoundingClientRect();
-            tooltip.style.top = (rect.bottom + window.scrollY + 4) + 'px';
-            tooltip.style.left = (rect.left + window.scrollX) + 'px';
+        // Check if hovering over a colored (vocab) word in Quill
+        if (e.target.closest && e.target.closest('.ql-editor')) {
+            const el = e.target;
+            if (el.tagName === 'SPAN' && el.style && el.style.color === 'rgb(220, 38, 38)') {
+                const word = el.textContent.toLowerCase().replace(/[.,!?;:]/g, '').trim();
+                const translation = vocabMap[word];
+                if (translation) {
+                    tooltip.textContent = translation;
+                    tooltip.style.display = 'block';
+                    const rect = el.getBoundingClientRect();
+                    tooltip.style.top = (rect.bottom + window.scrollY + 4) + 'px';
+                    tooltip.style.left = (rect.left + window.scrollX) + 'px';
+                }
+            }
         }
     });
 
     document.addEventListener('mouseout', (e) => {
-        if (e.target.classList && e.target.classList.contains('vocab-highlight')) {
+        if (e.target.tagName === 'SPAN' && e.target.style && e.target.style.color === 'rgb(220, 38, 38)') {
             tooltip.style.display = 'none';
         }
     });
