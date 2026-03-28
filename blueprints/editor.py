@@ -43,7 +43,14 @@ def get_document(doc_id):
 
 @bp.route("/documents/<int:doc_id>", methods=["PUT", "POST"])
 def update_document(doc_id):
+    import json as jsonlib
     data = request.json
+    # Fallback: parse raw body if request.json failed (e.g. sendBeacon)
+    if not data:
+        try:
+            data = jsonlib.loads(request.data.decode())
+        except Exception:
+            data = {}
     conn = get_db()
     row = conn.execute("SELECT id FROM documents WHERE id = ?", (doc_id,)).fetchone()
     if not row:

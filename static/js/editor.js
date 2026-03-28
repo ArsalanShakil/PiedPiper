@@ -4,7 +4,7 @@ function initEditorView() {
     let saveTimer = null;
     let lastTranslation = null;
     let isSaving = false;
-    let isLoading = false; // Prevent save during document load
+    let isLoading = false;
 
     const docList = document.getElementById('ed-doc-list');
     const newDocBtn = document.getElementById('ed-new-doc');
@@ -40,7 +40,6 @@ function initEditorView() {
         const text = quill.getText().trim();
         const words = text ? text.split(/\s+/).length : 0;
         wordCount.textContent = words + ' words';
-        // Only auto-save on user edits, not programmatic changes
         if (source === 'user' && !isLoading) {
             scheduleSave();
         }
@@ -68,8 +67,8 @@ function initEditorView() {
         loadDocList();
     }
 
-    // Save synchronously before leaving (uses sendBeacon as fallback)
-    function saveSync() {
+    // FIX: Use fetch with keepalive instead of broken sendBeacon
+    function saveBeforeLeave() {
         if (!currentDocId) return;
         const payload = JSON.stringify({
             title: titleInput.value.trim() || 'Untitled',
@@ -77,11 +76,15 @@ function initEditorView() {
             content_html: quill.root.innerHTML,
             content_text: quill.getText().trim(),
         });
-        // Use sendBeacon for guaranteed delivery even during page transition
-        navigator.sendBeacon(
-            `/api/editor/documents/${currentDocId}`,
-            new Blob([payload], { type: 'application/json' })
-        );
+        // keepalive: true ensures the request completes even during page navigation
+        fetch(`/api/editor/documents/${currentDocId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload,
+            keepalive: true,
+        }).catch(() => {});
+        // Also store doc ID so we can resume on return
+        localStorage.setItem('piedpiper_last_doc_id', String(currentDocId));
     }
 
     // --- Folders ---
@@ -89,38 +92,30 @@ function initEditorView() {
         const folders = await Api.get('/api/editor/folders');
         const opts = folders.map(f => `<option value="${escapeHtml(f)}">${escapeHtml(f)}</option>`).join('');
         docFolder.innerHTML = opts + '<option value="__new__">+ New folder...</option>';
-
-        // Filter dropdown: include folders + delete option per folder
         let filterHtml = '<option value="">All Folders</option>';
         folders.forEach(f => {
             filterHtml += `<option value="${escapeHtml(f)}">${escapeHtml(f)}</option>`;
         });
         folderFilter.innerHTML = filterHtml;
-
         if (selectValue) docFolder.value = selectValue;
     }
 
-    // Single folder change handler
     docFolder.addEventListener('change', () => {
         if (docFolder.value === '__new__') {
             const name = prompt('New folder name:');
             if (name && name.trim()) {
                 const trimmed = name.trim();
-                // Add to folder dropdown before __new__
                 const opt = document.createElement('option');
                 opt.value = trimmed;
                 opt.textContent = trimmed;
                 docFolder.insertBefore(opt, docFolder.querySelector('[value="__new__"]'));
                 docFolder.value = trimmed;
-                // Add to filter dropdown
                 const fopt = document.createElement('option');
                 fopt.value = trimmed;
                 fopt.textContent = trimmed;
                 folderFilter.appendChild(fopt);
-                // Save immediately so folder persists
                 saveNow();
             } else {
-                // Revert to current doc's folder
                 if (currentDocId) {
                     Api.get(`/api/editor/documents/${currentDocId}`).then(doc => {
                         docFolder.value = doc.folder || 'General';
@@ -277,7 +272,6 @@ function initEditorView() {
             return;
         }
 
-        // Group by folder
         const grouped = {};
         filtered.forEach(d => {
             const f = d.folder || 'General';
@@ -306,7 +300,6 @@ function initEditorView() {
         }
         docList.innerHTML = html;
 
-        // Click to open doc
         docList.querySelectorAll('.doc-item').forEach(el => {
             el.addEventListener('click', (e) => {
                 if (e.target.classList.contains('doc-delete-btn')) return;
@@ -314,7 +307,6 @@ function initEditorView() {
             });
         });
 
-        // Delete doc
         docList.querySelectorAll('.doc-delete-btn').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
@@ -323,6 +315,7 @@ function initEditorView() {
                 await fetch(`/api/editor/documents/${id}`, { method: 'DELETE' });
                 if (currentDocId === id) {
                     currentDocId = null;
+                    localStorage.removeItem('piedpiper_last_doc_id');
                     titleInput.value = 'Untitled';
                     quill.setText('');
                 }
@@ -330,13 +323,11 @@ function initEditorView() {
             });
         });
 
-        // Delete folder (moves docs to General)
         docList.querySelectorAll('.folder-delete-btn').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
                 const folder = btn.dataset.folder;
                 if (!confirm(`Delete folder "${folder}"? Documents will be moved to General.`)) return;
-                // Move all docs in this folder to General
                 const allDocs = await Api.get('/api/editor/documents');
                 for (const d of allDocs.filter(d => d.folder === folder)) {
                     await fetch(`/api/editor/documents/${d.id}`, {
@@ -353,23 +344,22 @@ function initEditorView() {
     }
 
     async function loadDocument(id) {
-        // Save current doc before switching
         if (currentDocId && !isSaving && !isLoading) {
             await saveDocument();
         }
 
-        isLoading = true; // Prevent auto-save during load
+        isLoading = true;
         clearTimeout(saveTimer);
 
         const doc = await Api.get(`/api/editor/documents/${id}`);
         if (doc.error) { isLoading = false; return; }
 
         currentDocId = doc.id;
+        localStorage.setItem('piedpiper_last_doc_id', String(doc.id));
         titleInput.value = doc.title;
         docFolder.value = doc.folder || 'General';
         quill.root.innerHTML = doc.content_html || '';
 
-        // Wait a tick for Quill to process the content change
         setTimeout(() => {
             isLoading = false;
             saveStatus.textContent = 'Saved';
@@ -392,6 +382,7 @@ function initEditorView() {
                 content_text: quill.getText().trim(),
             }),
         });
+        localStorage.setItem('piedpiper_last_doc_id', String(currentDocId));
     }
 
     // New document
@@ -405,6 +396,7 @@ function initEditorView() {
         const { ok, data } = await Api.post('/api/editor/documents', { title: 'Untitled', folder });
         if (ok) {
             currentDocId = data.id;
+            localStorage.setItem('piedpiper_last_doc_id', String(data.id));
             titleInput.value = data.title;
             docFolder.value = data.folder;
             quill.setText('');
@@ -421,16 +413,21 @@ function initEditorView() {
         }
     });
 
-    // --- Init ---
+    // --- Init: restore last document ---
     (async () => {
         await loadFolders('General');
         const docs = await Api.get('/api/editor/documents');
+
         if (docs.length === 0) {
             const { ok, data } = await Api.post('/api/editor/documents', { title: 'My first document' });
             if (ok) currentDocId = data.id;
         } else {
-            currentDocId = docs[0].id;
+            // Restore last edited document from localStorage
+            const lastId = parseInt(localStorage.getItem('piedpiper_last_doc_id'));
+            const lastDoc = lastId ? docs.find(d => d.id === lastId) : null;
+            currentDocId = lastDoc ? lastDoc.id : docs[0].id;
         }
+
         await loadDocList();
         if (currentDocId) await loadDocument(currentDocId);
     })();
@@ -438,7 +435,8 @@ function initEditorView() {
     return {
         destroy() {
             clearTimeout(saveTimer);
-            saveSync(); // Guaranteed save before view is destroyed
+            // FIX: Use fetch with keepalive for guaranteed save on navigation
+            saveBeforeLeave();
             document.removeEventListener('mouseup', handleSelection);
             document.removeEventListener('keyup', handleSelection);
         }
