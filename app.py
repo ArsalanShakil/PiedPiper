@@ -7,6 +7,9 @@ from db import init_db
 def create_app():
     app = Flask(__name__)
 
+    # Disable static file caching in development
+    app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
     # Ensure directories exist
     OUTPUT_DIR.mkdir(exist_ok=True)
     (OUTPUT_DIR / "General").mkdir(exist_ok=True)
