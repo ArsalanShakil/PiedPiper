@@ -15,6 +15,7 @@ function initYkiSpeakingView() {
     let recorder = null;
     let recognition = null;
     let allResponses = [];
+    let isMockMode = false;
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     // --- Load options ---
@@ -49,6 +50,7 @@ function initYkiSpeakingView() {
         const data = await Api.get(`/api/speaking/test/${testNum}`);
         if (data.error) { alert(data.error); loading.style.display = 'none'; menu.style.display = 'block'; return; }
 
+        isMockMode = true;
         testData = data;
         currentPartIndex = 0;
         allResponses = [];
@@ -70,6 +72,7 @@ function initYkiSpeakingView() {
         const data = await Api.get(url);
         if (data.error) { alert(data.error); loading.style.display = 'none'; menu.style.display = 'block'; return; }
 
+        isMockMode = false;
         testData = { number: 0, topic: data.test_topic || 'Practice', parts: [data] };
         currentPartIndex = 0;
         allResponses = [];
@@ -134,13 +137,7 @@ function initYkiSpeakingView() {
                         <button class="btn btn-small" onclick="spPlayPrompt(this, \`${line.prompt.replace(/`/g, "'")}\`)">Listen</button>
                     </div>
                     <p style="font-size:12px;color:var(--text-light);margin-bottom:8px;"><em>${escapeHtml(line.instruction)}</em></p>
-                    <div class="recording-controls">
-                        <button class="rec-btn" id="rec-${id}" onclick="spToggleRec('${id}', ${part.answer_seconds})"><div class="rec-dot"></div></button>
-                        <span class="recording-status" id="status-${id}">Press to record</span>
-                        <span class="exam-timer" id="timer-${id}" style="font-size:14px;padding:4px 8px;display:none;">00:${part.answer_seconds}</span>
-                        <audio id="play-${id}" controls style="display:none;height:32px;"></audio>
-                    </div>
-                    <div class="transcript-box" id="transcript-${id}">Your answer will appear here...</div>
+                    ${recControlsHtml(id, part.answer_seconds)}
                 </div>`;
             }
             html += '</div>';
@@ -203,16 +200,25 @@ function initYkiSpeakingView() {
             <div style="margin-top:12px;padding:12px;background:var(--primary-light);border-radius:var(--radius-sm);font-size:13px;color:var(--primary);">
                 Prep time: ${part.prep_seconds}s | Speaking time: ${part.answer_seconds}s
             </div>
-            <div class="recording-controls" style="margin-top:16px;">
-                <button class="rec-btn" id="rec-${id}" onclick="spToggleRec('${id}', ${part.answer_seconds})"><div class="rec-dot"></div></button>
-                <span class="recording-status" id="status-${id}">Press to record when ready</span>
-                <span class="exam-timer" id="timer-${id}" style="font-size:14px;padding:4px 8px;display:none;">00:${part.answer_seconds}</span>
-                <audio id="play-${id}" controls style="display:none;height:32px;"></audio>
+            <div style="margin-top:16px;">
+                ${recControlsHtml(id, part.answer_seconds)}
             </div>
-            <div class="transcript-box" id="transcript-${id}">Your answer will appear here...</div>
         </div>`;
 
         currentPartDiv.innerHTML = html;
+    }
+
+    // Helper: generate recording controls HTML for an exercise
+    function recControlsHtml(id, answerSeconds) {
+        return `
+            <div class="recording-controls">
+                <button class="rec-btn" id="rec-${id}" onclick="spToggleRec('${id}', ${answerSeconds})"><div class="rec-dot"></div></button>
+                <span class="recording-status" id="status-${id}">Press to record</span>
+                <span class="exam-timer" id="timer-${id}" style="font-size:14px;padding:4px 8px;display:none;">00:${answerSeconds}</span>
+                ${!isMockMode ? `<button class="btn btn-small" id="reset-${id}" style="display:none;" onclick="spResetRec('${id}', ${answerSeconds})">Reset</button>` : ''}
+                <audio id="play-${id}" controls style="display:none;height:32px;"></audio>
+            </div>
+            <div class="transcript-box" id="transcript-${id}">Your answer will appear here...</div>`;
     }
 
     // --- Play prompt via TTS (repeat twice) ---
@@ -262,16 +268,24 @@ function initYkiSpeakingView() {
             // Stop recorder
             if (activeRecorders[id]) {
                 const blob = await activeRecorders[id].stop();
-                playback.src = URL.createObjectURL(blob);
-                playback.style.display = 'block';
+                const blobUrl = URL.createObjectURL(blob);
                 activeRecorders[id].destroy();
                 activeRecorders[id] = null;
 
-                // Save response
-                allResponses.push({
-                    id, transcript: transcriptBox.textContent || '',
-                    hasAudio: true,
-                });
+                if (isMockMode) {
+                    // Mock: always save audio for review
+                    playback.src = blobUrl;
+                    playback.style.display = 'block';
+                    allResponses.push({ id, transcript: transcriptBox.textContent || '', hasAudio: true });
+                } else {
+                    // Practice: show playback but don't persist
+                    playback.src = blobUrl;
+                    playback.style.display = 'block';
+                    allResponses.push({ id, transcript: transcriptBox.textContent || '', hasAudio: false });
+                    // Show reset button
+                    const resetBtn = document.getElementById(`reset-${id}`);
+                    if (resetBtn) resetBtn.style.display = 'inline-flex';
+                }
             }
 
             // Stop speech recognition
@@ -355,6 +369,28 @@ function initYkiSpeakingView() {
                 transcriptBox.textContent = '(Speech-to-text not supported — use Chrome)';
             }
         }
+    };
+
+    // Reset recording — practice mode only
+    window.spResetRec = function(id, maxSeconds) {
+        const playback = document.getElementById(`play-${id}`);
+        const transcriptBox = document.getElementById(`transcript-${id}`);
+        const status = document.getElementById(`status-${id}`);
+        const resetBtn = document.getElementById(`reset-${id}`);
+        const timerSpan = document.getElementById(`timer-${id}`);
+
+        // Revoke old blob URL to free memory
+        if (playback.src) URL.revokeObjectURL(playback.src);
+        playback.src = '';
+        playback.style.display = 'none';
+        transcriptBox.textContent = 'Your answer will appear here...';
+        status.textContent = 'Press to record';
+        timerSpan.style.display = 'none';
+        timerSpan.classList.remove('timer-warning', 'timer-danger');
+        if (resetBtn) resetBtn.style.display = 'none';
+
+        // Remove the old response for this id
+        allResponses = allResponses.filter(r => r.id !== id);
     };
 
     function formatTimer(s) {
