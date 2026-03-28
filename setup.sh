@@ -121,32 +121,26 @@ LAUNCHER
 </plist>
 PLIST
 
-    # Generate icon
-    python3 -c "
-import subprocess, os, tempfile
-svg = '''<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"512\" height=\"512\" viewBox=\"0 0 512 512\">
-  <rect width=\"512\" height=\"512\" rx=\"100\" fill=\"#5b5fc7\"/>
-  <text x=\"256\" y=\"200\" font-family=\"Helvetica\" font-size=\"180\" font-weight=\"bold\" fill=\"white\" text-anchor=\"middle\">PP</text>
-  <text x=\"256\" y=\"340\" font-family=\"Helvetica\" font-size=\"48\" fill=\"rgba(255,255,255,0.8)\" text-anchor=\"middle\">PiedPiper</text>
-</svg>'''
-tmp = tempfile.mkdtemp()
-with open(f'{tmp}/icon.svg', 'w') as f: f.write(svg)
-# Try qlmanage for SVG to PNG
-os.system(f'qlmanage -t -s 512 -o {tmp} {tmp}/icon.svg 2>/dev/null')
-png = f'{tmp}/icon.svg.png'
-if not os.path.exists(png):
-    # Fallback: create a simple colored PNG
-    os.system(f'sips -s format png --resampleWidth 512 {tmp}/icon.svg --out {png} 2>/dev/null')
-if os.path.exists(png):
-    iconset = f'{tmp}/icon.iconset'
-    os.makedirs(iconset, exist_ok=True)
-    for s in [16,32,64,128,256,512]:
-        os.system(f'sips -z {s} {s} {png} --out {iconset}/icon_{s}x{s}.png 2>/dev/null')
-        d = s*2
-        if d <= 512:
-            os.system(f'sips -z {d} {d} {png} --out {iconset}/icon_{s}x{s}@2x.png 2>/dev/null')
-    os.system(f'iconutil -c icns {iconset} -o \"$APP_BUNDLE/Contents/Resources/AppIcon.icns\" 2>/dev/null')
-" 2>/dev/null
+    # Generate icon from bundled SVG
+    ICON_SVG="$APP_DIR/icon.svg"
+    if [ -f "$ICON_SVG" ]; then
+        TMP_DIR=$(mktemp -d)
+        qlmanage -t -s 512 -o "$TMP_DIR" "$ICON_SVG" 2>/dev/null
+        PNG="$TMP_DIR/icon.svg.png"
+        if [ -f "$PNG" ]; then
+            ICONSET="$TMP_DIR/icon.iconset"
+            mkdir -p "$ICONSET"
+            for size in 16 32 64 128 256 512; do
+                sips -z $size $size "$PNG" --out "$ICONSET/icon_${size}x${size}.png" 2>/dev/null
+                double=$((size * 2))
+                if [ $double -le 512 ]; then
+                    sips -z $double $double "$PNG" --out "$ICONSET/icon_${size}x${size}@2x.png" 2>/dev/null
+                fi
+            done
+            iconutil -c icns "$ICONSET" -o "$APP_BUNDLE/Contents/Resources/AppIcon.icns" 2>/dev/null
+        fi
+        rm -rf "$TMP_DIR"
+    fi
 
     echo "[OK] Desktop app created at ~/Desktop/PiedPiper.app"
 fi
