@@ -244,21 +244,35 @@ function initYkiSpeakingView() {
     async function runSingleItem(opts) {
         const { id, promptText, instructionText, prepSeconds, answerSeconds, showBullets, topicTitle } = opts;
 
+        // Build the display text — this is EXACTLY what TTS will read
+        let displayText = promptText;
+
         // Render the current item UI
         let html = `<div class="speaking-active-item">`;
         if (topicTitle) {
             html += `<h3 style="margin-bottom:8px;">${escapeHtml(topicTitle)}</h3>`;
         }
-        html += `<div class="speaking-prompt" id="item-prompt">
-                <p style="font-size:15px;line-height:1.7;">${escapeHtml(promptText)}</p>`;
+
+        // Show the prompt text that TTS will read — highlighted
+        html += `<div class="speaking-prompt" id="item-prompt" style="border-left:3px solid var(--primary);padding-left:16px;">
+                <p style="font-size:15px;line-height:1.7;font-weight:500;">TTS reads:</p>
+                <p style="font-size:15px;line-height:1.7;">${escapeHtml(displayText)}</p>
+            </div>`;
+
+        // Show bullets separately if present (for narrate/opinion)
         if (showBullets && showBullets.length > 0) {
-            html += '<ul style="margin-top:8px;padding-left:20px;">';
+            html += '<div style="margin-top:12px;padding:12px;background:var(--bg);border-radius:var(--radius-sm);">';
+            html += '<p style="font-size:12px;color:var(--text-light);margin-bottom:6px;">Questions to answer:</p>';
+            html += '<ul style="margin:0;padding-left:20px;">';
             showBullets.forEach(b => { html += `<li style="margin-bottom:4px;font-size:14px;">${escapeHtml(b)}</li>`; });
-            html += '</ul>';
+            html += '</ul></div>';
         }
-        html += `</div>`;
+
+        // Show instruction for dialogues/react
         if (instructionText && !showBullets) {
-            html += `<p style="font-size:13px;color:var(--text-light);margin-top:8px;font-style:italic;">${escapeHtml(instructionText)}</p>`;
+            html += `<div style="margin-top:8px;padding:10px 12px;background:#fffbeb;border-radius:var(--radius-sm);border-left:3px solid #d97706;">
+                <p style="font-size:13px;color:#92400e;"><strong>Your task:</strong> ${escapeHtml(instructionText)}</p>
+            </div>`;
         }
         html += `
             <div class="speaking-flow-status" id="flow-status" style="margin-top:16px;padding:16px;border-radius:var(--radius-sm);background:var(--bg);text-align:center;">
