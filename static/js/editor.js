@@ -36,6 +36,87 @@ function initEditorView() {
         }
     });
 
+    // --- Vocabulary highlighting ---
+    let vocabMap = {}; // lowercase swedish word -> translation
+    let highlightTimer = null;
+
+    async function loadVocabWords() {
+        const items = await Api.get('/api/vocabulary/');
+        vocabMap = {};
+        items.forEach(v => {
+            // Store by lowercase, strip punctuation for matching
+            const key = v.swedish_text.toLowerCase().replace(/[.,!?;:]/g, '').trim();
+            if (key) vocabMap[key] = v.translation;
+        });
+    }
+
+    function highlightVocabWords() {
+        clearTimeout(highlightTimer);
+        highlightTimer = setTimeout(() => {
+            const editor = document.querySelector('.ql-editor');
+            if (!editor || Object.keys(vocabMap).length === 0) return;
+
+            // Remove existing highlights
+            editor.querySelectorAll('.vocab-highlight').forEach(el => {
+                el.replaceWith(document.createTextNode(el.textContent));
+            });
+            editor.normalize();
+
+            // Walk text nodes and wrap vocab words
+            const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
+            const matches = [];
+            let node;
+            while (node = walker.nextNode()) {
+                const text = node.textContent;
+                // Find vocab words in this text node
+                const wordRegex = /[\wåäöÅÄÖ]+/gi;
+                let match;
+                while (match = wordRegex.exec(text)) {
+                    const word = match[0].toLowerCase();
+                    if (vocabMap[word]) {
+                        matches.push({ node, start: match.index, end: match.index + match[0].length, word: match[0], translation: vocabMap[word] });
+                    }
+                }
+            }
+
+            // Apply highlights in reverse order to preserve positions
+            for (let i = matches.length - 1; i >= 0; i--) {
+                const m = matches[i];
+                const range = document.createRange();
+                range.setStart(m.node, m.start);
+                range.setEnd(m.node, m.end);
+                const span = document.createElement('span');
+                span.className = 'vocab-highlight';
+                span.dataset.translation = m.translation;
+                span.textContent = m.word;
+                range.deleteContents();
+                range.insertNode(span);
+            }
+        }, 300);
+    }
+
+    // Tooltip on hover
+    const tooltip = document.createElement('div');
+    tooltip.className = 'vocab-tooltip';
+    tooltip.style.display = 'none';
+    document.body.appendChild(tooltip);
+
+    document.addEventListener('mouseover', (e) => {
+        if (e.target.classList && e.target.classList.contains('vocab-highlight')) {
+            tooltip.textContent = e.target.dataset.translation;
+            tooltip.style.display = 'block';
+            const rect = e.target.getBoundingClientRect();
+            tooltip.style.top = (rect.bottom + window.scrollY + 4) + 'px';
+            tooltip.style.left = (rect.left + window.scrollX) + 'px';
+        }
+    });
+
+    document.addEventListener('mouseout', (e) => {
+        if (e.target.classList && e.target.classList.contains('vocab-highlight')) {
+            tooltip.style.display = 'none';
+        }
+    });
+
     // --- Auto-save ---
     quill.on('text-change', (delta, oldDelta, source) => {
         const text = quill.getText().trim();
@@ -44,6 +125,7 @@ function initEditorView() {
         if (source === 'user' && !isLoading) {
             isDirty = true;
             scheduleSave();
+            highlightVocabWords();
         }
     });
 
@@ -212,6 +294,9 @@ function initEditorView() {
                 btn.textContent = '✓';
                 btn.disabled = true;
                 btn.classList.add('word-added');
+                // Refresh highlights with new vocab word
+                await loadVocabWords();
+                highlightVocabWords();
             });
         });
     });
@@ -262,6 +347,9 @@ function initEditorView() {
         await Api.post('/api/vocabulary/', {
             swedish_text: swedish, translation, context: quill.getText().trim().substring(0, 200),
         });
+        // Refresh highlights
+        await loadVocabWords();
+        highlightVocabWords();
     }
 
     function showToast(msg) {
@@ -387,7 +475,8 @@ function initEditorView() {
             isLoading = false;
             saveStatus.textContent = 'Saved';
             saveStatus.style.color = 'var(--success)';
-        }, 100);
+            highlightVocabWords();
+        }, 150);
 
         loadDocList();
     }
@@ -439,6 +528,7 @@ function initEditorView() {
     // --- Init: restore last document ---
     (async () => {
         await loadFolders('General');
+        await loadVocabWords();
         const docs = await Api.get('/api/editor/documents');
 
         if (docs.length === 0) {
@@ -480,6 +570,7 @@ function initEditorView() {
             if (currentDocId) localStorage.setItem('piedpiper_last_doc_id', String(currentDocId));
             document.removeEventListener('mouseup', handleSelection);
             document.removeEventListener('keyup', handleSelection);
+            if (tooltip.parentNode) tooltip.parentNode.removeChild(tooltip);
         }
     };
 }

@@ -207,6 +207,33 @@
     font-style: normal;
 }
 
+/* Vocabulary highlighting in editor */
+.vocab-highlight {
+    color: #dc2626;
+    text-decoration: underline;
+    text-decoration-color: #fca5a5;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    border-radius: 2px;
+}
+
+.vocab-highlight:hover {
+    background: #fef2f2;
+}
+
+.vocab-tooltip {
+    position: absolute;
+    background: var(--text);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    z-index: 200;
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    max-width: 250px;
+}
+
 /* Floating Selection Toolbar */
 .selection-toolbar {
     position: absolute;
