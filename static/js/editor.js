@@ -4,6 +4,7 @@ function initEditorView() {
     let saveTimer = null;
     let lastTranslation = null;
     let isSaving = false;
+    let isLoading = false; // Prevent save during document load
 
     const docList = document.getElementById('ed-doc-list');
     const newDocBtn = document.getElementById('ed-new-doc');
@@ -35,14 +36,19 @@ function initEditorView() {
     });
 
     // --- Auto-save ---
-    quill.on('text-change', () => {
+    quill.on('text-change', (delta, oldDelta, source) => {
         const text = quill.getText().trim();
         const words = text ? text.split(/\s+/).length : 0;
         wordCount.textContent = words + ' words';
-        scheduleSave();
+        // Only auto-save on user edits, not programmatic changes
+        if (source === 'user' && !isLoading) {
+            scheduleSave();
+        }
     });
 
-    titleInput.addEventListener('input', scheduleSave);
+    titleInput.addEventListener('input', () => {
+        if (!isLoading) scheduleSave();
+    });
 
     function scheduleSave() {
         saveStatus.textContent = 'Saving...';
@@ -53,7 +59,7 @@ function initEditorView() {
 
     async function saveNow() {
         clearTimeout(saveTimer);
-        if (!currentDocId || isSaving) return;
+        if (!currentDocId || isSaving || isLoading) return;
         isSaving = true;
         await saveDocument();
         saveStatus.textContent = 'Auto-saved';
@@ -347,16 +353,29 @@ function initEditorView() {
     }
 
     async function loadDocument(id) {
-        if (currentDocId && !isSaving) await saveDocument();
+        // Save current doc before switching
+        if (currentDocId && !isSaving && !isLoading) {
+            await saveDocument();
+        }
+
+        isLoading = true; // Prevent auto-save during load
+        clearTimeout(saveTimer);
 
         const doc = await Api.get(`/api/editor/documents/${id}`);
-        if (doc.error) return;
+        if (doc.error) { isLoading = false; return; }
+
         currentDocId = doc.id;
         titleInput.value = doc.title;
         docFolder.value = doc.folder || 'General';
         quill.root.innerHTML = doc.content_html || '';
-        saveStatus.textContent = 'Auto-saved';
-        saveStatus.style.color = 'var(--success)';
+
+        // Wait a tick for Quill to process the content change
+        setTimeout(() => {
+            isLoading = false;
+            saveStatus.textContent = 'Saved';
+            saveStatus.style.color = 'var(--success)';
+        }, 100);
+
         loadDocList();
     }
 
@@ -377,7 +396,11 @@ function initEditorView() {
 
     // New document
     newDocBtn.addEventListener('click', async () => {
-        if (currentDocId) await saveDocument();
+        if (currentDocId && !isSaving) await saveDocument();
+
+        isLoading = true;
+        clearTimeout(saveTimer);
+
         const folder = (docFolder.value && docFolder.value !== '__new__') ? docFolder.value : 'General';
         const { ok, data } = await Api.post('/api/editor/documents', { title: 'Untitled', folder });
         if (ok) {
@@ -385,9 +408,16 @@ function initEditorView() {
             titleInput.value = data.title;
             docFolder.value = data.folder;
             quill.setText('');
-            saveStatus.textContent = 'Auto-saved';
-            saveStatus.style.color = 'var(--success)';
+
+            setTimeout(() => {
+                isLoading = false;
+                saveStatus.textContent = 'Saved';
+                saveStatus.style.color = 'var(--success)';
+            }, 100);
+
             loadDocList();
+        } else {
+            isLoading = false;
         }
     });
 
