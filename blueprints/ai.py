@@ -28,7 +28,7 @@ def ask_claude(prompt, system="", use_knowledge=False, timeout=120):
 
     cmd = ["claude", "-p"]
     if system:
-        cmd += ["--system", system]
+        cmd += ["--system-prompt", system]
     cmd.append(prompt)
 
     try:

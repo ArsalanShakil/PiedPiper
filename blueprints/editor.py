@@ -10,7 +10,7 @@ bp = Blueprint("editor", __name__, url_prefix="/api/editor")
 def list_documents():
     conn = get_db()
     rows = conn.execute(
-        "SELECT id, title, word_count, updated_at FROM documents ORDER BY updated_at DESC"
+        "SELECT id, title, folder, word_count, updated_at FROM documents ORDER BY folder, updated_at DESC"
     ).fetchall()
     conn.close()
     return jsonify([dict(r) for r in rows])
@@ -20,9 +20,10 @@ def list_documents():
 def create_document():
     data = request.json or {}
     title = data.get("title", "Untitled")
+    folder = data.get("folder", "General")
     conn = get_db()
     cur = conn.execute(
-        "INSERT INTO documents (title) VALUES (?)", (title,)
+        "INSERT INTO documents (title, folder) VALUES (?, ?)", (title, folder)
     )
     doc_id = cur.lastrowid
     conn.commit()
@@ -51,6 +52,7 @@ def update_document(doc_id):
         return jsonify({"error": "Not found"}), 404
 
     title = data.get("title")
+    folder = data.get("folder")
     content_html = data.get("content_html")
     content_text = data.get("content_text", "")
     word_count = len(content_text.split()) if content_text else 0
@@ -59,6 +61,11 @@ def update_document(doc_id):
         conn.execute(
             "UPDATE documents SET title = ?, updated_at = datetime('now') WHERE id = ?",
             (title, doc_id),
+        )
+    if folder is not None:
+        conn.execute(
+            "UPDATE documents SET folder = ?, updated_at = datetime('now') WHERE id = ?",
+            (folder, doc_id),
         )
     if content_html is not None:
         conn.execute(
@@ -78,6 +85,19 @@ def delete_document(doc_id):
     conn.commit()
     conn.close()
     return jsonify({"ok": True})
+
+
+@bp.route("/folders")
+def list_folders():
+    conn = get_db()
+    rows = conn.execute(
+        "SELECT DISTINCT folder FROM documents ORDER BY folder"
+    ).fetchall()
+    conn.close()
+    folders = [r["folder"] for r in rows]
+    if "General" not in folders:
+        folders.insert(0, "General")
+    return jsonify(folders)
 
 
 @bp.route("/translate", methods=["POST"])
@@ -102,10 +122,8 @@ def translate():
 
     result = ask_claude(prompt, system=system)
 
-    # Try to parse JSON from response
     import json
     try:
-        # Find JSON in the response
         start = result.find("{")
         end = result.rfind("}") + 1
         if start >= 0 and end > start:
@@ -114,7 +132,6 @@ def translate():
     except (json.JSONDecodeError, ValueError):
         pass
 
-    # Fallback: return raw text as translation
     return jsonify({
         "translation": result,
         "word_by_word": [],

@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS vocabulary (
 CREATE TABLE IF NOT EXISTS documents (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL DEFAULT 'Untitled',
+    folder TEXT NOT NULL DEFAULT 'General',
     content_html TEXT NOT NULL DEFAULT '',
     content_text TEXT NOT NULL DEFAULT '',
     word_count INTEGER DEFAULT 0,
