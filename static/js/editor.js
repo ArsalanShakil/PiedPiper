@@ -354,11 +354,8 @@ function initEditorView() {
     }
 
     async function loadDocument(id) {
-        if (currentDocId && !isSaving && !isLoading) {
-            await saveDocument();
-        }
-
         isLoading = true;
+        isDirty = false;
         clearTimeout(saveTimer);
 
         const doc = await Api.get(`/api/editor/documents/${id}`);
@@ -444,9 +441,27 @@ function initEditorView() {
 
     return {
         destroy() {
+            // Save any pending changes before leaving
             clearTimeout(saveTimer);
-            // FIX: Use fetch with keepalive for guaranteed save on navigation
-            saveBeforeLeave();
+            if (isDirty && currentDocId && quill) {
+                const text = quill.getText().trim();
+                // Only save if there's actual content
+                if (text.length > 0) {
+                    const payload = JSON.stringify({
+                        title: titleInput.value.trim() || 'Untitled',
+                        folder: (docFolder.value && docFolder.value !== '__new__') ? docFolder.value : 'General',
+                        content_html: quill.root.innerHTML,
+                        content_text: text,
+                    });
+                    fetch(`/api/editor/documents/${currentDocId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: payload,
+                        keepalive: true,
+                    }).catch(() => {});
+                }
+            }
+            if (currentDocId) localStorage.setItem('piedpiper_last_doc_id', String(currentDocId));
             document.removeEventListener('mouseup', handleSelection);
             document.removeEventListener('keyup', handleSelection);
         }

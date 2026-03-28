@@ -45,14 +45,17 @@ def get_document(doc_id):
 def update_document(doc_id):
     import json as jsonlib
     data = request.json
-    # Fallback: parse raw body if request.json failed (e.g. sendBeacon)
     if not data:
         try:
             data = jsonlib.loads(request.data.decode())
         except Exception:
             data = {}
+
+    if not data:
+        return jsonify({"error": "No data"}), 400
+
     conn = get_db()
-    row = conn.execute("SELECT id FROM documents WHERE id = ?", (doc_id,)).fetchone()
+    row = conn.execute("SELECT * FROM documents WHERE id = ?", (doc_id,)).fetchone()
     if not row:
         conn.close()
         return jsonify({"error": "Not found"}), 404
@@ -61,7 +64,11 @@ def update_document(doc_id):
     folder = data.get("folder")
     content_html = data.get("content_html")
     content_text = data.get("content_text", "")
-    word_count = len(content_text.split()) if content_text else 0
+
+    # SAFETY: Don't overwrite existing content with empty content
+    # Only update content if new content is non-empty, OR if the doc was already empty
+    existing_text = row["content_text"] or ""
+    new_text = content_text.strip() if content_text else ""
 
     if title is not None:
         conn.execute(
@@ -74,10 +81,14 @@ def update_document(doc_id):
             (folder, doc_id),
         )
     if content_html is not None:
-        conn.execute(
-            "UPDATE documents SET content_html = ?, content_text = ?, word_count = ?, updated_at = datetime('now') WHERE id = ?",
-            (content_html, content_text, word_count, doc_id),
-        )
+        # Only save content if: new content is non-empty, OR existing content was already empty
+        if new_text or not existing_text:
+            word_count = len(new_text.split()) if new_text else 0
+            conn.execute(
+                "UPDATE documents SET content_html = ?, content_text = ?, word_count = ?, updated_at = datetime('now') WHERE id = ?",
+                (content_html, new_text, word_count, doc_id),
+            )
+
     conn.commit()
     updated = conn.execute("SELECT * FROM documents WHERE id = ?", (doc_id,)).fetchone()
     conn.close()
