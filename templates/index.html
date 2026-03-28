@@ -3,407 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Piper TTS Studio</title>
+    <title>PiedPiper</title>
     <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/css/knowledge.css">
 </head>
 <body>
-    <div class="app">
-        <header>
-            <h1>Piper TTS Studio</h1>
-            <p class="subtitle">Swedish Text-to-Speech</p>
-        </header>
+    <div class="app-layout">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="logo">PiedPiper</h1>
+                <span class="logo-sub">Swedish Language Learning & YKI Prep</span>
+            </div>
 
-        <main>
-            <section class="panel synthesize-panel">
-                <h2>Generate Speech</h2>
+            <div class="nav-section">
+                <div class="nav-label">Tools</div>
+                <a href="#/" class="nav-link active">
+                    <span class="nav-icon">&#9835;</span>
+                    <span>Text to Speech</span>
+                </a>
+                <a href="#/editor" class="nav-link">
+                    <span class="nav-icon">&#9998;</span>
+                    <span>Writing Editor</span>
+                </a>
+                <a href="#/vocabulary" class="nav-link">
+                    <span class="nav-icon">&#128218;</span>
+                    <span>Vocabulary</span>
+                </a>
+            </div>
 
-                <div class="form-group">
-                    <label for="text-input">Text</label>
-                    <textarea id="text-input" rows="6" placeholder="Skriv din svenska text här..."></textarea>
-                    <div class="char-count"><span id="char-count">0</span> characters</div>
-                </div>
+            <div class="nav-section">
+                <div class="nav-label">YKI Exam</div>
+                <a href="#/yki" class="nav-link">
+                    <span class="nav-icon">&#127891;</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#/yki/reading" class="nav-link">
+                    <span class="nav-icon">&#128214;</span>
+                    <span>Reading</span>
+                </a>
+                <a href="#/yki/writing" class="nav-link">
+                    <span class="nav-icon">&#128221;</span>
+                    <span>Writing</span>
+                </a>
+                <a href="#/yki/listening" class="nav-link">
+                    <span class="nav-icon">&#127911;</span>
+                    <span>Listening</span>
+                </a>
+                <a href="#/yki/speaking" class="nav-link">
+                    <span class="nav-icon">&#127908;</span>
+                    <span>Speaking</span>
+                </a>
+            </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="voice-select">Voice</label>
-                        <select id="voice-select"></select>
-                    </div>
-                    <div class="form-group">
-                        <label for="format-select">Format</label>
-                        <select id="format-select">
-                            <option value="wav">WAV (lossless)</option>
-                            <option value="mp3">MP3</option>
-                            <option value="ogg">OGG Vorbis</option>
-                            <option value="flac">FLAC</option>
-                        </select>
-                    </div>
-                </div>
+            <div class="nav-section">
+                <div class="nav-label">Manage</div>
+                <a href="#/knowledge" class="nav-link">
+                    <span class="nav-icon">&#128194;</span>
+                    <span>Knowledge Base</span>
+                </a>
+                <a href="#/settings" class="nav-link">
+                    <span class="nav-icon">&#9881;</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </nav>
 
-                <div class="form-group">
-                    <label>Save to</label>
-                    <div class="save-location">
-                        <select id="quick-folder"></select>
-                        <span class="save-or">or</span>
-                        <button id="browse-btn" class="btn btn-small">Browse...</button>
-                    </div>
-                    <div class="current-path" id="current-save-path"></div>
-                </div>
-
-                <div class="form-group">
-                    <label for="filename-input">Filename <span class="optional">(optional)</span></label>
-                    <input type="text" id="filename-input" placeholder="Auto-generated if empty">
-                </div>
-
-                <div class="actions">
-                    <button id="generate-btn" class="btn btn-primary">
-                        <span class="btn-text">Generate Speech</span>
-                        <span class="btn-loading" style="display:none;">Generating...</span>
-                    </button>
-                </div>
-
-                <div id="result-area" style="display:none;">
-                    <div class="result-card">
-                        <div class="result-info">
-                            <span id="result-filename" class="result-name"></span>
-                            <span id="result-size" class="result-size"></span>
-                        </div>
-                        <div id="result-path" class="result-path"></div>
-                        <audio id="result-audio" controls></audio>
-                    </div>
-                </div>
-            </section>
-
-            <section class="panel files-panel">
-                <div class="files-header">
-                    <h2>Saved Files</h2>
-                    <div class="filter-row">
-                        <select id="filter-folder">
-                            <option value="">All Folders</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div id="files-list" class="files-list">
-                    <p class="empty-state">No files yet. Generate some speech!</p>
-                </div>
-            </section>
+        <main class="main-content">
+            <div id="view-container" class="view-container">
+                <div class="loading-state">Loading...</div>
+            </div>
         </main>
     </div>
 
-    <!-- Folder Browser Modal -->
-    <div id="browser-overlay" class="modal-overlay" style="display:none;">
-        <div class="modal modal-browser">
-            <h3>Choose Save Folder</h3>
-            <div class="browser-path-bar">
-                <button id="browser-up" class="btn btn-small" title="Go up">&#8593;</button>
-                <input type="text" id="browser-path-input" class="browser-path-input" placeholder="/path/to/folder">
-                <button id="browser-go" class="btn btn-small">Go</button>
-            </div>
-            <div id="browser-list" class="browser-list"></div>
-            <div class="modal-actions">
-                <button id="browser-cancel" class="btn">Cancel</button>
-                <button id="browser-select" class="btn btn-primary">Select This Folder</button>
-            </div>
-        </div>
-    </div>
-
+    <script src="/static/js/utils.js"></script>
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/tts.js"></script>
+    <script src="/static/js/knowledge.js"></script>
+    <script src="/static/js/router.js"></script>
     <script>
-        const API = '';
+        // Register routes
+        Router.register('#/', { partial: 'tts.html', init: initTtsView });
+        Router.register('#/editor', { partial: 'editor.html', init: () => ({}) });
+        Router.register('#/vocabulary', { partial: 'vocabulary.html', init: () => ({}) });
+        Router.register('#/yki', { partial: 'yki_home.html', init: () => ({}) });
+        Router.register('#/yki/reading', { partial: 'yki_reading.html', init: () => ({}) });
+        Router.register('#/yki/writing', { partial: 'yki_writing.html', init: () => ({}) });
+        Router.register('#/yki/listening', { partial: 'yki_listening.html', init: () => ({}) });
+        Router.register('#/yki/speaking', { partial: 'yki_speaking.html', init: () => ({}) });
+        Router.register('#/knowledge', { partial: 'knowledge.html', init: initKnowledgeView });
+        Router.register('#/settings', { partial: 'settings.html', init: () => ({}) });
 
-        // State
-        let voices = [];
-        let recentFolders = [];
-        let selectedSavePath = '';
-        let browserCurrentPath = '';
-
-        // Elements
-        const textInput = document.getElementById('text-input');
-        const charCount = document.getElementById('char-count');
-        const voiceSelect = document.getElementById('voice-select');
-        const formatSelect = document.getElementById('format-select');
-        const quickFolder = document.getElementById('quick-folder');
-        const browseBtn = document.getElementById('browse-btn');
-        const currentSavePath = document.getElementById('current-save-path');
-        const filterFolder = document.getElementById('filter-folder');
-        const filenameInput = document.getElementById('filename-input');
-        const generateBtn = document.getElementById('generate-btn');
-        const resultArea = document.getElementById('result-area');
-        const resultFilename = document.getElementById('result-filename');
-        const resultSize = document.getElementById('result-size');
-        const resultPath = document.getElementById('result-path');
-        const resultAudio = document.getElementById('result-audio');
-        const filesList = document.getElementById('files-list');
-
-        // Browser modal elements
-        const browserOverlay = document.getElementById('browser-overlay');
-        const browserUp = document.getElementById('browser-up');
-        const browserPathInput = document.getElementById('browser-path-input');
-        const browserGo = document.getElementById('browser-go');
-        const browserList = document.getElementById('browser-list');
-        const browserCancel = document.getElementById('browser-cancel');
-        const browserSelect = document.getElementById('browser-select');
-
-        // Character count
-        textInput.addEventListener('input', () => {
-            charCount.textContent = textInput.value.length;
-        });
-
-        // Load voices
-        async function loadVoices() {
-            const res = await fetch(`${API}/api/voices`);
-            voices = await res.json();
-            voiceSelect.innerHTML = voices.map(v =>
-                `<option value="${v.id}">${v.name}</option>`
-            ).join('');
-        }
-
-        // Load quick folder options
-        async function loadRecentFolders() {
-            const res = await fetch(`${API}/api/recent-folders`);
-            recentFolders = await res.json();
-            quickFolder.innerHTML = recentFolders.map(f =>
-                `<option value="${f.path}">${f.name}</option>`
-            ).join('');
-            selectedSavePath = quickFolder.value;
-            updatePathDisplay();
-
-            // Also populate the filter
-            filterFolder.innerHTML = `<option value="">All (Default Output)</option>` +
-                recentFolders.map(f => `<option value="${f.path}">${f.name}</option>`).join('');
-        }
-
-        function updatePathDisplay() {
-            currentSavePath.textContent = selectedSavePath;
-        }
-
-        quickFolder.addEventListener('change', () => {
-            selectedSavePath = quickFolder.value;
-            updatePathDisplay();
-        });
-
-        // --- Folder Browser ---
-        browseBtn.addEventListener('click', () => {
-            browserOverlay.style.display = 'flex';
-            browseTo(selectedSavePath || '');
-        });
-
-        async function browseTo(path) {
-            const url = path
-                ? `${API}/api/browse?path=${encodeURIComponent(path)}`
-                : `${API}/api/browse`;
-            const res = await fetch(url);
-            if (!res.ok) {
-                const data = await res.json();
-                alert(data.error || 'Cannot open folder');
-                return;
-            }
-            const data = await res.json();
-            browserCurrentPath = data.current;
-            browserPathInput.value = data.current;
-
-            browserUp.disabled = !data.parent;
-            browserUp.onclick = () => { if (data.parent) browseTo(data.parent); };
-
-            if (data.directories.length === 0) {
-                browserList.innerHTML = '<p class="empty-state">No subfolders</p>';
-            } else {
-                browserList.innerHTML = data.directories.map(d => `
-                    <div class="browser-item" data-path="${d.path}">
-                        <span class="folder-icon">&#128193;</span>
-                        <span class="folder-name">${d.name}</span>
-                    </div>
-                `).join('');
-
-                browserList.querySelectorAll('.browser-item').forEach(el => {
-                    el.addEventListener('dblclick', () => browseTo(el.dataset.path));
-                    el.addEventListener('click', () => {
-                        browserList.querySelectorAll('.browser-item').forEach(e => e.classList.remove('selected'));
-                        el.classList.add('selected');
-                        browserCurrentPath = el.dataset.path;
-                        browserPathInput.value = el.dataset.path;
-                    });
-                });
-            }
-        }
-
-        browserGo.addEventListener('click', () => {
-            const val = browserPathInput.value.trim();
-            if (val) browseTo(val);
-        });
-
-        browserPathInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') browserGo.click();
-        });
-
-        browserCancel.addEventListener('click', () => {
-            browserOverlay.style.display = 'none';
-        });
-
-        browserOverlay.addEventListener('click', (e) => {
-            if (e.target === browserOverlay) browserOverlay.style.display = 'none';
-        });
-
-        browserSelect.addEventListener('click', () => {
-            selectedSavePath = browserCurrentPath;
-            updatePathDisplay();
-            // Set quick-folder to custom if path isn't in the list
-            const match = Array.from(quickFolder.options).find(o => o.value === selectedSavePath);
-            if (match) {
-                quickFolder.value = selectedSavePath;
-            } else {
-                // Add custom option
-                const opt = document.createElement('option');
-                opt.value = selectedSavePath;
-                opt.textContent = selectedSavePath.split('/').pop() + ' (custom)';
-                quickFolder.prepend(opt);
-                quickFolder.value = selectedSavePath;
-            }
-            browserOverlay.style.display = 'none';
-        });
-
-        // --- Load files ---
-        async function loadFiles() {
-            const folder = filterFolder.value;
-            const url = folder
-                ? `${API}/api/files?folder=${encodeURIComponent(folder)}`
-                : `${API}/api/files`;
-            const res = await fetch(url);
-            const files = await res.json();
-
-            if (files.length === 0) {
-                filesList.innerHTML = '<p class="empty-state">No files yet. Generate some speech!</p>';
-                return;
-            }
-
-            filesList.innerHTML = files.map(f => {
-                const escapedFolder = f.folder.replace(/'/g, "\\'");
-                const escapedName = f.name.replace(/'/g, "\\'");
-                return `
-                <div class="file-item">
-                    <div class="file-info">
-                        <span class="file-name">${f.name}</span>
-                        <span class="file-meta">
-                            <span class="badge">${f.folder_short}</span>
-                            <span class="badge format-${f.format}">${f.format.toUpperCase()}</span>
-                            <span>${formatSize(f.size)}</span>
-                            <span>${formatDate(f.created)}</span>
-                        </span>
-                    </div>
-                    <div class="file-actions">
-                        <button class="btn btn-small" onclick="playFile('${escapedFolder}', '${escapedName}')">Play</button>
-                        <button class="btn btn-small" onclick="downloadFile('${escapedFolder}', '${escapedName}')">Download</button>
-                        <button class="btn btn-small btn-danger" onclick="deleteFile('${escapedFolder}', '${escapedName}')">Delete</button>
-                    </div>
-                </div>
-                `;
-            }).join('');
-        }
-
-        // Generate speech
-        generateBtn.addEventListener('click', async () => {
-            const text = textInput.value.trim();
-            if (!text) {
-                alert('Please enter some text.');
-                return;
-            }
-
-            const btnText = generateBtn.querySelector('.btn-text');
-            const btnLoading = generateBtn.querySelector('.btn-loading');
-            generateBtn.disabled = true;
-            btnText.style.display = 'none';
-            btnLoading.style.display = 'inline';
-
-            try {
-                const res = await fetch(`${API}/api/synthesize`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        text,
-                        voice_id: voiceSelect.value,
-                        format: formatSelect.value,
-                        save_path: selectedSavePath,
-                        filename: filenameInput.value.trim(),
-                    }),
-                });
-
-                const data = await res.json();
-                if (!res.ok) {
-                    alert(data.error || 'Generation failed');
-                    return;
-                }
-
-                // Show result
-                resultFilename.textContent = data.filename;
-                resultSize.textContent = formatSize(data.size);
-                resultPath.textContent = data.path;
-                resultAudio.src = `${API}/api/files/play?folder=${encodeURIComponent(data.folder)}&name=${encodeURIComponent(data.filename)}`;
-                resultArea.style.display = 'block';
-
-                // Refresh file list
-                loadFiles();
-                filenameInput.value = '';
-            } catch (err) {
-                alert('Error: ' + err.message);
-            } finally {
-                generateBtn.disabled = false;
-                btnText.style.display = 'inline';
-                btnLoading.style.display = 'none';
-            }
-        });
-
-        // Keyboard shortcut: Ctrl/Cmd + Enter to generate
-        textInput.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                generateBtn.click();
-            }
-        });
-
-        // Play file
-        function playFile(folder, name) {
-            resultAudio.src = `${API}/api/files/play?folder=${encodeURIComponent(folder)}&name=${encodeURIComponent(name)}`;
-            resultFilename.textContent = name;
-            resultSize.textContent = '';
-            resultPath.textContent = folder + '/' + name;
-            resultArea.style.display = 'block';
-            resultAudio.play();
-        }
-
-        // Download file
-        function downloadFile(folder, name) {
-            const a = document.createElement('a');
-            a.href = `${API}/api/files/play?folder=${encodeURIComponent(folder)}&name=${encodeURIComponent(name)}`;
-            a.download = name;
-            a.click();
-        }
-
-        // Delete file
-        async function deleteFile(folder, name) {
-            if (!confirm(`Delete ${name}?`)) return;
-            await fetch(`${API}/api/files/delete`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ folder, name }),
-            });
-            loadFiles();
-        }
-
-        // Filter
-        filterFolder.addEventListener('change', loadFiles);
-
-        // Helpers
-        function formatSize(bytes) {
-            if (bytes < 1024) return bytes + ' B';
-            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-        }
-
-        function formatDate(iso) {
-            const d = new Date(iso);
-            return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        }
-
-        // Init
-        Promise.all([loadVoices(), loadRecentFolders()]).then(() => loadFiles());
+        // Start router
+        Router.init('view-container');
     </script>
 </body>
 </html>

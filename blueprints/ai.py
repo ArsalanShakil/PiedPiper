@@ -1,0 +1,61 @@
+import subprocess
+from pathlib import Path
+
+from config import KNOWLEDGE_DIR
+
+
+def load_knowledge_base():
+    """Load all files from the knowledge directory as context."""
+    context_parts = []
+    if not KNOWLEDGE_DIR.exists():
+        return ""
+    for f in sorted(KNOWLEDGE_DIR.iterdir()):
+        if f.suffix in (".md", ".txt"):
+            try:
+                content = f.read_text(encoding="utf-8")
+                context_parts.append(f"--- {f.name} ---\n{content}")
+            except Exception:
+                continue
+    return "\n\n".join(context_parts)
+
+
+def ask_claude(prompt, system="", use_knowledge=False, timeout=120):
+    """Call local Claude Code CLI for AI responses."""
+    if use_knowledge:
+        kb = load_knowledge_base()
+        if kb:
+            prompt = f"Reference material:\n\n{kb}\n\n---\n\nTask:\n{prompt}"
+
+    cmd = ["claude", "-p"]
+    if system:
+        cmd += ["--system", system]
+    cmd.append(prompt)
+
+    try:
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
+        if result.returncode != 0:
+            return f"Error: {result.stderr.strip()}"
+        return result.stdout.strip()
+    except subprocess.TimeoutExpired:
+        return "Error: Claude CLI timed out"
+    except FileNotFoundError:
+        return "Error: Claude CLI not found. Make sure 'claude' is installed and in your PATH."
+
+
+def check_claude_available():
+    """Check if the claude CLI is available."""
+    try:
+        result = subprocess.run(
+            ["claude", "--version"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        return result.returncode == 0, result.stdout.strip()
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        return False, "Claude CLI not found"
