@@ -15,4 +15,16 @@ BUNDLED_KNOWLEDGE = [
     "Writing/yki-informella.md",
     "Writing/yki-klagomal.md",
     "Writing/yki-recension.md",
+    "Speaking/yki-speaking-12-tests.md",
+    "Speaking/yki-speaking-prep-book.md",
+]
+
+SPEAKING_TOPICS = [
+    "Människan och omgivningen",
+    "Vardagsliv",
+    "Natur och miljö",
+    "Hälsa och välbefinnande",
+    "Fritid och hobbyer",
+    "Arbete och utbildning",
+    "Samhälle",
 ]

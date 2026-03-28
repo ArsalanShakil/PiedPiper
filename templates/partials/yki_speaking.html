@@ -1,41 +1,98 @@
 <div id="yki-speaking">
-    <div id="speaking-setup" class="exam-setup">
-        <h2>&#127908; Speaking Exam</h2>
-        <p>Talproduktion — 4 parts, 25 minutes total</p>
-        <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;">
-            Questions will be read aloud via TTS. Your speech is recorded AND transcribed to text for AI evaluation.
-        </p>
-        <div class="form-group">
-            <label>Topic (optional)</label>
-            <select id="speaking-topic"><option value="">Random</option></select>
+    <!-- Mode Selection -->
+    <div id="sp-menu">
+        <h2 style="font-size:22px;margin-bottom:4px;">Speaking Exam</h2>
+        <p style="color:var(--text-dim);font-size:14px;margin-bottom:24px;">Talproduktion — Practice individual parts or take a full mock test.</p>
+
+        <div class="yki-dashboard">
+            <div class="yki-card" id="sp-start-mock">
+                <div class="yki-card-icon">&#127891;</div>
+                <h3>Mock Test</h3>
+                <p>Full exam — 4 parts, all timed, just like the real YKI</p>
+                <div class="yki-card-time">25-30 minutes</div>
+            </div>
+            <div class="yki-card" id="sp-start-practice">
+                <div class="yki-card-icon">&#127911;</div>
+                <h3>Practice Mode</h3>
+                <p>Pick a part type and topic — practice at your own pace</p>
+                <div class="yki-card-time">Flexible</div>
+            </div>
         </div>
-        <button class="btn btn-primary" id="speaking-start">Generate & Start Exam</button>
+
+        <!-- Test/Topic picker for Mock -->
+        <div id="sp-mock-options" class="panel" style="display:none;">
+            <h2>Choose a Mock Test</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Test</label>
+                    <select id="sp-test-select"></select>
+                </div>
+            </div>
+            <button class="btn btn-primary" id="sp-mock-go">Start Mock Test</button>
+        </div>
+
+        <!-- Practice picker -->
+        <div id="sp-practice-options" class="panel" style="display:none;">
+            <h2>Practice Settings</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Part Type</label>
+                    <select id="sp-part-type">
+                        <option value="">Random</option>
+                        <option value="dialogues">Del 1: Dialoger</option>
+                        <option value="react">Del 2: Reagera</option>
+                        <option value="narrate">Del 3: Ber&auml;tta</option>
+                        <option value="opinion">Del 4: Din &aring;sikt</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Topic</label>
+                    <select id="sp-topic-select">
+                        <option value="">Random</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-primary" id="sp-practice-go">Start Practice</button>
+        </div>
     </div>
 
-    <div id="speaking-loading" class="generating-overlay" style="display:none;">
-        <h3>Generating speaking prompts...</h3>
-        <p>This may take 15-30 seconds</p>
+    <!-- Loading -->
+    <div id="sp-loading" class="generating-overlay" style="display:none;">
+        <h3>Preparing audio...</h3>
+        <p>Converting prompts to speech</p>
     </div>
 
-    <div id="speaking-exam" style="display:none;">
+    <!-- Active Exam -->
+    <div id="sp-exam" style="display:none;">
         <div class="exam-header">
-            <h2>Speaking Exam</h2>
-            <div class="exam-timer" id="speaking-timer">25:00</div>
+            <h2 id="sp-exam-title">Speaking Exam</h2>
+            <div style="display:flex;gap:12px;align-items:center;">
+                <span id="sp-part-label" style="font-size:13px;color:var(--text-dim);"></span>
+                <div class="exam-timer" id="sp-timer">00:00</div>
+            </div>
         </div>
-        <div id="speaking-parts"></div>
-        <button class="btn btn-primary" id="speaking-submit">Finish & Get Feedback</button>
+
+        <div id="sp-current-part"></div>
+
+        <div style="display:flex;gap:10px;margin-top:20px;">
+            <button class="btn" id="sp-back-menu">Exit</button>
+            <button class="btn btn-primary" id="sp-next-part" style="flex:1;">Next Part</button>
+        </div>
     </div>
 
-    <div id="speaking-results" style="display:none;">
+    <!-- Results -->
+    <div id="sp-results" style="display:none;">
         <div class="results-panel">
             <div class="score-display">
-                <div class="score-number" id="speaking-score">0</div>
-                <div class="score-label">Score</div>
+                <div class="score-number" id="sp-score">-</div>
+                <div class="score-label">Your responses are saved below</div>
             </div>
-            <div class="feedback-text" id="speaking-feedback"></div>
+            <div id="sp-results-list"></div>
+            <div id="sp-ai-feedback" class="feedback-text" style="display:none;margin-top:16px;"></div>
         </div>
-        <div style="margin-top:16px;text-align:center;">
-            <button class="btn" onclick="location.hash='#/yki'">Back to Dashboard</button>
+        <div style="margin-top:16px;display:flex;gap:10px;justify-content:center;">
+            <button class="btn" id="sp-evaluate-btn">Get AI Feedback</button>
+            <button class="btn" onclick="location.hash='#/yki/speaking'">Back</button>
         </div>
     </div>
 </div>
