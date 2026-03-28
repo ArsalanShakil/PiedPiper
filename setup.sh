@@ -75,11 +75,17 @@ if [[ "$(uname)" == "Darwin" ]]; then
     mkdir -p "$APP_BUNDLE/Contents/MacOS"
     mkdir -p "$APP_BUNDLE/Contents/Resources"
 
-    # Launcher script
+    # Launcher script — include full PATH so the app works from Finder
+    CURRENT_PATH="$PATH"
+    PYTHON_PATH="$(which python3)"
     cat > "$APP_BUNDLE/Contents/MacOS/PiedPiper" << LAUNCHER
 #!/bin/bash
+export PATH="$CURRENT_PATH"
+export PYENV_ROOT="\$HOME/.pyenv"
+eval "\$(pyenv init --path 2>/dev/null)" 2>/dev/null
+eval "\$(pyenv init - 2>/dev/null)" 2>/dev/null
 cd "$APP_DIR"
-exec python3 desktop.py
+exec "$PYTHON_PATH" desktop.py
 LAUNCHER
     chmod +x "$APP_BUNDLE/Contents/MacOS/PiedPiper"
 
