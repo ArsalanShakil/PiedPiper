@@ -192,10 +192,19 @@ function initYkiSpeakingView() {
             if (part.type === 'dialogues') {
                 for (const dialog of (part.items || [])) {
                     if (aborted) return;
-                    // Show situation
-                    showStatus(`Dialog: ${dialog.title}`, dialog.situation);
-                    await sleep(2000);
 
+                    // First: TTS reads the situation (the actual question)
+                    await runSingleItem({
+                        id: `d${pi}-sit`,
+                        promptText: dialog.situation,
+                        instructionText: '',
+                        prepSeconds: 0,
+                        answerSeconds: 0,
+                        listenOnly: true, // Just listen, no recording
+                        headerText: dialog.title,
+                    });
+
+                    // Then: each dialogue line — TTS reads the other person, you respond
                     for (let li = 0; li < dialog.lines.length; li++) {
                         if (aborted) return;
                         const line = dialog.lines[li];
@@ -205,6 +214,7 @@ function initYkiSpeakingView() {
                             instructionText: line.instruction,
                             prepSeconds: part.prep_seconds || 15,
                             answerSeconds: part.answer_seconds || 20,
+                            headerText: `${dialog.title} — Reply ${li + 1}/${dialog.lines.length}`,
                         });
                     }
                 }
@@ -242,21 +252,19 @@ function initYkiSpeakingView() {
     // Listen (2x) → Prep countdown → Beep → Record+Timer → Auto-stop
 
     async function runSingleItem(opts) {
-        const { id, promptText, instructionText, prepSeconds, answerSeconds, showBullets, topicTitle } = opts;
-
-        // Build the display text — this is EXACTLY what TTS will read
-        let displayText = promptText;
+        const { id, promptText, instructionText, prepSeconds, answerSeconds, showBullets, topicTitle, listenOnly, headerText } = opts;
 
         // Render the current item UI
         let html = `<div class="speaking-active-item">`;
-        if (topicTitle) {
+        if (headerText) {
+            html += `<h3 style="margin-bottom:8px;">${escapeHtml(headerText)}</h3>`;
+        } else if (topicTitle) {
             html += `<h3 style="margin-bottom:8px;">${escapeHtml(topicTitle)}</h3>`;
         }
 
-        // Show the prompt text that TTS will read — highlighted
+        // Show the prompt text — this is what TTS reads
         html += `<div class="speaking-prompt" id="item-prompt" style="border-left:3px solid var(--primary);padding-left:16px;">
-                <p style="font-size:15px;line-height:1.7;font-weight:500;">TTS reads:</p>
-                <p style="font-size:15px;line-height:1.7;">${escapeHtml(displayText)}</p>
+                <p style="font-size:15px;line-height:1.7;">${escapeHtml(promptText)}</p>
             </div>`;
 
         // Show bullets separately if present (for narrate/opinion)
@@ -293,16 +301,29 @@ function initYkiSpeakingView() {
         const transcriptEl = document.getElementById('flow-transcript');
         const flowStatus = document.getElementById('flow-status');
 
-        // STEP 1: Play prompt twice via TTS
-        phaseEl.textContent = 'Listening... (played 2 times)';
+        // STEP 1: Play prompt via TTS
+        phaseEl.textContent = listenOnly ? 'Listening to situation...' : 'Listening... (played 2 times)';
         timerDisplay.textContent = '';
         flowStatus.style.background = '#eff6ff';
 
         const { ok, data } = await Api.post('/api/speaking/tts', { text: promptText });
         if (ok && !aborted) {
-            await playAudioTwice(data.url);
+            if (listenOnly) {
+                // Just play once for situation context
+                const audio = new Audio(data.url);
+                await new Promise(r => { audio.addEventListener('ended', r); audio.addEventListener('error', r); audio.play().catch(r); });
+            } else {
+                await playAudioTwice(data.url);
+            }
         }
         if (aborted) return;
+
+        // Listen-only mode: done after TTS plays
+        if (listenOnly) {
+            phaseEl.textContent = 'Now the dialogue begins...';
+            await sleep(1500);
+            return;
+        }
 
         // STEP 2: Prep countdown
         phaseEl.textContent = 'Prepare your answer...';
