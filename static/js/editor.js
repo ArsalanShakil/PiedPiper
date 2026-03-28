@@ -60,35 +60,42 @@ function initEditorView() {
     }
 
     // --- Folders ---
-    async function loadFolders() {
+    let currentFolderValue = 'General';
+
+    async function loadFolders(selectValue) {
         const folders = await Api.get('/api/editor/folders');
         const opts = folders.map(f => `<option value="${escapeHtml(f)}">${escapeHtml(f)}</option>`).join('');
         docFolder.innerHTML = opts + '<option value="__new__">+ New folder...</option>';
         folderFilter.innerHTML = '<option value="">All Folders</option>' + opts;
-
-        // Restore selection
-        if (currentDocId) {
-            const doc = await Api.get(`/api/editor/documents/${currentDocId}`);
-            if (doc && doc.folder) docFolder.value = doc.folder;
-        }
-
-        // Handle "new folder" selection
-        docFolder.addEventListener('change', function handler() {
-            if (docFolder.value === '__new__') {
-                const name = prompt('New folder name:');
-                if (name && name.trim()) {
-                    const opt = document.createElement('option');
-                    opt.value = name.trim();
-                    opt.textContent = name.trim();
-                    docFolder.insertBefore(opt, docFolder.lastElementChild);
-                    docFolder.value = name.trim();
-                    triggerAutoSave();
-                } else {
-                    docFolder.value = 'General';
-                }
-            }
-        });
+        if (selectValue) docFolder.value = selectValue;
     }
+
+    // Handle "new folder" selection — single listener, not inside loadFolders
+    docFolder.addEventListener('change', () => {
+        if (docFolder.value === '__new__') {
+            const name = prompt('New folder name:');
+            if (name && name.trim()) {
+                // Add new option and select it
+                const opt = document.createElement('option');
+                opt.value = name.trim();
+                opt.textContent = name.trim();
+                docFolder.insertBefore(opt, docFolder.querySelector('[value="__new__"]'));
+                docFolder.value = name.trim();
+                // Also add to filter dropdown
+                const filterOpt = document.createElement('option');
+                filterOpt.value = name.trim();
+                filterOpt.textContent = name.trim();
+                folderFilter.appendChild(filterOpt);
+                currentFolderValue = name.trim();
+                triggerAutoSave();
+            } else {
+                docFolder.value = currentFolderValue;
+            }
+        } else {
+            currentFolderValue = docFolder.value;
+            triggerAutoSave();
+        }
+    });
 
     folderFilter.addEventListener('change', loadDocList);
 
@@ -250,14 +257,36 @@ function initEditorView() {
                 html += `
                     <div class="doc-item ${d.id === currentDocId ? 'active' : ''}" data-id="${d.id}">
                         <span class="doc-item-name">${escapeHtml(d.title)}</span>
-                        <span class="doc-item-meta">${d.word_count}w</span>
+                        <span style="display:flex;align-items:center;gap:4px;">
+                            <span class="doc-item-meta">${d.word_count}w</span>
+                            <button class="doc-delete-btn" data-id="${d.id}" title="Delete">&times;</button>
+                        </span>
                     </div>`;
             });
         }
         docList.innerHTML = html;
 
         docList.querySelectorAll('.doc-item').forEach(el => {
-            el.addEventListener('click', () => loadDocument(parseInt(el.dataset.id)));
+            el.addEventListener('click', (e) => {
+                if (e.target.classList.contains('doc-delete-btn')) return;
+                loadDocument(parseInt(el.dataset.id));
+            });
+        });
+
+        docList.querySelectorAll('.doc-delete-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const id = parseInt(btn.dataset.id);
+                if (!confirm('Delete this document?')) return;
+                await fetch(`/api/editor/documents/${id}`, { method: 'DELETE' });
+                if (currentDocId === id) {
+                    currentDocId = null;
+                    titleInput.value = 'Untitled';
+                    quill.setText('');
+                }
+                loadDocList();
+                loadFolders(docFolder.value);
+            });
         });
     }
 
@@ -308,7 +337,7 @@ function initEditorView() {
 
     // --- Init ---
     (async () => {
-        await loadFolders();
+        await loadFolders('General');
         const docs = await Api.get('/api/editor/documents');
         if (docs.length === 0) {
             const { ok, data } = await Api.post('/api/editor/documents', { title: 'My first document' });
