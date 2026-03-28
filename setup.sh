@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "=== Piper TTS Studio — Automated Setup ==="
+echo "=== PiedPiper — Automated Setup ==="
 echo ""
 
 APP_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -29,6 +29,14 @@ else
     echo "[OK] ffmpeg found"
 fi
 
+# --- Check Claude Code CLI ---
+if command -v claude &> /dev/null; then
+    echo "[OK] Claude Code CLI found"
+else
+    echo "[!!] Claude Code CLI not found — AI features (translation, exam generation) won't work"
+    echo "     Install from: https://claude.ai/code"
+fi
+
 # --- Install Python dependencies ---
 echo "[..] Installing Python packages..."
 pip3 install -q -r "$APP_DIR/requirements.txt"
@@ -51,8 +59,15 @@ else
     echo "[OK] Voice model already present"
 fi
 
-# --- Create output directory ---
+# --- Create directories ---
 mkdir -p "$APP_DIR/output/General"
+mkdir -p "$APP_DIR/output/recordings"
+mkdir -p "$APP_DIR/output/audio_cache"
+mkdir -p "$APP_DIR/knowledge"
+
+# --- Initialize database ---
+cd "$APP_DIR" && python3 -c "from db import init_db; init_db()"
+echo "[OK] Database initialized"
 
 # --- Add shell alias ---
 ALIAS_LINE="alias start-tts='python3 $APP_DIR/app.py & sleep 1 && open http://localhost:5123'"
@@ -60,10 +75,9 @@ ALIAS_LINE="alias start-tts='python3 $APP_DIR/app.py & sleep 1 && open http://lo
 for RC_FILE in "$HOME/.zshrc" "$HOME/.bashrc"; do
     if [ -f "$RC_FILE" ]; then
         if ! grep -q "start-tts" "$RC_FILE" 2>/dev/null; then
-            printf '\n# Piper TTS Studio\n%s\n' "$ALIAS_LINE" >> "$RC_FILE"
+            printf '\n# PiedPiper\n%s\n' "$ALIAS_LINE" >> "$RC_FILE"
             echo "[OK] Added 'start-tts' alias to $RC_FILE"
         else
-            # Update the alias path in case the repo moved
             sed -i.bak "/alias start-tts=/c\\
 $ALIAS_LINE" "$RC_FILE" && rm -f "${RC_FILE}.bak"
             echo "[OK] Updated 'start-tts' alias in $RC_FILE"
@@ -75,4 +89,5 @@ echo ""
 echo "=== Setup complete! ==="
 echo ""
 echo "Start the app:  start-tts"
+echo "Or run directly: python3 $APP_DIR/app.py"
 echo "(open a new terminal first, or run: source ~/.zshrc)"

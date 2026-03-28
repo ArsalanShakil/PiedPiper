@@ -17,8 +17,14 @@ def create_app():
     # Register blueprints
     from blueprints.tts import bp as tts_bp
     from blueprints.knowledge import bp as knowledge_bp
+    from blueprints.editor import bp as editor_bp
+    from blueprints.vocabulary import bp as vocabulary_bp
+    from blueprints.yki import bp as yki_bp
     app.register_blueprint(tts_bp)
     app.register_blueprint(knowledge_bp)
+    app.register_blueprint(editor_bp)
+    app.register_blueprint(vocabulary_bp)
+    app.register_blueprint(yki_bp)
 
     # SPA entry point
     @app.route("/")

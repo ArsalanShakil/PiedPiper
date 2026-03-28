@@ -1,4 +1,42 @@
-<div class="placeholder-page">
-    <h2>YKI reading</h2>
-    <p>Coming soon...</p>
+<div id="yki-reading">
+    <!-- Setup -->
+    <div id="reading-setup" class="exam-setup">
+        <h2>&#128214; Reading Exam</h2>
+        <p>Textf&ouml;rst&aring;else — 60 minutes</p>
+        <div class="form-group">
+            <label>Topic (optional)</label>
+            <select id="reading-topic"><option value="">Random</option></select>
+        </div>
+        <button class="btn btn-primary" id="reading-start">Generate & Start Exam</button>
+    </div>
+
+    <!-- Loading -->
+    <div id="reading-loading" class="generating-overlay" style="display:none;">
+        <h3>Generating exam with AI...</h3>
+        <p>This may take 15-30 seconds</p>
+    </div>
+
+    <!-- Exam -->
+    <div id="reading-exam" style="display:none;">
+        <div class="exam-header">
+            <h2>Reading Exam</h2>
+            <div class="exam-timer" id="reading-timer">60:00</div>
+        </div>
+        <div id="reading-passages"></div>
+        <button class="btn btn-primary" id="reading-submit">Submit Answers</button>
+    </div>
+
+    <!-- Results -->
+    <div id="reading-results" style="display:none;">
+        <div class="results-panel">
+            <div class="score-display">
+                <div class="score-number" id="reading-score">0</div>
+                <div class="score-label">Score</div>
+            </div>
+            <div class="feedback-text" id="reading-feedback"></div>
+        </div>
+        <div style="margin-top:16px;text-align:center;">
+            <button class="btn" onclick="location.hash='#/yki'">Back to Dashboard</button>
+        </div>
+    </div>
 </div>

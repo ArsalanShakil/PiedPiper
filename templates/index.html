@@ -6,6 +6,11 @@
     <title>PiedPiper</title>
     <link rel="stylesheet" href="/static/style.css">
     <link rel="stylesheet" href="/static/css/knowledge.css">
+    <link rel="stylesheet" href="/static/css/editor.css">
+    <link rel="stylesheet" href="/static/css/vocabulary.css">
+    <link rel="stylesheet" href="/static/css/yki.css">
+    <!-- Quill.js Rich Text Editor -->
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
 </head>
 <body>
     <div class="app-layout">
@@ -75,25 +80,36 @@
         </main>
     </div>
 
+    <!-- Quill.js -->
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+
+    <!-- App Scripts -->
     <script src="/static/js/utils.js"></script>
     <script src="/static/js/api.js"></script>
+    <script src="/static/js/timer.js"></script>
+    <script src="/static/js/audio-recorder.js"></script>
     <script src="/static/js/tts.js"></script>
     <script src="/static/js/knowledge.js"></script>
+    <script src="/static/js/editor.js"></script>
+    <script src="/static/js/vocabulary.js"></script>
+    <script src="/static/js/yki.js"></script>
+    <script src="/static/js/yki-reading.js"></script>
+    <script src="/static/js/yki-writing.js"></script>
+    <script src="/static/js/yki-listening.js"></script>
+    <script src="/static/js/yki-speaking.js"></script>
     <script src="/static/js/router.js"></script>
     <script>
-        // Register routes
         Router.register('#/', { partial: 'tts.html', init: initTtsView });
-        Router.register('#/editor', { partial: 'editor.html', init: () => ({}) });
-        Router.register('#/vocabulary', { partial: 'vocabulary.html', init: () => ({}) });
-        Router.register('#/yki', { partial: 'yki_home.html', init: () => ({}) });
-        Router.register('#/yki/reading', { partial: 'yki_reading.html', init: () => ({}) });
-        Router.register('#/yki/writing', { partial: 'yki_writing.html', init: () => ({}) });
-        Router.register('#/yki/listening', { partial: 'yki_listening.html', init: () => ({}) });
-        Router.register('#/yki/speaking', { partial: 'yki_speaking.html', init: () => ({}) });
+        Router.register('#/editor', { partial: 'editor.html', init: initEditorView });
+        Router.register('#/vocabulary', { partial: 'vocabulary.html', init: initVocabularyView });
+        Router.register('#/yki', { partial: 'yki_home.html', init: initYkiHomeView });
+        Router.register('#/yki/reading', { partial: 'yki_reading.html', init: initYkiReadingView });
+        Router.register('#/yki/writing', { partial: 'yki_writing.html', init: initYkiWritingView });
+        Router.register('#/yki/listening', { partial: 'yki_listening.html', init: initYkiListeningView });
+        Router.register('#/yki/speaking', { partial: 'yki_speaking.html', init: initYkiSpeakingView });
         Router.register('#/knowledge', { partial: 'knowledge.html', init: initKnowledgeView });
         Router.register('#/settings', { partial: 'settings.html', init: () => ({}) });
 
-        // Start router
         Router.init('view-container');
     </script>
 </body>

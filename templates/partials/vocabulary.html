@@ -1,4 +1,32 @@
-<div class="placeholder-page">
-    <h2>vocabulary</h2>
-    <p>Coming soon...</p>
+<div id="vocab-page">
+    <!-- List View -->
+    <div id="vocab-list-view">
+        <div class="vocab-header">
+            <h2>Vocabulary</h2>
+            <div class="vocab-actions">
+                <button class="btn" id="vocab-export-btn">Export CSV</button>
+                <button class="btn btn-primary" id="vocab-review-btn" style="width:auto;">Review Flashcards</button>
+            </div>
+        </div>
+
+        <div class="vocab-search">
+            <input type="text" id="vocab-search-input" placeholder="Search words...">
+            <select id="vocab-category-filter">
+                <option value="">All Categories</option>
+            </select>
+        </div>
+
+        <div id="vocab-list" class="vocab-list">
+            <p class="empty-state">No vocabulary yet. Save words from the Writing Editor!</p>
+        </div>
+    </div>
+
+    <!-- Flashcard Review View -->
+    <div id="vocab-review-view" style="display:none;">
+        <div class="vocab-header">
+            <h2>Flashcard Review</h2>
+            <button class="btn" id="vocab-back-btn">Back to List</button>
+        </div>
+        <div id="vocab-review-content" class="flashcard-container"></div>
+    </div>
 </div>

@@ -1,4 +1,41 @@
-<div class="placeholder-page">
-    <h2>YKI speaking</h2>
-    <p>Coming soon...</p>
+<div id="yki-speaking">
+    <div id="speaking-setup" class="exam-setup">
+        <h2>&#127908; Speaking Exam</h2>
+        <p>Talproduktion — 4 parts, 25 minutes total</p>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;">
+            Questions will be read aloud via TTS. Your speech is recorded AND transcribed to text for AI evaluation.
+        </p>
+        <div class="form-group">
+            <label>Topic (optional)</label>
+            <select id="speaking-topic"><option value="">Random</option></select>
+        </div>
+        <button class="btn btn-primary" id="speaking-start">Generate & Start Exam</button>
+    </div>
+
+    <div id="speaking-loading" class="generating-overlay" style="display:none;">
+        <h3>Generating speaking prompts...</h3>
+        <p>This may take 15-30 seconds</p>
+    </div>
+
+    <div id="speaking-exam" style="display:none;">
+        <div class="exam-header">
+            <h2>Speaking Exam</h2>
+            <div class="exam-timer" id="speaking-timer">25:00</div>
+        </div>
+        <div id="speaking-parts"></div>
+        <button class="btn btn-primary" id="speaking-submit">Finish & Get Feedback</button>
+    </div>
+
+    <div id="speaking-results" style="display:none;">
+        <div class="results-panel">
+            <div class="score-display">
+                <div class="score-number" id="speaking-score">0</div>
+                <div class="score-label">Score</div>
+            </div>
+            <div class="feedback-text" id="speaking-feedback"></div>
+        </div>
+        <div style="margin-top:16px;text-align:center;">
+            <button class="btn" onclick="location.hash='#/yki'">Back to Dashboard</button>
+        </div>
+    </div>
 </div>

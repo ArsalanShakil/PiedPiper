@@ -1,4 +1,38 @@
-<div class="placeholder-page">
-    <h2>YKI writing</h2>
-    <p>Coming soon...</p>
+<div id="yki-writing">
+    <div id="writing-setup" class="exam-setup">
+        <h2>&#128221; Writing Exam</h2>
+        <p>Skriftlig framst&auml;llning — 3 tasks, 54 minutes total</p>
+        <div class="form-group">
+            <label>Topic (optional)</label>
+            <select id="writing-topic"><option value="">Random</option></select>
+        </div>
+        <button class="btn btn-primary" id="writing-start">Generate & Start Exam</button>
+    </div>
+
+    <div id="writing-loading" class="generating-overlay" style="display:none;">
+        <h3>Generating writing prompts...</h3>
+        <p>This may take 15-30 seconds</p>
+    </div>
+
+    <div id="writing-exam" style="display:none;">
+        <div class="exam-header">
+            <h2>Writing Exam</h2>
+            <div class="exam-timer" id="writing-timer">54:00</div>
+        </div>
+        <div id="writing-tasks"></div>
+        <button class="btn btn-primary" id="writing-submit">Submit All Tasks</button>
+    </div>
+
+    <div id="writing-results" style="display:none;">
+        <div class="results-panel">
+            <div class="score-display">
+                <div class="score-number" id="writing-score">0</div>
+                <div class="score-label">Score</div>
+            </div>
+            <div class="feedback-text" id="writing-feedback"></div>
+        </div>
+        <div style="margin-top:16px;text-align:center;">
+            <button class="btn" onclick="location.hash='#/yki'">Back to Dashboard</button>
+        </div>
+    </div>
 </div>

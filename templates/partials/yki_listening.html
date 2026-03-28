@@ -1,4 +1,38 @@
-<div class="placeholder-page">
-    <h2>YKI listening</h2>
-    <p>Coming soon...</p>
+<div id="yki-listening">
+    <div id="listening-setup" class="exam-setup">
+        <h2>&#127911; Listening Exam</h2>
+        <p>Talf&ouml;rst&aring;else — 40 minutes</p>
+        <div class="form-group">
+            <label>Topic (optional)</label>
+            <select id="listening-topic"><option value="">Random</option></select>
+        </div>
+        <button class="btn btn-primary" id="listening-start">Generate & Start Exam</button>
+    </div>
+
+    <div id="listening-loading" class="generating-overlay" style="display:none;">
+        <h3>Generating listening exam...</h3>
+        <p>Creating scripts and synthesizing audio — this may take 30-60 seconds</p>
+    </div>
+
+    <div id="listening-exam" style="display:none;">
+        <div class="exam-header">
+            <h2>Listening Exam</h2>
+            <div class="exam-timer" id="listening-timer">40:00</div>
+        </div>
+        <div id="listening-clips"></div>
+        <button class="btn btn-primary" id="listening-submit">Submit Answers</button>
+    </div>
+
+    <div id="listening-results" style="display:none;">
+        <div class="results-panel">
+            <div class="score-display">
+                <div class="score-number" id="listening-score">0</div>
+                <div class="score-label">Score</div>
+            </div>
+            <div class="feedback-text" id="listening-feedback"></div>
+        </div>
+        <div style="margin-top:16px;text-align:center;">
+            <button class="btn" onclick="location.hash='#/yki'">Back to Dashboard</button>
+        </div>
+    </div>
 </div>

@@ -1,4 +1,48 @@
-<div class="placeholder-page">
-    <h2>editor</h2>
-    <p>Coming soon...</p>
+<div class="editor-layout">
+    <!-- Document Sidebar -->
+    <div class="doc-sidebar">
+        <div class="doc-sidebar-header">
+            <h3>Documents</h3>
+            <button class="btn btn-small" id="ed-new-doc">+ New</button>
+        </div>
+        <div class="doc-list" id="ed-doc-list"></div>
+    </div>
+
+    <!-- Editor Main -->
+    <div class="editor-main">
+        <div class="editor-toolbar-bar">
+            <input type="text" class="editor-title-input" id="ed-title" placeholder="Document title..." value="Untitled">
+            <div class="editor-stats">
+                <span id="ed-word-count">0 words</span>
+                <span id="ed-save-status">Saved</span>
+            </div>
+        </div>
+        <div class="editor-body">
+            <div class="editor-paper">
+                <div id="ed-quill-editor"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Selection Toolbar -->
+    <div class="selection-toolbar" id="ed-sel-toolbar">
+        <button class="sel-btn sel-primary" id="ed-sel-translate">Translate</button>
+        <button class="sel-btn" id="ed-sel-speak">Speak</button>
+        <button class="sel-btn" id="ed-sel-vocab">+ Vocab</button>
+    </div>
+
+    <!-- Translation Panel -->
+    <div class="translation-panel" id="ed-trans-panel">
+        <div class="trans-header">
+            <h3>Translation</h3>
+            <button class="btn btn-small" id="ed-trans-close">Close</button>
+        </div>
+        <div class="trans-body" id="ed-trans-body">
+            <p class="trans-loading">Select text and click Translate</p>
+        </div>
+        <div class="trans-actions" id="ed-trans-actions" style="display:none;">
+            <button class="btn btn-small" id="ed-trans-save-vocab">Save to Vocabulary</button>
+            <button class="btn btn-small" id="ed-trans-speak">Speak</button>
+        </div>
+    </div>
 </div>
