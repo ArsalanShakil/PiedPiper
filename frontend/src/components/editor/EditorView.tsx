@@ -32,7 +32,7 @@ const QUILL_MODULES = {
 interface LastTranslation {
   swedish: string
   translation: string
-  word_by_word: { sv: string; en: string }[]
+  word_by_word: { sv?: string; en?: string; src?: string; dst?: string }[]
   grammar_notes: string
 }
 
@@ -524,11 +524,13 @@ export default function EditorView() {
       if (data.word_by_word && data.word_by_word.length > 0) {
         html += '<div class="trans-words"><h4>Word by word</h4>'
         data.word_by_word.forEach(w => {
+          const srcWord = w.sv || w.src || ''
+          const dstWord = w.en || w.dst || ''
           html += `<div class="word-pair">
-            <span class="word-sv">${escapeHtml(w.sv)}</span>
+            <span class="word-sv">${escapeHtml(srcWord)}</span>
             <span class="word-pair-right">
-              <span class="word-en">${escapeHtml(w.en)}</span>
-              <button class="word-add-btn" data-sv="${escapeHtml(w.sv)}" data-en="${escapeHtml(w.en)}" title="Add to vocabulary">+</button>
+              <span class="word-en">${escapeHtml(dstWord)}</span>
+              <button class="word-add-btn" data-sv="${escapeHtml(srcWord)}" data-en="${escapeHtml(dstWord)}" title="Add to vocabulary">+</button>
             </span>
           </div>`
         })

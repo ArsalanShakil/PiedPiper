@@ -121,13 +121,15 @@ def list_folders():
 def translate():
     data = request.json
     text = data.get("text", "").strip()
+    source = data.get("source", "sv")
+    target = data.get("target", "en")
 
     if not text:
         return jsonify({"error": "No text provided"}), 400
 
     try:
         from deep_translator import GoogleTranslator
-        translator = GoogleTranslator(source='sv', target='en')
+        translator = GoogleTranslator(source=source, target=target)
         translation = translator.translate(text)
 
         # Word-by-word: batch translate all words in one call using newline separator
@@ -139,8 +141,8 @@ def translate():
                 batch_result = translator.translate(batch)
                 translated_words = batch_result.split("\n")
                 for i, w in enumerate(words):
-                    en = translated_words[i].strip() if i < len(translated_words) else "?"
-                    word_by_word.append({"sv": w, "en": en})
+                    tw = translated_words[i].strip() if i < len(translated_words) else "?"
+                    word_by_word.append({"src": w, "dst": tw})
             except Exception:
                 pass
 

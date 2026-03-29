@@ -11,6 +11,7 @@ import WritingView from './components/writing/WritingView'
 import ListeningView from './components/listening/ListeningView'
 import SpeakingView from './components/speaking/SpeakingView'
 import EditorView from './components/editor/EditorView'
+import TranslateWidget from './components/common/TranslateWidget'
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
+        <TranslateWidget />
       </FullExamProvider>
     </BrowserRouter>
   )

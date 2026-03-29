@@ -19,5 +19,5 @@ export const deleteDocument = (id: number) =>
 export const fetchFolders = () =>
   apiGet<string[]>('/api/editor/folders')
 
-export const translate = (text: string, context?: string) =>
-  apiPost<TranslationResult>('/api/editor/translate', { text, context })
+export const translate = (text: string, context?: string, source = 'sv', target = 'en') =>
+  apiPost<TranslationResult>('/api/editor/translate', { text, context, source, target })

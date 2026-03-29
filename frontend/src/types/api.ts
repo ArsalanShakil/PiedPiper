@@ -62,7 +62,7 @@ export interface DocumentListItem {
 
 export interface TranslationResult {
   translation: string
-  word_by_word: { sv: string; en: string }[]
+  word_by_word: { sv?: string; en?: string; src?: string; dst?: string }[]
   grammar_notes: string
 }
 
