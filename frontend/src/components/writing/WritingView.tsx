@@ -297,11 +297,13 @@ export default function WritingView() {
           <h3>Mock Test</h3>
           <p>Full writing section, timed</p>
           <div className="yki-card-time">54 min</div>
+          <div className="yki-card-cta">Start Mock Exam &rarr;</div>
         </div>
         <div className="yki-card" onClick={() => { setMenuSub('practice'); setPendingTask(null); setShowBrowser(false) }}>
           <div className="yki-card-icon">&#x270D;&#xFE0F;</div>
           <h3>Practice</h3>
           <p>Individual task, flexible timing</p>
+          <div className="yki-card-cta">Start Practice &rarr;</div>
         </div>
       </div>
 

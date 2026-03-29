@@ -380,11 +380,13 @@ export default function ListeningView() {
           <h3>Mock Test</h3>
           <p>2 clips, timed 40 minutes</p>
           <div className="yki-card-time">40 min</div>
+          <div className="yki-card-cta">Start Mock Exam &rarr;</div>
         </div>
         <div className="yki-card" onClick={() => { setMenuSub('practice'); setShowBrowser(false) }}>
           <div className="yki-card-icon">&#x1F50A;</div>
           <h3>Practice</h3>
           <p>Single clip, flexible timing</p>
+          <div className="yki-card-cta">Start Practice &rarr;</div>
         </div>
       </div>
 

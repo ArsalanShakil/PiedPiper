@@ -849,6 +849,7 @@ export default function SpeakingView() {
           <h3>Mock Test</h3>
           <p>Full exam &mdash; 4 parts, all timed, just like the real YKI</p>
           <div className="yki-card-time">25-30 minutes</div>
+          <div className="yki-card-cta">Start Mock Exam &rarr;</div>
         </div>
 
         <div
@@ -860,6 +861,7 @@ export default function SpeakingView() {
           <h3>Practice Mode</h3>
           <p>Pick a part type and topic &mdash; practice at your own pace</p>
           <div className="yki-card-time">Flexible</div>
+          <div className="yki-card-cta">Start Practice &rarr;</div>
         </div>
       </div>
 

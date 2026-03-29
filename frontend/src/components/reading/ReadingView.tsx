@@ -328,11 +328,13 @@ export default function ReadingView() {
           <h3>Mock Test</h3>
           <p>3 passages, timed 60 minutes</p>
           <div className="yki-card-time">60 min</div>
+          <div className="yki-card-cta">Start Mock Exam &rarr;</div>
         </div>
         <div className="yki-card" onClick={() => { setMenuSub('practice'); setShowBrowser(false) }}>
           <div className="yki-card-icon">&#x1F4D6;</div>
           <h3>Practice</h3>
           <p>Single passage, flexible timing</p>
+          <div className="yki-card-cta">Start Practice &rarr;</div>
         </div>
       </div>
 
