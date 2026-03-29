@@ -232,21 +232,54 @@ export default function GlobalVocab() {
     setBusy(false)
   }, [])
 
+  // --- Speak player state ---
+  const [speakUrl, setSpeakUrl] = useState<string | null>(null)
+  const [speakFile, setSpeakFile] = useState<{ folder: string; name: string } | null>(null)
+  const [speakLoading, setSpeakLoading] = useState(false)
+  const speakAudioRef = useRef<HTMLAudioElement>(null)
+  const speakFileRef = useRef<{ folder: string; name: string } | null>(null)
+
+  // Clean up speak file on unmount
+  useEffect(() => {
+    return () => {
+      if (speakFileRef.current) {
+        deleteFile(speakFileRef.current.folder, speakFileRef.current.name).catch(() => {})
+      }
+    }
+  }, [])
+
+  const closeSpeakPlayer = useCallback(() => {
+    if (speakAudioRef.current) speakAudioRef.current.pause()
+    if (speakFile) deleteFile(speakFile.folder, speakFile.name).catch(() => {})
+    setSpeakUrl(null)
+    setSpeakFile(null)
+    speakFileRef.current = null
+  }, [speakFile])
+
   const handleSpeak = useCallback(async () => {
     const text = window.getSelection()?.toString().trim()
     if (!text) return
     setToolbarVisible(false)
+    // Clean up previous
+    if (speakFileRef.current) {
+      deleteFile(speakFileRef.current.folder, speakFileRef.current.name).catch(() => {})
+    }
+    setSpeakLoading(true)
+    setSpeakUrl(null)
     try {
       const voices = await fetchVoices()
-      if (voices.length === 0) return
+      if (voices.length === 0) { setSpeakLoading(false); return }
       const firstVoice = voices[0]
-      if (!firstVoice) return
+      if (!firstVoice) { setSpeakLoading(false); return }
       const data = await synthesize({ text, voice_id: firstVoice.id, format: 'wav', save_path: '', filename: '' })
-      const audio = new Audio(getPlayUrl(data.folder, data.filename))
-      audio.addEventListener('ended', () => { deleteFile(data.folder, data.filename).catch(() => {}) })
-      audio.play()
+      const url = getPlayUrl(data.folder, data.filename)
+      setSpeakUrl(url)
+      setSpeakFile({ folder: data.folder, name: data.filename })
+      speakFileRef.current = { folder: data.folder, name: data.filename }
+      setSpeakLoading(false)
+      setTimeout(() => { speakAudioRef.current?.play() }, 100)
     } catch {
-      // TTS not available
+      setSpeakLoading(false)
     }
   }, [])
 
@@ -324,6 +357,32 @@ export default function GlobalVocab() {
             </div>
           )}
           <button className="global-trans-close" onClick={() => setTransPopup(null)}>&times;</button>
+        </div>
+      )}
+
+      {/* Speak Player */}
+      {(speakUrl || speakLoading) && (
+        <div className="speak-player-bar">
+          {speakLoading ? (
+            <span style={{ fontSize: 13, color: 'var(--text-dim)' }}>Generating audio...</span>
+          ) : (
+            <>
+              <audio ref={speakAudioRef} src={speakUrl ?? undefined} controls style={{ flex: 1, height: 36 }} />
+              <div className="speak-speed-controls">
+                {[0.5, 0.75, 1, 1.25, 1.5].map(s => (
+                  <button
+                    key={s}
+                    className="btn btn-small"
+                    onClick={() => { if (speakAudioRef.current) speakAudioRef.current.playbackRate = s }}
+                    title={`${s}x speed`}
+                  >
+                    {s}x
+                  </button>
+                ))}
+              </div>
+              <button className="btn btn-small btn-danger" onClick={closeSpeakPlayer} title="Close">&times;</button>
+            </>
+          )}
         </div>
       )}
 
