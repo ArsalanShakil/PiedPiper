@@ -36,6 +36,9 @@ def load_passages():
                 chapters = re.split(r'^## (Kapitel .+)', text, flags=re.MULTILINE)
                 for i in range(1, len(chapters) - 1, 2):
                     title = chapters[i].strip()
+                    # Skip Översikt (summary) sections — only keep actual chapters
+                    if 'Översikt' in title:
+                        continue
                     body = chapters[i + 1].strip()[:2000]
                     if len(body) > 100:
                         key = hashlib.sha256((title + body[:200]).encode()).hexdigest()[:16]
