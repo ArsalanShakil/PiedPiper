@@ -96,22 +96,33 @@ function initEditorView() {
         if (!e.target.closest || !e.target.closest('.ql-editor')) return;
         const el = e.target;
 
-        // Check if this element or any parent span has red color
+        // Get the word text from this element
+        const rawWord = el.textContent.toLowerCase().replace(/[.,!?;:]/g, '').trim();
+
+        // Try direct lookup first (works for any element containing a vocab word)
+        if (rawWord && vocabMap[rawWord]) {
+            tooltip.textContent = vocabMap[rawWord];
+            tooltip.style.display = 'block';
+            const rect = el.getBoundingClientRect();
+            tooltip.style.top = (rect.bottom + window.scrollY + 4) + 'px';
+            tooltip.style.left = (rect.left + window.scrollX) + 'px';
+            return;
+        }
+
+        // Walk up to find a colored span (for nested elements like bold+color)
         let span = el;
         while (span && span !== document.body) {
             if (span.tagName === 'SPAN' && span.style && span.style.color) {
-                // Extract the word text and look it up
                 const word = span.textContent.toLowerCase().replace(/[.,!?;:]/g, '').trim();
-                const translation = vocabMap[word];
-                if (translation) {
-                    tooltip.textContent = translation;
+                if (word && vocabMap[word]) {
+                    tooltip.textContent = vocabMap[word];
                     tooltip.style.display = 'block';
                     const rect = span.getBoundingClientRect();
                     tooltip.style.top = (rect.bottom + window.scrollY + 4) + 'px';
                     tooltip.style.left = (rect.left + window.scrollX) + 'px';
                     return;
                 }
-                break; // Found a span with color but no vocab match, stop walking
+                break;
             }
             span = span.parentElement;
         }
