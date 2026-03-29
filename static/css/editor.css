@@ -205,18 +205,12 @@
     font-style: normal;
 }
 
-/* Vocabulary highlighting in editor */
-.vocab-highlight {
+/* Vocabulary highlighting in editor — CSS Custom Highlight API */
+::highlight(vocab-words) {
     color: #dc2626;
     text-decoration: underline;
     text-decoration-color: #fca5a5;
     text-underline-offset: 3px;
-    cursor: pointer;
-    border-radius: 2px;
-}
-
-.vocab-highlight:hover {
-    background: #fef2f2;
 }
 
 .vocab-tooltip {

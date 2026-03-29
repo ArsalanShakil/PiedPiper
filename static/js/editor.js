@@ -69,21 +69,34 @@ function initEditorView() {
     function highlightVocabWords() {
         clearTimeout(highlightTimer);
         highlightTimer = setTimeout(() => {
-            if (!quill || !vocabPattern) return;
-            const text = quill.getText();
-            const fullLen = quill.getLength();
+            if (!quill || !vocabPattern || Object.keys(vocabMap).length === 0) return;
 
-            // Clear all color formatting first
-            quill.formatText(0, fullLen, 'color', false, 'silent');
+            // Use CSS Custom Highlight API if available (Chrome 105+)
+            if (CSS.highlights) {
+                const editor = document.querySelector('.ql-editor');
+                if (!editor) return;
 
-            // Apply red to every occurrence of every vocab word
-            vocabPattern.lastIndex = 0;
-            let match;
-            while (match = vocabPattern.exec(text)) {
-                const wordStart = match.index + match[0].indexOf(match[1]);
-                quill.formatText(wordStart, match[1].length, { 'color': '#dc2626' }, 'silent');
+                const ranges = [];
+                const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
+                let node;
+                while (node = walker.nextNode()) {
+                    vocabPattern.lastIndex = 0;
+                    let m;
+                    while (m = vocabPattern.exec(node.textContent)) {
+                        const wordStart = m.index + m[0].indexOf(m[1]);
+                        try {
+                            const range = new Range();
+                            range.setStart(node, wordStart);
+                            range.setEnd(node, wordStart + m[1].length);
+                            ranges.push(range);
+                        } catch(e) {}
+                    }
+                }
+
+                const highlight = new Highlight(...ranges);
+                CSS.highlights.set('vocab-words', highlight);
             }
-        }, 200); // Fast response
+        }, 150);
     }
 
     // Tooltip on hover — look up word under cursor in vocabMap
@@ -92,45 +105,44 @@ function initEditorView() {
     tooltip.style.display = 'none';
     document.body.appendChild(tooltip);
 
-    document.addEventListener('mouseover', (e) => {
-        if (!e.target.closest || !e.target.closest('.ql-editor')) return;
-        const el = e.target;
-
-        // Get the word text from this element
-        const rawWord = el.textContent.toLowerCase().replace(/[.,!?;:]/g, '').trim();
-
-        // Try direct lookup first (works for any element containing a vocab word)
-        if (rawWord && vocabMap[rawWord]) {
-            tooltip.textContent = vocabMap[rawWord];
-            tooltip.style.display = 'block';
-            const rect = el.getBoundingClientRect();
-            tooltip.style.top = (rect.bottom + window.scrollY + 4) + 'px';
-            tooltip.style.left = (rect.left + window.scrollX) + 'px';
+    // Tooltip: get word under cursor and check vocabMap
+    document.addEventListener('mousemove', (e) => {
+        if (!e.target.closest || !e.target.closest('.ql-editor')) {
+            tooltip.style.display = 'none';
             return;
         }
 
-        // Walk up to find a colored span (for nested elements like bold+color)
-        let span = el;
-        while (span && span !== document.body) {
-            if (span.tagName === 'SPAN' && span.style && span.style.color) {
-                const word = span.textContent.toLowerCase().replace(/[.,!?;:]/g, '').trim();
-                if (word && vocabMap[word]) {
-                    tooltip.textContent = vocabMap[word];
-                    tooltip.style.display = 'block';
-                    const rect = span.getBoundingClientRect();
-                    tooltip.style.top = (rect.bottom + window.scrollY + 4) + 'px';
-                    tooltip.style.left = (rect.left + window.scrollX) + 'px';
-                    return;
-                }
-                break;
+        // Get word at cursor position using caretPositionFromPoint
+        let word = '';
+        if (document.caretPositionFromPoint) {
+            const pos = document.caretPositionFromPoint(e.clientX, e.clientY);
+            if (pos && pos.offsetNode && pos.offsetNode.nodeType === 3) {
+                const text = pos.offsetNode.textContent;
+                const offset = pos.offset;
+                // Find word boundaries
+                let start = offset, end = offset;
+                while (start > 0 && /[\wåäöÅÄÖ]/.test(text[start - 1])) start--;
+                while (end < text.length && /[\wåäöÅÄÖ]/.test(text[end])) end++;
+                word = text.slice(start, end).toLowerCase();
             }
-            span = span.parentElement;
+        } else if (document.caretRangeFromPoint) {
+            const range = document.caretRangeFromPoint(e.clientX, e.clientY);
+            if (range && range.startContainer && range.startContainer.nodeType === 3) {
+                const text = range.startContainer.textContent;
+                const offset = range.startOffset;
+                let start = offset, end = offset;
+                while (start > 0 && /[\wåäöÅÄÖ]/.test(text[start - 1])) start--;
+                while (end < text.length && /[\wåäöÅÄÖ]/.test(text[end])) end++;
+                word = text.slice(start, end).toLowerCase();
+            }
         }
-    });
 
-    document.addEventListener('mouseout', (e) => {
-        // Hide tooltip when leaving any span
-        if (e.target.tagName === 'SPAN') {
+        if (word && vocabMap[word]) {
+            tooltip.textContent = vocabMap[word];
+            tooltip.style.display = 'block';
+            tooltip.style.top = (e.clientY + window.scrollY + 16) + 'px';
+            tooltip.style.left = (e.clientX + window.scrollX) + 'px';
+        } else {
             tooltip.style.display = 'none';
         }
     });
@@ -143,7 +155,6 @@ function initEditorView() {
         if (source === 'user' && !isLoading) {
             isDirty = true;
             scheduleSave();
-            highlightVocabWords();
         }
     });
 
@@ -503,16 +514,15 @@ function initEditorView() {
         titleInput.value = doc.title;
         docFolder.value = doc.folder || 'General';
         quill.root.innerHTML = doc.content_html || '';
+        isLoading = false;
+        saveStatus.textContent = 'Saved';
+        saveStatus.style.color = 'var(--success)';
 
-        setTimeout(() => {
-            isLoading = false;
-            saveStatus.textContent = 'Saved';
-            saveStatus.style.color = 'var(--success)';
-            highlightVocabWords();
-        }, 150);
-
-        // Just re-render cached list with new active state (no API call)
+        // Re-render doc list instantly (cached, no API call)
         if (cachedDocs) renderDocList(cachedDocs);
+
+        // Highlight vocab words in background (doesn't block UI)
+        highlightVocabWords();
     }
 
     async function saveDocument() {
