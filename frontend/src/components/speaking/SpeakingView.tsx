@@ -10,7 +10,7 @@ import type {
   SpeakingTestListItem, SpeakingBrowseItem,
   DialogueItem, ReactItem,
 } from '../../types/exam'
-import { useFullExam } from '../../context/FullExamContext'
+import { useFullExam, ACTIVE_KEY } from '../../context/FullExamContext'
 import { playAudioTwice, playAudioOnce, fmtTime } from '../../utils/audio'
 import { sleep } from '../../utils/sleep'
 import '../../styles/yki.css'
@@ -52,7 +52,7 @@ function isReactItems(_items: unknown[], partType: string): _items is ReactItem[
 export default function SpeakingView() {
   const navigate = useNavigate()
   const { activeSection, completeSection } = useFullExam()
-  const isFullExam = activeSection === 'speaking'
+  const [isFullExam] = useState(() => activeSection === 'speaking' || localStorage.getItem(ACTIVE_KEY) === 'speaking')
 
   /* ---- top-level view state ---- */
   const [phase, setPhase] = useState<ViewPhase>('menu')

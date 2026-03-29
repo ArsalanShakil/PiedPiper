@@ -5,7 +5,7 @@ import { useTimer } from '../../hooks/useTimer'
 import { generateMock, generatePractice, evaluateWriting, fetchPrompts } from '../../api/writing'
 import type { WritingTask, WritingMockData, WritingPrompts } from '../../types/exam'
 import type { EvalResult } from '../../types/api'
-import { useFullExam } from '../../context/FullExamContext'
+import { useFullExam, ACTIVE_KEY } from '../../context/FullExamContext'
 import { escapeHtml } from '../../utils/format'
 import '../../styles/yki.css'
 
@@ -33,7 +33,7 @@ const TYPE_LABELS: Record<string, string> = {
 export default function WritingView() {
   const navigate = useNavigate()
   const { activeSection, completeSection } = useFullExam()
-  const isFullExam = activeSection === 'writing'
+  const [isFullExam] = useState(() => activeSection === 'writing' || localStorage.getItem(ACTIVE_KEY) === 'writing')
 
   const {
     phase, examData, score, feedback, loadingMessage,
@@ -74,10 +74,8 @@ export default function WritingView() {
   }, [phase, timerSeconds])
 
   // Auto-start for full exam
-  const fullExamStartedRef = useRef(false)
   useEffect(() => {
-    if (isFullExam && !fullExamStartedRef.current) {
-      fullExamStartedRef.current = true
+    if (isFullExam) {
       startLoading(true, 'Generating writing tasks...')
       generateMock()
         .then((data: WritingMockData) => {
@@ -92,7 +90,7 @@ export default function WritingView() {
         })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFullExam])
+  }, [])
 
   const handleMockStart = async () => {
     startLoading(true, 'Generating writing tasks...')

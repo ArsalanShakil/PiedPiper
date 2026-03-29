@@ -5,7 +5,7 @@ import { useTimer } from '../../hooks/useTimer'
 import { generateReading, evaluateReading, fetchPassages, fetchPassage } from '../../api/reading'
 import type { ReadingExamData, PassageListItem, ExamQuestion } from '../../types/exam'
 import type { EvalResult } from '../../types/api'
-import { useFullExam } from '../../context/FullExamContext'
+import { useFullExam, ACTIVE_KEY } from '../../context/FullExamContext'
 import { escapeHtml } from '../../utils/format'
 import { normalizeOptions } from '../../utils/exam'
 import '../../styles/yki.css'
@@ -15,7 +15,7 @@ type MenuSubView = 'none' | 'mock' | 'practice'
 export default function ReadingView() {
   const navigate = useNavigate()
   const { activeSection, completeSection } = useFullExam()
-  const isFullExam = activeSection === 'reading'
+  const [isFullExam] = useState(() => activeSection === 'reading' || localStorage.getItem(ACTIVE_KEY) === 'reading')
 
   const {
     phase, examData, isMock, score, feedback, loadingMessage,
@@ -61,10 +61,8 @@ export default function ReadingView() {
   }, [phase, timerSeconds])
 
   // Auto-start for full exam
-  const fullExamStartedRef = useRef(false)
   useEffect(() => {
-    if (isFullExam && !fullExamStartedRef.current) {
-      fullExamStartedRef.current = true
+    if (isFullExam) {
       startLoading(true, 'Generating questions with AI...')
       generateReading('', 3)
         .then(data => {
@@ -78,7 +76,7 @@ export default function ReadingView() {
         })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFullExam])
+  }, [])
 
   const handleMockStart = async () => {
     startLoading(true, 'Generating questions with AI...')

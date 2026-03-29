@@ -1,10 +1,9 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
-import { flushSync } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import type { FullExamState, FullExamSection } from '../types/exam'
 
-const STORAGE_KEY = 'yki_full_exam'
-const ACTIVE_KEY = 'yki_full_exam_active'
+export const STORAGE_KEY = 'yki_full_exam'
+export const ACTIVE_KEY = 'yki_full_exam_active'
 
 const SECTIONS: FullExamSection[] = [
   { type: 'reading', label: 'Reading', icon: '\uD83D\uDCD6', time: '60 min', status: 'pending', route: '/yki/reading' },
@@ -73,11 +72,11 @@ export function FullExamProvider({ children }: { children: ReactNode }) {
       scores: {},
     }
     const first = sections[0]!
-    // flushSync ensures state is committed before navigate renders the section view
-    flushSync(() => {
-      setState(newState)
-      setActiveSection(first.type)
-    })
+    setState(newState)
+    setActiveSection(first.type)
+    // Write synchronously so section view can read on mount (before React state propagates)
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newState))
+    localStorage.setItem(ACTIVE_KEY, first.type)
     navigate(first.route)
   }, [navigate])
 
@@ -86,18 +85,17 @@ export function FullExamProvider({ children }: { children: ReactNode }) {
     const section = state.sections[state.currentSection]
     if (!section) return
 
-    flushSync(() => {
-      setState(prev => {
-        if (!prev) return prev
-        return {
-          ...prev,
-          sections: prev.sections.map((s, i) =>
-            i === prev.currentSection ? { ...s, status: 'in_progress' as const } : { ...s }
-          ),
-        }
-      })
-      setActiveSection(section.type)
-    })
+    const updated = {
+      ...state,
+      sections: state.sections.map((s, i) =>
+        i === state.currentSection ? { ...s, status: 'in_progress' as const } : { ...s }
+      ),
+    }
+    setState(updated)
+    setActiveSection(section.type)
+    // Write synchronously so section view can read on mount
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+    localStorage.setItem(ACTIVE_KEY, section.type)
     navigate(section.route)
   }, [state, navigate])
 
