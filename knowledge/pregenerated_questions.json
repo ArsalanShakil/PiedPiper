@@ -32,5 +32,961 @@
       }
     ],
     "audio_url": "/api/listening/audio/58dd541e4d206cc8"
+  },
+  "bca7e1a4b0876e71": {
+    "title": "Hårdare regler om utvisningar",
+    "text": "EU vill ha hårdare regler för flyktingar. Nu har politikerna i EUs riksdag röstat ja till reglerna. Det gäller människor som inte får stanna i länderna i EU men som inte kan åka till sina hemländer. Reglerna kan göra det lättare att utvisa personerna till särskilda platser. Platserna kallas förvar. Förvaren ska ligga i länder utanför EU. Där kan människor vara inlåsta i upp till två år.",
+    "source": "8sidor.se",
+    "category": "news",
+    "questions": [
+      {
+        "type": "mc",
+        "question": "Vad har politikerna i EUs riksdag röstat ja till?",
+        "options": {
+          "A": "Att ge alla flyktingar uppehållstillstånd",
+          "B": "Hårdare regler för flyktingar som inte får stanna i EU",
+          "C": "Att stänga alla gränser till EU"
+        },
+        "correct": "B"
+      },
+      {
+        "type": "tf",
+        "question": "Enligt texten kan människor vara inlåsta i förvar i upp till fem år.",
+        "correct": "falskt",
+        "explanation": "Enligt texten kan människor vara inlåsta i upp till två år, inte fem."
+      },
+      {
+        "type": "open",
+        "question": "Vad är ett förvar och var ska förvaren ligga enligt de nya reglerna?",
+        "sample_answer": "Ett förvar är en särskild plats dit personer som inte får stanna i EU kan utvisas. Enligt de nya reglerna ska förvaren ligga i länder utanför EU."
+      }
+    ],
+    "audio_url": "/api/listening/audio/578a69dd7e320da8"
+  },
+  "71c3e6d59ee6b1eb": {
+    "title": "Dags för sommartid",
+    "text": "Söndagen den 29 mars är det dags att ändra klockan från vintertid till sommartid. Då flyttas klockan fram en timme. Mobiltelefoner och datorer brukar ändra sina tider själva. Du behöver inte göra något. Sommartid finns för att människor ska kunna använda dagar och kvällar på ett bättre sätt när det blir ljusare ute. Det är ungefär 70 länder i världen som har sommartid. I Sverige har det varit sommartid varje år sedan 1980.",
+    "source": "8sidor.se",
+    "category": "news",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Vad händer med klockan när sommartiden börjar?",
+        "options": {
+          "A": "Klockan flyttas tillbaka en timme.",
+          "B": "Klockan flyttas fram en timme.",
+          "C": "Klockan flyttas fram två timmar."
+        },
+        "correct": "B",
+        "explanation": "Texten säger: 'Då flyttas klockan fram en timme.'"
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "question": "Sverige har haft sommartid varje år sedan 1990.",
+        "correct": "falskt",
+        "explanation": "Enligt texten har Sverige haft sommartid varje år sedan 1980, inte 1990."
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Varför finns sommartid, enligt texten?",
+        "example_answer": "Sommartid finns för att människor ska kunna använda dagar och kvällar på ett bättre sätt när det blir ljusare ute."
+      }
+    ],
+    "audio_url": "/api/listening/audio/0b6a2c3cfacf4836"
+  },
+  "5d502e8cd5a4be45": {
+    "title": "Sverige vann viktig match",
+    "text": "I sommar är det VM i fotboll för herrar. Sverige har en sista chans att få vara med. Men först måste de vinna två matcher. I torsdags spelade de mot Ukraina i den första matchen. Matchen var i staden Valencia i Spanien. Det gick bra för det svenska laget. De vann med 3–1. Bäst gick det för spelaren Viktor Gyökeres. Han gjorde alla Sveriges mål. På tisdag är Sveriges nästa match om en plats i VM.",
+    "source": "8sidor.se",
+    "category": "news",
+    "questions": [
+      {
+        "type": "mc",
+        "question": "Var spelades matchen mellan Sverige och Ukraina?",
+        "options": {
+          "A": "I Stockholm, Sverige",
+          "B": "I Valencia, Spanien",
+          "C": "I Kyiv, Ukraina"
+        },
+        "correct": "B"
+      },
+      {
+        "type": "tf",
+        "question": "Viktor Gyökeres gjorde två av Sveriges tre mål.",
+        "correct": "falskt",
+        "explanation": "Viktor Gyökeres gjorde alla tre målen, inte bara två."
+      },
+      {
+        "type": "open",
+        "question": "Vad måste Sverige göra för att få vara med i VM? Beskriv med egna ord.",
+        "suggested_answer": "Sverige måste vinna två matcher. De har redan vunnit den första matchen mot Ukraina med 3–1. Nästa match spelas på tisdag."
+      }
+    ],
+    "audio_url": "/api/listening/audio/f88005e29873f03e"
+  },
+  "9c1d205fd67d3274": {
+    "title": "Fem skjutningar på kort tid",
+    "text": "Tidigare i år har det varit färre skjutningar i Sverige. Men nu har något hänt. Det har varit fem skjutningar på fem dagar. Den första var på en buss i Tyresö nära Stockholm. En ung man som var ungefär 18 år blev skjuten på bussen. Han blev skadad, men det gick inte att rädda hans liv. Han dog. Många personer såg skjutningen. Flera av dem är barn. Den andra skjutningen hände i området Rosengård i Malmö. En 15-årig pojke blev skjuten till döds.",
+    "source": "8sidor.se",
+    "category": "news",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Var hände den första skjutningen?",
+        "options": {
+          "A": "På ett tåg i Göteborg",
+          "B": "På en buss i Tyresö nära Stockholm",
+          "C": "I området Rosengård i Malmö"
+        },
+        "correct": "B",
+        "explanation": "Texten säger: 'Den första var på en buss i Tyresö nära Stockholm.'"
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "question": "Den unga mannen som blev skjuten på bussen överlevde.",
+        "correct": "falskt",
+        "explanation": "Texten säger att han blev skadad men att det inte gick att rädda hans liv – han dog."
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Hur många skjutningar hände det på fem dagar, och varför är situationen oroande jämfört med tidigare under året?",
+        "example_answer": "Det hände fem skjutningar på fem dagar. Det är oroande eftersom det tidigare under året hade varit färre skjutningar i Sverige."
+      }
+    ],
+    "audio_url": "/api/listening/audio/e7d7504f465e561e"
+  },
+  "6ef1f455de422dce": {
+    "title": "Dom mot Google och Meta",
+    "text": "Företagen Google och Meta blir straffade. Företagen ska betala skadestånd till en kvinna som blev beroende av deras appar. Det säger en domstol i USA. Kvinnan var sex år när hon började använda Googles app Youtube. När hon var åtta år började hon använda Metas app Instagram. En dag använde hon Instagram i sexton timmar. Hon mådde dåligt och fick tankar på att ta sitt liv. Nu ska företagen betala 28 miljoner kronor till kvinnan.",
+    "source": "8sidor.se",
+    "category": "news",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Hur gammal var kvinnan när hon började använda Youtube?",
+        "options": {
+          "A": "Fyra år",
+          "B": "Sex år",
+          "C": "Åtta år"
+        },
+        "correct": "B",
+        "explanation": "I texten står det: 'Kvinnan var sex år när hon började använda Googles app Youtube.'"
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "question": "Företagen Google och Meta ska betala 18 miljoner kronor till kvinnan.",
+        "correct": "falskt",
+        "explanation": "Enligt texten ska företagen betala 28 miljoner kronor, inte 18 miljoner kronor."
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Varför blev företagen Google och Meta straffade? Beskriv vad som hände med kvinnan.",
+        "example_answer": "Företagen blev straffade eftersom en kvinna blev beroende av deras appar Youtube och Instagram. Hon mådde dåligt och fick tankar på att ta sitt liv. En domstol i USA bestämde att företagen ska betala skadestånd till henne."
+      }
+    ],
+    "audio_url": "/api/listening/audio/4b10b33a258fb36e"
+  },
+  "1814940d9b15f8d2": {
+    "title": "Dåligt val för Frederiksen",
+    "text": "I tisdags var det val i Danmark. Folk röstade om vilka partier som ska styra landet. Valet gick dåligt för partierna i regeringen. Socialdemokraterna gjorde sitt sämsta val på över hundra år. De fick 21,9 procent av rösterna. Socialdemokraternas ledare heter Mette Frederiksen. Hon är Danmarks statsminister. Bäst gick det för partiet Dansk Folkeparti. Det är ett parti med politik långt till höger.",
+    "source": "8sidor.se",
+    "category": "news",
+    "questions": [
+      {
+        "type": "mc",
+        "question": "Hur mycket fick Socialdemokraterna i valet?",
+        "options": {
+          "A": "25,3 procent",
+          "B": "21,9 procent",
+          "C": "31,9 procent"
+        },
+        "correct": "B"
+      },
+      {
+        "type": "tf",
+        "question": "Dansk Folkeparti är ett parti med politik långt till vänster.",
+        "correct": "falskt"
+      },
+      {
+        "type": "open",
+        "question": "Varför var valet dåligt för Mette Frederiksen och hennes parti?"
+      }
+    ],
+    "audio_url": "/api/listening/audio/2b87eda61bc6d2a2"
+  },
+  "15fe35fe7f5b64a6": {
+    "title": "Höjd säkerhet vid kontor",
+    "text": "Det är ett ökat hot mot personer som jobbar för USA och Israel. Det beror på kriget i Iran. I området Diplomatstaden i Stockholm finns USAs och Israels svenska kontor. Nu vill poliserna höja säkerheten i området. Poliserna har bestämt att särskilda regler ska gälla där. Det ska vara en säkerhetszon. Där får poliserna kontrollera personer även om personerna inte är misstänkta för något brott.",
+    "source": "8sidor.se",
+    "category": "news",
+    "questions": [
+      {
+        "type": "mc",
+        "question": "Varför har hotet ökat mot personer som jobbar för USA och Israel?",
+        "options": {
+          "A": "Det beror på kriget i Iran",
+          "B": "Det beror på en demonstration i Stockholm",
+          "C": "Det beror på ett brott i Diplomatstaden"
+        },
+        "correct": "A"
+      },
+      {
+        "type": "tf",
+        "question": "I säkerhetszonen får poliserna bara kontrollera personer som är misstänkta för brott.",
+        "correct": "falskt"
+      },
+      {
+        "type": "open",
+        "question": "Vad har poliserna bestämt ska gälla i området Diplomatstaden i Stockholm?"
+      }
+    ],
+    "audio_url": "/api/listening/audio/2ad84cfaf71a5802"
+  },
+  "79253101aaaaf139": {
+    "title": "Båtar kanske kan åka",
+    "text": "Nu kanske en del båtar kan få åka genom sundet Hormuz nära Iran. USA och Israel har startat krig mot Iran. Många båtar med olja åker genom sundet. Men ledarna i Iran hotar med att attackera dem. Därför vågar ingen åka där. Flera tusen båtar står stilla och väntar. Då blir det kris. Det gör att priset på olja går upp. Det blir problem med ekonomin i hela världen.",
+    "source": "8sidor.se",
+    "category": "news",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Varför vågar inga båtar åka genom sundet Hormuz?",
+        "options": {
+          "A": "Det är för grunt för stora båtar.",
+          "B": "Irans ledare hotar med att attackera dem.",
+          "C": "Det blåser för mycket i sundet."
+        },
+        "correct": "B",
+        "explanation": "I texten står det att ledarna i Iran hotar med att attackera båtarna, och därför vågar ingen åka där."
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "question": "Priset på olja går ner på grund av krisen i sundet Hormuz.",
+        "correct": "falskt",
+        "explanation": "Enligt texten går priset på olja upp, inte ner, eftersom så många båtar står stilla och väntar."
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Vilka konsekvenser får det när tusentals båtar inte kan åka genom sundet? Beskriv med egna ord.",
+        "example_answer": "När båtarna inte kan åka genom sundet blir det kris. Priset på olja går upp och det skapar problem med ekonomin i hela världen."
+      }
+    ],
+    "audio_url": "/api/listening/audio/2b13ea4edcaa87d6"
+  },
+  "d2f53f72674e414c": {
+    "title": "Leksand åkte ur SHL",
+    "text": "Leksand är ett populärt lag i ishockey. De är från Dalarna. Leksand har spelat i sju år i herrarnas högsta serie, SHL. Men nu har de åkt ur. Då förlorade laget mot HV71 från Jönköping som vann med 2–1. Laget förlorade alla fyra matcher mot HV71 i kvalet. Nästa säsong får Leksand spela i Hockeyallsvenskan.",
+    "source": "8sidor.se",
+    "category": "news",
+    "questions": [
+      {
+        "type": "mc",
+        "question": "Hur många år har Leksand spelat i SHL?",
+        "options": {
+          "A": "Fem år",
+          "B": "Sju år",
+          "C": "Tio år"
+        },
+        "correct": "B"
+      },
+      {
+        "type": "tf",
+        "question": "Leksand vann två av fyra matcher mot HV71 i kvalet.",
+        "correct": "falskt"
+      },
+      {
+        "type": "open",
+        "question": "Vad händer med Leksand nästa säsong och varför?"
+      }
+    ],
+    "audio_url": "/api/listening/audio/fd71247a9d23cf71"
+  },
+  "4dcd7c5db779ed03": {
+    "title": "Dagen för våfflor",
+    "text": "Den 25 mars är det våfflornas dag. Då äter många svenskar våfflor med sylt och grädde. Från början var dagen en kristen högtid. De kristna firade Jesus mamma Maria. Dagen kallas Maria bebådelsedag eller Vårfrudagen. Många tyckte att namnet lät som Våffeldagen. Därför började folk att äta våfflor på den dagen.",
+    "source": "8sidor.se",
+    "category": "news",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Vad äter många svenskar på våfflornas dag?",
+        "options": {
+          "A": "Våfflor med smör och socker",
+          "B": "Våfflor med sylt och grädde",
+          "C": "Pannkakor med sylt och grädde"
+        },
+        "correct": "B",
+        "explanation": "Texten säger att många svenskar äter våfflor med sylt och grädde den 25 mars."
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "question": "Våfflornas dag firades från början som en kristen högtid för att hedra Jesus mamma Maria.",
+        "correct": "sant",
+        "explanation": "Texten berättar att dagen från början var en kristen högtid där man firade Jesus mamma Maria, och att den kallas Maria bebådelsedag eller Vårfrudagen."
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Varför började folk äta våfflor just på den här dagen? Förklara med dina egna ord.",
+        "suggested_answer": "Folk började äta våfflor för att namnet Vårfrudagen lät som Våffeldagen. Därför kopplade man ihop dagen med våfflor.",
+        "explanation": "Frågan testar om läsaren förstår sambandet mellan namnet Vårfrudagen och Våffeldagen, vilket ledde till traditionen att äta våfflor."
+      }
+    ],
+    "audio_url": "/api/listening/audio/4581c1685c825f66"
+  },
+  "0830d70b0ba78236": {
+    "title": "Bättre för havsörnen",
+    "text": "Havsörnstammen i Sverige har ökat markant. En undersökning visar att det nu finns nästan tre tusen vuxna havsörnar, jämfört med bara några få för 50 år sedan när arten var på väg att försvinna. Medan arter som älg, igelkott och vissa ugglar minskar, har havsörn, utter och asp återhämtat sig.",
+    "source": "8sidor.se",
+    "category": "news",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Hur många vuxna havsörnar finns det nu i Sverige enligt undersökningen?",
+        "options": {
+          "A": "Ungefär femhundra",
+          "B": "Nästan tre tusen",
+          "C": "Över tio tusen"
+        },
+        "correct": "B",
+        "explanation": "Texten anger att det nu finns nästan tre tusen vuxna havsörnar i Sverige."
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "question": "Älgen är en av de arter som har ökat i antal enligt texten.",
+        "correct": "falskt",
+        "explanation": "Texten nämner att älgen är en av de arter som minskar, inte ökar."
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Vilka tre arter nämns i texten som har återhämtat sig, och hur var situationen för havsörnen för 50 år sedan?",
+        "example_answer": "De tre arter som har återhämtat sig är havsörn, utter och asp. För 50 år sedan fanns det bara några få havsörnar och arten var på väg att försvinna."
+      }
+    ],
+    "audio_url": "/api/listening/audio/6f032bb8e1c6af25"
+  },
+  "83d06d80825c7009": {
+    "title": "En miljard kronor till Gaza",
+    "text": "Sverige och Akelius foundation samlar över en miljard kronor för barn i Gaza. Pengarna ska användas för att bygga nya skolor för barnen i området.",
+    "source": "8sidor.se",
+    "category": "news",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Vad ska pengarna användas till?",
+        "options": {
+          "A": "Att bygga nya sjukhus",
+          "B": "Att bygga nya skolor",
+          "C": "Att köpa mat och kläder"
+        },
+        "correct": "B",
+        "explanation": "Enligt texten ska pengarna användas för att bygga nya skolor för barnen i området."
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "question": "Sverige och Akelius foundation samlar in pengar för vuxna i Gaza.",
+        "correct": "falskt",
+        "explanation": "Pengarna samlas in för barn i Gaza, inte för vuxna."
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Vilka samarbetar för att samla in pengar, och hur mycket har de samlat in?",
+        "example_answer": "Sverige och Akelius foundation samarbetar och har samlat in över en miljard kronor."
+      }
+    ],
+    "audio_url": "/api/listening/audio/e71df78eb387fbef"
+  },
+  "7426f22b0b344bd8": {
+    "title": "Två män dog på jobbet",
+    "text": "En arbetsolycka inträffade i Hallsberg där två män omkom. De arbetade med att gräva för en ny järnväg när en del från en maskin lossnade. Männen blev klämda och dog. Statistik visar att ungefär 40 personer dör årligen i arbetsrelaterade olyckor i Sverige.",
+    "source": "8sidor.se",
+    "category": "news",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Vad arbetade männen med när olyckan inträffade?",
+        "options": {
+          "A": "De byggde ett nytt sjukhus.",
+          "B": "De grävde för en ny järnväg.",
+          "C": "De reparerade en bro."
+        },
+        "correct": "B",
+        "explanation": "I texten står det att männen 'arbetade med att gräva för en ny järnväg' när olyckan hände."
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "question": "Ungefär 100 personer dör varje år i arbetsrelaterade olyckor i Sverige.",
+        "correct": "falskt",
+        "explanation": "Enligt texten dör ungefär 40 personer årligen i arbetsrelaterade olyckor i Sverige, inte 100."
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Vad var det som orsakade att männen dog? Beskriv med egna ord vad som hände.",
+        "sample_answer": "En del från en maskin lossnade medan männen grävde. De blev klämda av maskindelen och avled på platsen.",
+        "key_points": [
+          "en maskindel lossnade",
+          "männen blev klämda"
+        ]
+      }
+    ],
+    "audio_url": "/api/listening/audio/7007a02df003aa82"
+  },
+  "f293b3980293bca7": {
+    "title": "Kritik mot regeringens politik",
+    "text": "Experterna från Klimatpolitiska rådet kritiserar regeringens klimatpolitik som otillräcklig. Utsläppen av gaser som värmer klimatet minskar inte tillräckligt. Regeringen har sänkt skatten på bränslen, vilket ökar gasutslappen.",
+    "source": "8sidor.se",
+    "category": "news",
+    "questions": [
+      {
+        "type": "mc",
+        "question": "Vem kritiserar regeringens klimatpolitik?",
+        "options": {
+          "A": "Riksdagens talman",
+          "B": "Experterna från Klimatpolitiska rådet",
+          "C": "Europeiska unionen"
+        },
+        "correct": "B"
+      },
+      {
+        "type": "tf",
+        "question": "Regeringen har höjt skatten på bränslen.",
+        "correct": "falskt"
+      },
+      {
+        "type": "open",
+        "question": "Varför anser experterna att regeringens klimatpolitik är otillräcklig? Nämn minst två skäl från texten."
+      }
+    ],
+    "audio_url": "/api/listening/audio/7b54839cd1952ec8"
+  },
+  "bfb97e9f679cabb8": {
+    "title": "Folk har olika sockor",
+    "text": "Den 21 mars är dagen för Downs syndrom, en dag för att fira människor med denna funktionsnedsättning och celebrera mänsklig mångfald. FN fastställde detta datum. Folk brukar markera dagen genom att bära matchande eller olika färgade strumpor.",
+    "source": "8sidor.se",
+    "category": "news",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Vilket datum infaller dagen för Downs syndrom?",
+        "options": {
+          "A": "Den 21 januari",
+          "B": "Den 21 mars",
+          "C": "Den 31 mars"
+        },
+        "correct": "B",
+        "explanation": "Texten anger tydligt att dagen för Downs syndrom infaller den 21 mars."
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "question": "Enligt texten var det EU som fastställde datumet för Downs syndrom-dagen.",
+        "correct": "falskt",
+        "explanation": "Det var FN (Förenta nationerna), inte EU, som fastställde datumet."
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Hur brukar folk markera dagen för Downs syndrom enligt texten?",
+        "sample_answer": "Folk brukar markera dagen genom att bära matchande eller olika färgade strumpor.",
+        "explanation": "Svaret finns i textens sista mening där det beskrivs att man bär olika eller matchande strumpor."
+      }
+    ],
+    "audio_url": "/api/listening/audio/68e81b1249a00db4"
+  },
+  "7ac20786a42c184b": {
+    "title": "Kapitel 1 – Förberedelser",
+    "text": "‘Daniel, jag är här!’ ropar Julia när hon öppnar ytterdörren.\n‘Vad är det, Julia?’ svarar jag.\n‘Vi ska resa till Sverige idag! Kommer du inte ihåg det?’\n‘Klart jag gör. Jag är snart färdig,’ ropar jag.\n‘OK, jag går upp på mitt rum och väntar,’ säger Julia.\nJag heter Daniel. Jag är 24 år. Julia är min syster. Hon är 23. Vi går på\nuniversitetet. Vi bor i ett hus i London tillsammans med våra föräldrar Arthur\noch Sarah Bell.\nJulia och jag ska ut och resa. Vi ska åka till Sverige. Vi ska plugga svenska\ni Stockholm en termin. Vi kan redan språket ganska bra men vi vill lära oss\nmer.\nJag är nästan två meter lång. Jag har ganska långt brunt hår, gröna ögon och\nbred mun. Jag är kraftigt byggd. Jag gillar sport, speciellt att spela tennis.\nJag är också en duktig basketspelare.\nMin syster Julia har brunt hår som jag men hennes hår är längre. Hon har\ninte gröna ögon. Hon har bruna ögon som pappa. Jag har samma ögonfärg\nsom mamma.\nBåda våra föräldrar har bra jobb. Pappa är elektriker på ett stort företag.\nMamma är författare. Hon äger också ett företag som säljer science fictionböcker.\nVåra föräldrar är underbara. De hjälper oss alltid att uppnå våra mål.\nBåda kan tala svenska. De har bott i Sverige i många år. De talar ofta\nsvenska med oss. Det hjälper oss att öva. De har verkligen uppmuntrat oss\natt studera svenska i Sverige. Och idag reser vi alltså till Sverige!\n\n\fPappa kommer in i mitt rum. Han tittar förvånat på mig. Varför då? För att\njag inte har klätt på mig än! ‘Daniel! Varför har du inte klätt på dig?’ frågar\nhan.\n‘Klätt på mig? Jag har ju nyss stigit upp. Jag har precis duschat!’\n‘Skynda dig! Vi har inte så mycket tid på oss. Jag ska skjutsa er till\nflygplatsen. Men jag måste åka till jobbet också.’\n‘Oroa dig inte, pappa. Jag ska klä på mig nu.’\n‘Var är Julia?’\n‘Hon är på sitt rum.’\nPappa går till min systers rum. Han vill prata med henne. Han går in i\nrummet och Julia tittar på honom. ‘Åh, hej, pappa. Behöver du något?’ frågar\nhon.\n‘Nej då. Daniel håller på att klä",
+    "source": "Short Stories",
+    "category": "stories",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Vad arbetar Daniels och Julias mamma med?",
+        "options": {
+          "A": "Hon är elektriker på ett stort företag.",
+          "B": "Hon är författare och äger ett företag som säljer science fiction-böcker.",
+          "C": "Hon är svensklärare på ett universitet i London."
+        },
+        "correct": "B",
+        "explanation": "I texten står det: 'Mamma är författare. Hon äger också ett företag som säljer science fiction-böcker.'"
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "question": "Daniel har bruna ögon precis som sin pappa.",
+        "correct": "falskt",
+        "explanation": "Daniel har gröna ögon, samma ögonfärg som sin mamma. Det är Julia som har bruna ögon som pappa."
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Varför ska Daniel och Julia resa till Sverige, och varför kan de redan lite svenska?",
+        "sample_answer": "De ska resa till Sverige för att plugga svenska i Stockholm under en termin. De kan redan språket ganska bra eftersom deras föräldrar har bott i Sverige i många år och ofta talar svenska med dem hemma."
+      }
+    ],
+    "audio_url": "/api/listening/audio/957dfd6bfb4934fe"
+  },
+  "2660044635bcf345": {
+    "title": "Kapitel 1 Översikt",
+    "text": "Sammanfattning\nDaniel och Julia bor i London. De studerar på universitetet. De ska\nresa till Sverige idag. De ska studera svenska i Stockholm. Deras\nföräldrar kör dem till flygplatsen. Julia är väldigt nervös i bilen. Hon\nmår bättre på flygplatsen. Planet lyfter mot Stockholm.\n\nOrdförråd\ngalen mad, crazy\nköttbulle meatball\nförberedelse preparation\nropa to call\nytterdörr front door\n\n\ffärdig ready, prepared\nkraftigt byggd strong-built\nduktig good, clever\nföretag company\nförfattare author, writer\nmål goal\nverkligen really\nuppmuntra to encourage\nförvånad surprised\nduscha to take a shower\nskynda sig to hurry\nflygplats airport\nkuvert envelope\nha användning för to make use of\nvända sig om to turn around\nnervös nervous, worried\nsärskilt particularly, above all\nför nöjes skull for fun\nkrama to hug\nvinka to wave\n\nLäsförståelsefrågor\nVälj enbart ett svar för varje fråga.\n1) Daniel och Julia bor i ___.\na. samma hus i London\nb. olika hus i London\nc. samma hus i Stockholm\nd. olika hus i Stockholm\n2) Daniel och Julias föräldrar ___.\n\n\fa. talar svenska men inte med Daniel och Julia\nb. talar svenska och övar med Daniel och Julia\nc. talar inte svenska\nd. bor inte i London\n3) Daniel och Julias pappa ger dem en present inför resan. Vad?\na. en bil\nb. en resa till flygplatsen\nc. en science fiction-bok\nd. pengar\n4) Under resan till flygplatsen känner sig Julia ____.\na. hungrig\nb. glad\nc. nervös\nd. rädd\n5) På flygplatsen finns det ___.\na. många av Daniels kompisar\nb. många affärsmän\nc. inte många människor\nd. inga barn\n\n\fKapitel 2 – Två städer\nVårt plan landar på Arlanda, flygplatsen utanför Stockholm. Min kompis\nAnders väntar på oss. ‘Hej Daniel!’ säger han. Han ger mig en stor kram.\n‘Jag är så glad att du är här!’\n‘Hej Anders! Jättekul att träffas igen!’ svarar jag.\nAnders tittar på min syster Julia. Jag presenterar dem för varandra. ‘Det\nhär är min kompis Anders. Och det här är min syster Julia.’\nAnders vänder sig till Julia. Han pussar henne på båda kinderna. ‘Hej\nJulia. Trevligt att t",
+    "source": "Short Stories",
+    "category": "stories",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Varför ska Daniel och Julia resa till Sverige?",
+        "options": {
+          "A": "De ska besöka sina släktingar i Stockholm.",
+          "B": "De ska studera svenska i Stockholm.",
+          "C": "De ska jobba på ett företag i Stockholm."
+        },
+        "correct": "B",
+        "explanation": "Enligt texten: 'De ska studera svenska i Stockholm.'"
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "question": "Julia känner sig nervös på flygplatsen men mår bättre i bilen.",
+        "correct": "falskt",
+        "explanation": "Det är tvärtom: Julia är nervös i bilen men mår bättre på flygplatsen."
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Hur tar sig Daniel och Julia till flygplatsen, och vem hjälper dem?",
+        "example_answer": "Deras föräldrar kör dem till flygplatsen."
+      }
+    ],
+    "audio_url": "/api/listening/audio/46c5072406df5fb2"
+  },
+  "8d6678d7cdbef3b9": {
+    "title": "Kapitel 2 Översikt",
+    "text": "Sammanfattning\n\n\fDaniel och Julia kommer fram till Stockholm. Daniels kompis Anders\nmöter dem på flygplatsen. De åker till Anders lägenhet. Daniel och\nJulia är hungriga. Anders föreslår två restauranger. Julia går till en\nfiskrestaurang. Daniel tar bussen till en restaurang som serverar\nköttbullar. På bussen somnar Daniel. Han vaknar i Uppsala! Hans\nmobil fungerar inte. Han kan inte sin systers telefonnummer. Till sist\nringer han sin mamma. Sedan övernattar han på ett hotell.\n\nOrdförråd\npresentera to introduce\npussa to kiss\nkind cheek\nblyg shy\nrodna to blush\nlägenhet flat, (Am. Eng.) apartment\npromenad a walk\nsval cool\n(buss)hållplats bus stop\nskjorta shirt\nproppfull very full\nbekväm comfortable\njämföra to compare\nsomna to fall asleep\nbatteriet är dött the battery is dead\norolig worried\ntelefonkiosk telephone box, (Am. Eng.) telephone booth\nlåna to borrow\nfundera to think, to consider\nbestämma sig to decide\nhitta to find\nservitör waiter\n\n\fskratta to laugh\ngenerad embarrassed\nlösning solution\nallvarlig serious\n\nLäsförståelsefrågor\nVälj enbart ett svar för varje fråga.\n6) Anders ___.\na. jobbar på flygplatsen\nb. är en kompis till Julias och Daniels föräldrar\nc. är Julias kompis\nd. är Daniels kompis\n7) I Stockholm är det ___.\na. kallt\nb. varmt\nc. inte varmt och inte kallt\nd. varmt på natten och kallt på dagen\n8) Julia och Daniel tänker först åka till ___.\na. en restaurang\nb. Anders kompis lägenhet\nc. Anders lägenhet\nd. Uppsala\n9) Daniel kan inte kontakta sin syster eftersom ___.\na. hans mobil inte fungerar\nb. han inte har några pengar\nc. det inte finns någon telefonkiosk\nd. han har glömt sin mobil\n10) Daniel övernattar ___.\n\n\fa. på ett hotell i Stockholm\nb. på en buss\nc. på ett hotell i Uppsala\nd. på flygplatsen\n\n\fKapitel 3 – På motorvägen\nJag vaknar tidigt och duschar. Jag äter frukost på rummet. Jag har inte så\nmycket pengar kvar. Men jag är hungrig så jag tar god tid på mig medan jag\näter.\nSedan klär jag på mig och lämnar rummet. Jag tittar på klockan. Den är\nredan t",
+    "source": "Short Stories",
+    "category": "stories",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Vad händer med Daniel på bussen?",
+        "options": {
+          "A": "Han tappar bort sin mobil.",
+          "B": "Han somnar och vaknar i Uppsala.",
+          "C": "Han ringer sin mamma från bussen."
+        },
+        "correct": "B",
+        "explanation": "Texten säger: 'På bussen somnar Daniel. Han vaknar i Uppsala!'"
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "question": "Julia och Daniel äter middag på samma restaurang.",
+        "correct": "falskt",
+        "explanation": "Julia går till en fiskrestaurang medan Daniel tar bussen till en restaurang som serverar köttbullar. De äter alltså på olika restauranger."
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Varför kan Daniel inte ringa sin syster? Vad gör han till sist för att lösa problemet?",
+        "example_answer": "Daniels mobil fungerar inte (batteriet är dött) och han kan inte sin systers telefonnummer utantill. Till sist ringer han sin mamma istället och sedan övernattar han på ett hotell i Uppsala."
+      }
+    ],
+    "audio_url": "/api/listening/audio/9fb4ee335e301655"
+  },
+  "2ac6dfec558c3d84": {
+    "title": "Kapitel 3 Översikt",
+    "text": "Sammanfattning\nDaniel vaknar och äter frukost på sitt hotellrum i Uppsala. När han\nlämnar hotellet ser han en lastbil. Den tillhör restaurangen Den galna\nköttbullen. Daniel ber chauffören att köra honom tillbaka till\nStockholm. Chauffören säger ja. Inne i lastbilen sitter en annan man.\nHan ska också åka till Stockholm. Han vill träffa sin son Anders.\nMannen är pappa till Daniels kompis Anders.\n\nOrdförråd\nfrukost breakfast\nlåda box\nlastbil lorry, (Am. Eng.) truck\nnärmare closer\nhejda sig to stop oneself\ngöra bort sig to make a fool of oneself\n\n\fförarhytt cab of the lorry/truck\nklättra to climb\nspara to save\nbillig cheap\nkoppla av to relax\nmörk dark\növerraskning surprise\ngömma sig to hide\nlämna ifred to leave in peace\ntur chance, luck\nflytta to move\nvarken/eller neither/nor\nsammanträffande coincidence\nsträcka på to stretch\n\nLäsförståelsefrågor\nVälj enbart ett svar för varje fråga.\n11) Daniel vaknar ungefär klockan ___.\na. 10:15\nb. 10:00\nc. 09:00\nd. 12:15\n12) Lastbilschauffören ___.\na. arbetar på hotellet\nb. arbetar på Den galna köttbullen\nc. arbetar bara som chaufför\nd. arbetar för en annan restaurang\n13) Daniel träffar ___ i lastbilen.\na. en ung man\n\n\fb. en ung kvinna\nc. en annan chaufför\nd. en annan man\n14) Personen i lastbilen reser för att ___.\na. arbeta på Den galna köttbullen\nb. arbeta som chaufför\nc. träffa sin pappa\nd. träffa sitt barn\n15) Personen i lastbilen är ___.\na. Daniels pappa\nb. Anders pappa\nc. Julias mamma\nd. Daniels mamma\n\n\fKapitel 4 – Överraskningen\nGustav och jag fortsätter att prata. Jag berättar inte att jag känner hans son.\nTill slut kommer Den galna köttbullen-lastbilen fram. Chauffören stänger av\nmotorn. Vi hoppar ut genom bakdörren. Gustav gömmer sig bland\nmänniskorna på trottoaren. Jag tackar chauffören. ‘Det var så lite,’ säger\nhan. ‘Ha det så trevligt i Stockholm!’\nJag vänder mig om. Gustav tittar på restaurangen. Där är äntligen Den\ngalna köttbullen! Det finns ingen där. Det är förmiddag. Det är för tidigt för\nlunch.\n‘Vad ska du göra?’ f",
+    "source": "Short Stories",
+    "category": "stories",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Vart vill Daniel åka med lastbilen?",
+        "options": {
+          "A": "Till Uppsala",
+          "B": "Till Stockholm",
+          "C": "Till Göteborg"
+        },
+        "correct": "B",
+        "explanation": "I texten står det att Daniel ber chauffören att köra honom tillbaka till Stockholm."
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "question": "Mannen i lastbilen är pappa till Daniels kompis Anders.",
+        "correct": "sant",
+        "explanation": "Texten säger tydligt: 'Mannen är pappa till Daniels kompis Anders.'"
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Varför sitter den andra mannen i lastbilen? Vad vill han göra i Stockholm?",
+        "sample_answer": "Den andra mannen sitter i lastbilen för att han också ska åka till Stockholm. Han vill träffa sin son Anders.",
+        "explanation": "Svaret finns i texten: 'Han ska också åka till Stockholm. Han vill träffa sin son Anders.'"
+      }
+    ],
+    "audio_url": "/api/listening/audio/1d6b5ff6f9a92432"
+  },
+  "7577dc0a4dde73c7": {
+    "title": "Kapitel 4 Översikt",
+    "text": "Sammanfattning\nDaniel och den gamle mannen kommer fram till restaurangen Den\ngalna köttbullen. Ingen är där eftersom det är för tidigt. De tar sedan\nbussen till Anders lägenhet. Ingen är där heller. Daniel laddar sin\ntelefon. Han ringer till Julia. Hon är ute och fikar med Anders. Julia\noch Anders kommer tillbaka till lägenheten. Daniel presenterar Anders\nför sin pappa. De bestämmer sig för gå ut och äta för att fira. Men\nDaniel vill inte ha köttbullar. Han vill ha pizza.\n\nOrdförråd\ntrottoar pavement, (Am. Eng.) sidewalk\näntligen finally, at last\nhiss lift, (Am. Eng.) elevator\nslump chance, hazard\nöde destiny, fate\n\n\fförklaring explanation\nta en fika to take a coffee break\nhäpen surprised\nomöjligt impossible\ninse to realize\nförlägen embarrassed\nfira to celebrate\n\nLäsförståelsefrågor\nVälj enbart ett svar för varje fråga.\n16) Mannen och Daniel åker med lastbilen till ___.\na. Anders lägenhet\nb. en affär\nc. restaurangen Den galna köttbullen\nd. flygplatsen\n17) När de kommer till lägenheten är ___.\na. Julia och Anders där\nb. bara Julia där\nc. bara Anders där\nd. ingen där\n18) Det första Daniel gör är att ___.\na. ladda sin mobiltelefon\nb. laga middag\nc. ringa Anders\nd. ringa sina föräldrar\n19) Sedan ringer Daniel till ___.\na. sina föräldrar\nb. Anders\n\n\fc. Julia\nd. lastbilschauffören\n20) För att fira vill Julia åka till ___.\na. Den galna köttbullen\nb. en pizzeria\nc. London\nd. Uppsala\n\n\f\fEn mycket ovanlig utflykt",
+    "source": "Short Stories",
+    "category": "stories",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Vad gör Julia när Daniel ringer henne?",
+        "options": {
+          "A": "Hon lagar middag i lägenheten.",
+          "B": "Hon är ute och fikar med Anders.",
+          "C": "Hon är på väg till flygplatsen."
+        },
+        "correct": "B",
+        "explanation": "I texten står det: 'Han ringer till Julia. Hon är ute och fikar med Anders.'"
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "question": "Daniel vill äta köttbullar för att fira.",
+        "correct": "falskt",
+        "explanation": "Daniel vill INTE ha köttbullar. Han vill ha pizza."
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Varför är ingen på restaurangen Den galna köttbullen när Daniel och den gamle mannen kommer dit?",
+        "sample_answer": "Ingen är där eftersom det är för tidigt.",
+        "explanation": "Texten säger att ingen är där 'eftersom det är för tidigt'."
+      }
+    ],
+    "audio_url": "/api/listening/audio/bcdd426d0e8b9ea0"
+  },
+  "883fa2800974fed3": {
+    "title": "Kapitel 1 – Varelsen",
+    "text": "Dalarna ligger i västra Sverige nära gränsen till Norge. I norra delen av\nDalarna ligger Grövelsjön. Det är ett populärt område för turister. På vintern\nåker man skidor. På sommaren vandrar man eller paddlar kanot. Många åker\nockså dit för att fotografera den vackra naturen.\nDalarna har växlande väder. Ibland sol och ibland regn. Somrarna är\nlagom varma. Därför tycker vandrare från hela Sverige om Grövelsjön. Elsa\när en av alla som gärna vandrar där. Hon bor dessutom i närheten. Hon tycker\nbäst om att vandra i maj och juni. Då tycker hon att naturen är speciellt\nvacker. Varje helg packar hon sin ryggsäck och går ut i skogen. Elsas kompis\nOskar gillar också att vandra, gärna tillsammans med Elsa. Förra helgen\ntänkte de göra en utflykt igen och det blev verkligen en mycket ovanlig\nutflykt!\nElsa och Oskar träffades i skogskanten. ‘Hej Elsa!’ ropade Oskar.\n‘Hej Oskar!’ svarade Elsa.\nOskar sprang fram till Elsa.\n‘Ta det lugnt, Oskar. Du blir trött,’ skrattade Elsa.\n‘Oroa dig inte. Jag har tagit med mig tillräckligt med energidrycker,’ sade\nOskar. Han pekade på sin stora ryggsäck och skrattade.\nDet var så roligt att träffas igen och de hade så mycket att prata om. Sedan\ngick de in på en stig och började sin vandring.\nEfter någon kilometer delade sig stigen i två stigar. En gick åt vänster, en\nåt höger.\n‘Åt vilket håll ska vi gå?’ frågade Elsa. ‘Åt vänster eller åt höger?’\n‘Vi går åt vänster,’ svarade Oskar.\n‘Tja, hm … Jag tror jag föredrar att gå åt höger.’\n\n\f‘Varför då?’\nElsa tittade inåt skogen längs den vänstra stigen. Sedan sade hon, ‘Folk\nberättar historier om den där stigen. Många har sett en stor hårig varelse där\n….’\n‘Jaså? Tror du på sådana historier?’\n‘Hm … Jag vet inte. Jag tycker att vi ska ta stigen åt höger istället …,’\nsade Elsa. Hon såg lite orolig ut.\n‘Kom igen, Elsa. Vi försöker! Det här kan bli spännande,’ sade Oskar och\nlog mot Elsa som fortfarande såg lite nervös ut. ‘OK då,’ sade hon till slut.\nOch så tog de den vänstra stigen.\nEn timme senare gick E",
+    "source": "Short Stories",
+    "category": "stories",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "När tycker Elsa bäst om att vandra vid Grövelsjön?",
+        "options": {
+          "A": "På vintern, när man kan åka skidor.",
+          "B": "I maj och juni, när naturen är speciellt vacker.",
+          "C": "På sommaren, när det är som varmast."
+        },
+        "correct": "B",
+        "explanation": "I texten står det: 'Hon tycker bäst om att vandra i maj och juni. Då tycker hon att naturen är speciellt vacker.'"
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "question": "Oskar ville gå åt höger när stigen delade sig i två.",
+        "correct": "falskt",
+        "explanation": "Oskar svarade 'Vi går åt vänster' när Elsa frågade åt vilket håll de skulle gå. Det var Elsa som föredrog att gå åt höger."
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Vad kan man göra som turist vid Grövelsjön under olika årstider? Nämn minst tre aktiviteter från texten.",
+        "example_answer": "På vintern kan man åka skidor. På sommaren kan man vandra, paddla kanot och fotografera den vackra naturen."
+      }
+    ],
+    "audio_url": "/api/listening/audio/522696417b74f973"
+  },
+  "246286977a3919f0": {
+    "title": "Kapitel 1 Översikt",
+    "text": "Sammanfattning\nElsa och Oskar vandrar i skogen nära Grövelsjön. De kommer till en\nliten sjö. Nära sjön ligger en gammal stuga och en eka. De ror ut på\nsjön. Sedan hör de ett ljud. De ror tillbaka och går in i huset. I köket\nser de en märklig varelse. Den springer ut ur huset och in i skogen.\nElsa och Oskar vet inte vad det är för något.\n\nOrdförråd\novanlig unusual\nutflykt excursion\nvarelse creature\ngräns border\nområde area\nhelg weekend\nstig path\nföredra to prefer\nspännande exciting\nsäker safe, certain\nsjö lake\nstuga cottage\nnoga careful\nbräda board\neka rowing-boat\nträ wood\n\n\fläcka to leak\nskoja to make a joke\nro to row\nmena allvar to be serious\ndamm dust\nfotspår footprint\nbjörn bear\nväsen noise\nförsvinna to disappear\n\nLäsförståelsefrågor\nVälj enbart ett svar för varje fråga.\n1) Elsa och Oskar är i ___.\na. Stockholm\nb. Dalarna\nc. Norrland\nd. södra Sverige\n2) De är på utflykt till en ___.\na. sjö\nb. strand\nc. by\nd. stad\n3) När de kommer ut ur skogen ser Elsa och Oskar ___.\na. en by\nb. en stad\nc. en affär\nd. ett litet hus\n4) När de ser båten på stranden ___.\n\n\fa. stiger de inte ner i den\nb. sover de i den\nc. ser de att den läcker\nd. tar de den och ror ut på sjön\n5) När Elsa och Oskar är ute på sjön hör de ett ljud från ___.\na. båten\nb. stugan\nc. sjön\nd. skogen\n\n\fKapitel 2 – Sökandet\n‘Såg du?’ frågade Oskar.\n‘Ja!’ svarade Elsa. ‘Vad var det för något?’\n‘Jag vet inte! Men det var något förfärligt stort och fult!’\n‘Javisst … någon slags varelse!’\nOskar tittade på Elsa och sade, ‘Ska vi följa efter den?’\n‘Skojar du?’ svarade Elsa. ‘Inte en chans!’\n‘Kom nu! Det här är riktigt spännande! Vi går ut och letar efter den!’\n‘Åh nej! Jag vet inte riktigt ….’\nOskar och Elsa gick ut ur stugan. De följde varelsens fotspår in i skogen.\nDe såg sig omkring. Till slut sade Oskar, ‘Varelsen kan vara var som helst. Vi\nmåste dela upp oss och leta.’\n‘Dela upp oss?’ sade Elsa förvånat. ‘Är du galen, Oskar? Det finns en\nkonstig varelse där ute. Och vi vet inte vad det är för något!’\n‘Jag vet,’ s",
+    "source": "Short Stories",
+    "category": "stories",
+    "questions": [
+      {
+        "type": "mc",
+        "question": "Vad hittar Elsa och Oskar nära den lilla sjön?",
+        "options": {
+          "A": "En modern villa och en segelbåt",
+          "B": "En gammal stuga och en eka",
+          "C": "En affär och en brygga"
+        },
+        "correct": "B",
+        "explanation": "I texten står det: 'Nära sjön ligger en gammal stuga och en eka.'"
+      },
+      {
+        "type": "tf",
+        "question": "Elsa och Oskar vet exakt vad den märkliga varelsen i köket är.",
+        "correct": "falskt",
+        "explanation": "Texten avslutas med: 'Elsa och Oskar vet inte vad det är för något.'"
+      },
+      {
+        "type": "open",
+        "question": "Vad händer efter att Elsa och Oskar hör ett ljud ute på sjön? Beskriv med egna ord.",
+        "sample_answer": "När de hör ljudet ror de tillbaka till land. Sedan går de in i stugan och ser en märklig varelse i köket. Varelsen springer ut ur huset och försvinner in i skogen."
+      }
+    ],
+    "audio_url": "/api/listening/audio/48ec5fb94b724606"
+  },
+  "4059808ebce5071b": {
+    "title": "Kapitel 2 Översikt",
+    "text": "Sammanfattning\nElsa och Oskar letar efter en konstig varelse i skogen. Oskar\nförsvinner. Elsa går tillbaka till den gamla stugan för att hitta honom.\nHan är inte där. Hon somnar. Hon vaknar nästa dag. Oskar är\nfortfarande inte där. Hon ringer men han svarar inte. Hon tar en taxi\ntill hans hus. Där står hans bil. Men hon kan inte hitta honom och hon\nkan inte hitta sina vänner. Hon går tillbaka till stugan igen. Det lyser i\nhuset.\n\nOrdförråd\nsökande search\nförfärlig horrible\nful ugly\nleta efter to look for\ndela upp to divide\nnyheter news\ntokig mad, crazy\n\n\finbilla sig to imagine\nfantasi imagination\nbevisa to prove\nbuskage shrubbery\ntäckning coverage\nskämt joke\nuppföra sig to behave\nsömnig sleepy\nupplevelse experience\nanvända to use\ngå vilse to get lost\nträdgård garden\nsms text message\ngenast immediately\nsäkerhet safety\nlysa to shine\n\nLäsförståelsefrågor\nVälj enbart ett svar för varje fråga.\n6) Först tror Elsa att varelsen är ___.\na. verklig\nb. ett skämt\nc. Oskar\nd. något i hennes fantasi\n7) Senare ser Oskar ___.\na. ett speciellt träd\nb. ett annat hus\nc. Elsas bil\nd. några täta buskar\n\n\f8) Elsa somnar i ___.\na. skogen\nb. båten på sjön\nc. en säng i huset\nd. byn\n9) När Elsa vaknar ___.\na. går hon till en by i närheten\nb. går hon till buskaget\nc. ringer hon Oskars föräldrar\nd. ringer hon sina föräldrar\n10) När Elsa kommer tilbaka till sjön ser hon ___.\na. att stugan brinner\nb. att det lyser i huset\nc. varelsen\nd. Oskar\n\n\fKapitel 3 – Presenten\nElsa kunde inte tro sina ögon. ‘Det lyser i huset!’ tänkte hon. Hon följde\nstigen ner till sjön. Hon lämnade ryggsäcken vid ett träd och gick fram till\nhuset.\nElsa gick runt stugan. Hon försökte titta in genom fönstren. Hon ville se\nvem som var där inne. Det måste vara Oskar!\n‘Hallå?’ ropade hon. ‘Det är Elsa!’ Ingen svarade. Plötsligt hörde hon ett\nljud inne i stugan. ‘OK, Oskar,’ tänkte Elsa. ‘Det här är inte roligt längre!’\nElsa gick fram till dörren och öppnade den. Hon var helt oförberedd på vad\nhon fick se.\nDet var fullt med fo",
+    "source": "Short Stories",
+    "category": "stories",
+    "questions": [
+      {
+        "type": "mc",
+        "question": "Vad gör Elsa när hon inte kan hitta Oskar i stugan?",
+        "options": {
+          "A": "Hon ringer polisen och väntar i skogen.",
+          "B": "Hon ringer Oskar, och när han inte svarar tar hon en taxi till hans hus.",
+          "C": "Hon går tillbaka till byn och frågar sina vänner om hjälp."
+        },
+        "correct": "B",
+        "explanation": "Enligt texten ringer Elsa Oskar men han svarar inte. Sedan tar hon en taxi till hans hus."
+      },
+      {
+        "type": "tf",
+        "question": "Elsa hittar Oskar hemma vid hans hus efter att hon tar en taxi dit.",
+        "correct": "falskt",
+        "explanation": "Texten säger att hans bil står där, men Elsa kan inte hitta honom."
+      },
+      {
+        "type": "open",
+        "question": "Vad ser Elsa när hon går tillbaka till stugan vid sjön för andra gången? Varför tror du att det kan vara viktigt för berättelsen?",
+        "example_answer": "Elsa ser att det lyser i huset. Det kan vara viktigt eftersom det betyder att någon — kanske Oskar eller varelsen — är inne i stugan. Det skapar spänning inför nästa kapitel."
+      }
+    ],
+    "audio_url": "/api/listening/audio/4615bdc19c113ddd"
+  },
+  "a1557dfe6aacb03c": {
+    "title": "Kapitel 3 Översikt",
+    "text": "Sammanfattning\nElsa går till stugan för att leta efter Oskar. Det lyser i huset. Hon går\nin. Hennes familj och vänner är där. De säger att de ska leta efter\nOskar. Elsa förstår inte. Alla går iväg för att leta i skogen. Elsa är\nplötsligt ensam. Hon går in i stugan igen. Varelsen är i köket. Den\njagar ut henne i skogen. Hon ramlar omkull men varelsen hjälper\nhenne upp. Det är hennes pappa! Alla bara skojar. Det är en\nfödelsedagsöverraskning och stugan är hennes present.\n\nOrdförråd\noförberedd unprepared\nförsiktigt carefully\nskrämma to frighten\nskaka to shake\nstämma to make sense, be right\nrusa to rush\nramla omkull to fall down\nsparka to kick\n\n\fkomma loss to get away\nsläppa to let go, release\nböja sig to bend\ndräkt costume\ngrattis congratulations\nfödelsedag birthday\nja må hon/han leva (the first line of the traditional Swedish birthday\nsong)\ngråta to weep\nspela ett spratt to play a trick\nvälbehållen safe and sound\nelak nasty, evil\nkuvert envelope\nlättnad relief\nsöt pretty, sweet\nföreställning performance\n\nLäsförståelsefrågor\nVälj enbart ett svar för varje fråga.\n11) När Elsa kommer tillbaka till stugan hittar hon ___.\na. Oskar\nb. sin pappa\nc. sin familj och flera av sina vänner\nd. varelsen\n12) När Elsa ropar på sina vänner ___.\na. hör hon ett ljud från sjön\nb. kommer hennes pappa bakom henne\nc. möter hon varelsen\nd. har de försvunnit\n\n\f13) Elsa bestämmer sig för att ___.\na. gå till buskaget för att leta efter Oskar\nb. ringa till Oskars mobil\nc. leta efter Oskar i skogen\nd. gå tillbaka till huset\n14) När Elsa går in i stugan igen ___.\na. hör hon ljud i köket\nb. ringer hennes mobiltelefon\nc. kommer Anna och Veronika\nd. somnar hon\n15) Varelsen var egentligen ___.\na. Elsas mamma\nb. Oskar\nc. Elsas pappa\nd. en riktig björn\n\n\f\fRiddaren",
+    "source": "Short Stories",
+    "category": "stories",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Vad visar sig varelsen i köket vara?",
+        "options": {
+          "A": "Elsas bror Oskar i en dräkt",
+          "B": "Elsas pappa som spelar ett spratt",
+          "C": "En av Elsas vänner som vill skrämma henne"
+        },
+        "correct": "B",
+        "explanation": "Texten säger: 'Det är hennes pappa! Alla bara skojar.' Varelsen som jagade Elsa var alltså hennes pappa som var utklädd."
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "statement": "Stugan är en födelsedagspresent till Elsa.",
+        "correct": "sant",
+        "explanation": "Texten avslutas med: 'Det är en födelsedagsöverraskning och stugan är hennes present.'"
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Beskriv vad som händer när Elsas familj och vänner lämnar stugan. Hur känner sig Elsa och vad händer sedan?",
+        "example_answer": "När alla går iväg för att leta efter Oskar i skogen blir Elsa plötsligt ensam. Hon går in i stugan igen och upptäcker varelsen i köket. Varelsen jagar ut henne i skogen och hon ramlar omkull. Men varelsen hjälper henne upp — det visar sig vara hennes pappa. Allt var bara ett skämt och en födelsedagsöverraskning."
+      }
+    ],
+    "audio_url": "/api/listening/audio/d53ab02f8229babb"
+  },
+  "254ff685aace82aa": {
+    "title": "Kapitel 1 – Guld",
+    "text": "Det var en gång ett stort kungarike, fullt med intressanta människor, djur och\nsaker. En dag kom en riddare till kungariket. Han var klädd i svart och vitt.\nHan var stor och stark.\nRiddaren kom till en stad. Han stannade på torget. Han tänkte köpa något.\nNågot mycket speciellt.\nDet var ett stort torg, fullt med folk, och det fanns många saker att köpa.\nRiddaren gick långsamt över torget. Han gick till ett mörkt hörn. Där hittade\nhan den köpman han letade efter.\nKöpmannen hade många ovanliga varor att sälja. Riddaren tittade på\nvarorna.\n‘God dag, köpman,’ sade han.\n‘God dag, herr riddare,’ svarade köpmannen.\n‘Jag letar efter en trolldryck. Har du någon?’\n‘Trolldryck? Nej, vi har inga trolldrycker här. Inga alls.’\nRiddaren tittade köpmannen djupt i ögonen. Sedan sade han, ‘Jag tror att\ndu vet vad jag vill ha.’\n‘Ja, jo … trolldryck. Hm … Vilken sorts trolldryck?’\n‘Trolldrycken som ger styrka.’\nKöpmannen såg sig omkring. Sedan tittade han på riddaren. ‘Jag har inga\ntrolldrycker här. Och den trolldryck du vill ha är mycket sällsynt. Det jag\nbehöver för att blanda till den är svårt att hitta.’ Han gjorde en paus och såg\nsig omkring igen. Sedan sade han, ‘Jag kan göra lite åt dig men till ett mycket\nhögt pris.’\n‘Jag har guld. Jag behöver två flaskor av trolldrycken som ger styrka. Hur\nlång tid kommer det att ta att blanda till den?’\n\n\f‘Kom tillbaka i kväll. Då är trolldrycken klar.’\nRiddaren nickade och gick sin väg.\nRiddaren gick tillbaka över torget. Folk tittade på honom. De kände inte\nigen honom. Men riddaren var en berömd krigare. Han hette Ingemar. Han\nreste från kungarike till kungarike. Han hade kämpat mot många män, ofta\ntillsammans med kungar.\nIngemar gick över en stenbro. På andra sidan låg slottet. Runt slottet stod\nhöga murar. Ingemar gick fram till porten. Två vakter stoppade honom. ‘Vem\när du?’ frågade en av dem.\n‘Jag heter Ingemar. Jag ska träffa kungen.’\n‘Det får du inte. Iväg med dig.’\nIngemar tittade på vakterna. Han tog några steg tillbaka. Han tog fram",
+    "source": "Short Stories",
+    "category": "stories",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Vad letade riddaren efter hos köpmannen?",
+        "options": {
+          "A": "Ett magiskt svärd",
+          "B": "En trolldryck som ger styrka",
+          "C": "En karta till kungarikets skatt"
+        },
+        "correct": "B",
+        "explanation": "Riddaren säger: 'Jag letar efter en trolldryck' och specificerar sedan: 'Trolldrycken som ger styrka.'"
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "question": "Riddaren var klädd i rött och guld när han kom till kungariket.",
+        "correct": "falskt",
+        "explanation": "Enligt texten var riddaren klädd i svart och vitt, inte i rött och guld."
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Varför var köpmannen först tveksam till att sälja trolldrycken? Beskriv med egna ord vad köpmannen sa om trolldrycken.",
+        "example_answer": "Köpmannen var tveksam och sa först att han inte hade några trolldrycker. Sedan förklarade han att trolldrycken riddaren ville ha var mycket sällsynt och att det som behövdes för att blanda till den var svårt att hitta. Han sa också att priset skulle bli mycket högt."
+      }
+    ],
+    "audio_url": "/api/listening/audio/9f8a448ab2d27ddd"
+  },
+  "07cc4d60c8d0dd60": {
+    "title": "Kapitel 1 Översikt",
+    "text": "Sammanfattning\nRiddaren Ingemar reser till kung Haralds rike. Han köper två flaskor\ntrolldryck som ger styrka. Han går sedan till slottet och talar med\nkungen. Kungen ber Ingemar att frakta guld till kungens bror. Tre\nvakter kommer att följa med. De ska vakta guldet. De kommer att\ndöda riddaren om han stjäl guldet. Gruppen ger sig iväg på sin färd.\n\nOrdförråd\nkungarike kingdom\nriddare knight\ntorg marketplace, square\nköpman merchant\n\n\fvara article, product\ntrolldryck potion\nsällsynt rare\nblanda to mix\nnicka to nod\nslott castle\nport gate, door\nväska bag\nbrev letter\nsigill seal\nmisstänksam suspicious\nlast load\nlita på to trust\nförråda to betray\näventyr adventure\nfara danger\nfärd journey\nstrid battle, fight\nsäck sack\nbeskydda to protect\negendom property\nstjäla to steal\n\nLäsförståelsefrågor\nVälj enbart ett svar för varje fråga.\n1) Ingemar är klädd i ___.\na. svart och rött\nb. svart och vitt\nc. svart och blått\n\n\fd. vitt och rött\n2) Ingemar köper ___.\na. en flaska trolldryck som ger styrka\nb. två flaskor trolldryck som ger styrka\nc. en flaska trolldryck för att göra guld\nd. två flaskor trolldryck för att göra guld\n3) Vid slottsporten talar Ingemar med ___.\na. kungen\nb. en arg köpman\nc. kungens bror\nd. en vakt\n4) Ingemar och vakterna ska frakta ___.\na. vapen\nb. trolldrycker\nc. en last med guld\nd. vakter\n5) Gruppen är på väg till ___.\na. ett okänt kungarike\nb. kung Haralds brors kungarike\nc. Haralds kungarike\nd. ett torg i kungariket\n\n\fKapitel 2 – Färden\nIngemar och vakterna följde Norra vägen. Bakom dem kom hästarna och\nvagnen med guld. Efter en stund frågade Olov, vaktchefen, ‘Ingemar, vad\nfinns det för faror längs vägen?’\n‘Det är inte någon enkel väg. Vägen är mycket farlig,’ svarade Ingemar.\n‘Vad ska vi göra då?’\n‘Det finns farliga män på den här vägen. Jag föreslår att vi håller oss borta\nfrån dem. Vi försöker att undvika strid.’\n‘Är du skicklig i strid, Ingemar?’\n‘Jag är känd för att vara skicklig med vapen.’\n‘Det låter bra,’ sade Olov. De red framåt.\nSnart red de över ",
+    "source": "Short Stories",
+    "category": "stories",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Vad ber kungen Ingemar att göra?",
+        "options": {
+          "A": "Att beskydda slottet mot fiender",
+          "B": "Att frakta guld till kungens bror",
+          "C": "Att köpa trolldryck åt kungen"
+        },
+        "correct": "B",
+        "explanation": "I texten står det: 'Kungen ber Ingemar att frakta guld till kungens bror.'"
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "question": "Ingemar köper en flaska trolldryck som ger styrka.",
+        "correct": "falskt",
+        "explanation": "Det är falskt. Ingemar köper två flaskor trolldryck, inte en."
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Varför följer tre vakter med Ingemar på färden, och vad händer om han stjäl guldet?",
+        "example_answer": "Tre vakter följer med för att vakta guldet. Om Ingemar stjäl guldet kommer vakterna att döda honom."
+      }
+    ],
+    "audio_url": "/api/listening/audio/e05de23112c2c17e"
+  },
+  "5127edb4f8aa99a0": {
+    "title": "Kapitel 2 Översikt",
+    "text": "Sammanfattning\nIngemar och kung Haralds vakter börjar sin färd. På vägen berättar\nriddaren en historia. Harald kämpade mot sin bror Sigurd i en stor\nstrid. Striden handlade om en källa med magiskt vatten som gav\nmänniskor styrka. Under striden försvann vattnet. Men kung Sigurd\nhar fortfarande magiskt vatten kvar. Han säljer det till kung Harald.\nHarald betalar med guld.\n\nOrdförråd\nfarlig dangerous\nundvika to avoid\nskicklig skilful, capable\nrida to ride (on an animal)\nanledning reason\ndagsljus daylight\nkälla well\nfred peace\n\n\fursprunglig original\nkraft force, strength\nsmaka to taste\ntorka to dry\nmakt power\nbada to bathe, to swim\nsmutsig dirty\nskapa to create\nhemlighet secret\nutsikt view\nnyfiken curious\nförlora to lose\n\nLäsförståelsefrågor\nVälj enbart ett svar för varje fråga.\n6) Ingemar ___.\na. kan vägen till Sigurds kungarike\nb. kan inte vägen till kungariket\nc. frågar efter vägen till kungariket\nd. går vilse på vägen\n7) ___ reser till Sigurds kungarike.\na. Tre vakter och Ingemar\nb. Två vakter och Ingemar\nc. En vakt och Ingemar\nd. Bara Ingemar\n8) I Tysta skogen ___.\na. har ingenting någonsin hänt\nb. var det en strid mellan två bröder\nc. var det ett okänt krig\n\n\fd. finns det många djur\n9) Källan i Tysta skogen ___.\na. existerar fortfarande\nb. existerade aldrig\nc. är borta nu\nd. var alltid en sjö\n10) När männen rider ut ur Tysta skogen ___.\na. ser de en annan skog\nb. kan de se havet\nc. bestämmer de sig för att åka tillbaka till kung Haralds rike\nd. kan de se kung Sigurds rike\n\n\fKapitel 3 – Hemligheten\nIngemar, Olov och vakterna red mot Sigurds slott. ‘Hur ska vi ta oss in i\nslottet?’ frågade Olov.\n‘Genom slottsporten,’ sade Ingemar och skrattade. Sedan gav han Olov en\nkonstig blick. Olov tittade tyst på honom. ‘Någonting känns fel,’ tänkte Olov.\nGruppen färdades först genom landsbygden. De såg många fält där det\nväxte säd. De red förbi många bönder som arbetade på fälten. Bönderna\nbodde utanför slottsmurarna. De producerade mat till människorna i\nkungariket.\nEn av bön",
+    "source": "Short Stories",
+    "category": "stories",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Vad handlade striden mellan Harald och Sigurd om?",
+        "options": {
+          "A": "En källa med magiskt vatten som gav styrka",
+          "B": "En stor skatt av guld och silver",
+          "C": "Makten över ett kungarike"
+        },
+        "correct": "A",
+        "explanation": "Texten säger: 'Striden handlade om en källa med magiskt vatten som gav människor styrka.'"
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "question": "Kung Harald ger sitt guld till Sigurd utan att få något tillbaka.",
+        "correct": "falskt",
+        "explanation": "Harald betalar med guld, men han får magiskt vatten i utbyte. Sigurd säljer det magiska vattnet till Harald."
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Vad hände med det magiska vattnet i källan under striden, och vem har fortfarande magiskt vatten kvar? Förklara med egna ord.",
+        "sample_answer": "Under striden mellan Harald och Sigurd försvann vattnet från källan. Men kung Sigurd har fortfarande magiskt vatten kvar, som han sedan säljer till kung Harald."
+      }
+    ],
+    "audio_url": "/api/listening/audio/f99c74c3118385c4"
+  },
+  "d421cb1afe6c3ca4": {
+    "title": "Kapitel 1 – Legenden",
+    "text": "Karl var urmakare. Han var i 40-årsåldern och hade ingen egen familj. Hans\nföräldrar bodde i Stockholm. Själv bodde Karl på Gotland i ett litet hus på\nen lugn gata i Visby.\nKarl var smal men stark. Han hade sin egen verkstad. Han lagade klockor\noch tillverkade också egna klockor av hög kvalitet.\nKarl arbetade många timmar varje dag och ofta till sent på kvällen. Hans\nverkstad låg nära stranden inte långt från ringmuren. Vid arbetsdagens slut\ngick han ofta ned till havet för att få lite frisk luft och för att sträcka på\nbenen.\nEn kväll mötte Karl en gammal vän på sin promenad. Hon hette Susanne.\n‘Hej Karl! Hur är det med dig?’ sade hon.\n‘Hej Susanne. Vad gör du här?’\n‘Jag är ute och går, precis som du,’ skrattade Susanne.\n‘Det låter bra. Vi kan göra sällskap.’\nKarl och Susanne var länge ute och gick. De pratade om allt möjligt. ‘Hur\när det på jobbet?’ frågade Susanne, ‘Har du mycket att göra?’\n‘Ja, jag har massor av jobb. Firman går fint. Jag är väldigt nöjd.’\n‘Kul för dig.’\nSusanne var säkerhetsvakt. Hon jobbade i hamnen. Hon berättade för\nKarl att hon gillade sitt jobb. Hon tyckte också om att gå längs stranden och\nsåg ofta intressanta saker där. Idag hade hon faktiskt hittat ett mycket speciellt\nföremål.\n‘Vet du vad,’ började Susanne. ‘Jag hoppades att jag skulle träffa dig\nidag.’\n\n\f‘Jaså?’ svarade Karl.\n‘Ja. Jag har hittat något på stranden. Och jag vet inte vad jag ska göra med\ndet.’\n‘Vad har du hittat, Susanne?’\nSusanne tog fram en klocka. Den såg gammal ut men den verkade vara av\nmycket god kvalitet. ‘Kan du tala om för mig vad det här är för sorts klocka?’\nfrågade hon.\n‘Låt mig titta efter,’ sade Karl.\nKarl tog klockan och tittade noga på den. ‘Jag har ingen aning om vad det\när för modell,’ sade han till slut.\nSusanne blev förvånad. ‘Vet du ingenting om den?’\n‘Tja, jag ser att det är en mycket gammal klocka. Jag är bara inte säker\n….’ Han gjorde en paus och tittade på henne. ‘Behöver du gå till jobbet just\nnu, Susanne?’\n‘Nej, jag är ledig ikväll.’\n‘Följ med t",
+    "source": "Short Stories",
+    "category": "stories",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Var ligger Karls verkstad?",
+        "options": {
+          "A": "I centrala Stockholm",
+          "B": "Nära stranden, inte långt från ringmuren i Visby",
+          "C": "I hamnen där Susanne jobbar"
+        },
+        "correct": "B",
+        "explanation": "I texten står det: 'Hans verkstad låg nära stranden inte långt från ringmuren.'"
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "statement": "Susanne arbetar som urmakare, precis som Karl.",
+        "correct": "falskt",
+        "explanation": "Susanne är inte urmakare – hon är säkerhetsvakt och jobbar i hamnen."
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Varför ville Susanne träffa Karl just den här kvällen? Beskriv vad hon hade hittat och varför hon ville prata med honom om det.",
+        "suggested_answer": "Susanne hade hittat ett speciellt föremål på stranden – en gammal klocka. Eftersom Karl är urmakare och expert på klockor ville hon visa den för honom och få hjälp att förstå vad det var."
+      }
+    ],
+    "audio_url": "/api/listening/audio/22ef05baf1eb44c3"
+  },
+  "ff851518668a69c3": {
+    "title": "Kapitel 1 Översikt",
+    "text": "Sammanfattning\nKarl är urmakare och bor på Gotland. Han träffar sin vän Susanne på\nstranden. Hon visar honom en mycket gammal klocka. De går till\nKarls verkstad och tittar noga på klockan. En bok berättar om piraten\nErik Kraken. Han ägde klockan på 1600-talet. Med klockans hjälp\nkunde han resa i tiden. Plötsligt märker Karl och Susanne att klockan\n\n\fär borta. De hör fotsteg. De jagar en man till stranden. Mannen säger\natt han är Erik Kraken. Han vill resa tillbaka till sin egen tid.\n\nOrdförråd\nklocka watch, clock\nurmakare watchmaker\nverkstad workshop\ntillverka to make, to produce\nringmur stone wall\nhav sea\ngöra sällskap to go together\nnöjd satisfied\nsäkerhetsvakt security guard\nhamn harbour, (Am. Eng.) harbor\nföremål object\nverktyg tool\nÖstersjön the Baltic Sea\nfotspår footprints\nkraftig big, sturdy\ngammalmodig old-fashioned\nfrisyr hairstyle\nborsta av to brush off\n\nLäsförståelsefrågor\nVälj enbart ett svar för varje fråga.\n1) Karl arbetar som ___.\na. urmakare\nb. fiskare\nc. pirat\n\n\fd. säkerhetsvakt\n2) Vid arbetsdagens slut gillar Karl att ___.\na. promenera på Visbys gator\nb. promenera runt i sin verkstad\nc. promenera längs stranden\nd. jobba med klockor\n3) Susanne är Karls ___.\na. flickvän\nb. fru\nc. dotter\nd. vän\n4) Legenden berättar att klockan ___.\na. försvann för längesedan\nb. kan visa tiden\nc. har magiska krafter\nd. ägs av en känd urmakare\n5) Klockan försvinner från Karls verkstad därför att ___.\na. Susanne stjäl den\nb. en okänd man tar den\nc. de tappar bort den\nd. de glömmer den på stranden\n\n\fKapitel 2 – Pirater\nKarl och Susanne tittade på den underlige mannen framför sig. Till slut sade\nKarl, ‘1600-talet? Resa tillbaka? Menar du att …du är den riktige Erik\nKraken?’ frågade han. Mannen sade ingenting. Han försökte använda klockan.\nKarl gick närmare. Mannen såg verkligen ut som en gammal pirat. Han\nhade samma svarta kläder som pirater som man läser om i sagor och andra\nböcker. ‘Kan det vara sant?’ frågade Karl.\nMannen tittade på dem och svarade, ‘Ja, det är jag.’\nN",
+    "source": "Short Stories",
+    "category": "stories",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Vad hände med klockan som tillhörde piraten Erik Kraken?",
+        "options": {
+          "A": "Karl sålde den i sin verkstad",
+          "B": "Den försvann och en okänd man tog den",
+          "C": "Susanne tog med sig den hem"
+        },
+        "correct": "B",
+        "explanation": "Enligt texten märker Karl och Susanne att klockan är borta. De jagar en man till stranden som säger att han är Erik Kraken och vill resa tillbaka till sin egen tid."
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "question": "Piraten Erik Kraken kunde resa i tiden med hjälp av klockan.",
+        "correct": "sant",
+        "explanation": "Texten säger: 'Med klockans hjälp kunde han resa i tiden.'"
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Var bor Karl och vad arbetar han med? Beskriv också hur han och Susanne upptäcker klockans hemlighet.",
+        "sample_answer": "Karl är urmakare och bor på Gotland. Han träffar sin vän Susanne på stranden och hon visar honom en mycket gammal klocka. De går till hans verkstad och undersöker klockan. En bok berättar att klockan tillhörde piraten Erik Kraken på 1600-talet och att den hade magiska krafter som gjorde det möjligt att resa i tiden."
+      }
+    ],
+    "audio_url": "/api/listening/audio/f6ffb8592f221fe7"
   }
 }
