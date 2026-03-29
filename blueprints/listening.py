@@ -19,17 +19,21 @@ def _get_clips():
     """Get all clips: stories + news articles."""
     clips = []
 
-    # Stories with built-in questions
+    # Stories with built-in questions — check if audio already cached
     if STORIES_FILE.exists():
         stories = json.loads(STORIES_FILE.read_text(encoding="utf-8"))
         for ch in stories:
+            text = ch["text"][:1500]
+            text_hash = hashlib.sha256(text.encode()).hexdigest()[:16]
+            audio_path = OUTPUT_DIR / "audio_cache" / f"listen_{text_hash}.wav"
+            audio_url = f"/api/listening/audio/{text_hash}" if audio_path.exists() else ""
             clips.append({
                 "title": f"{ch['story']} — {ch['chapter']}",
                 "text": ch["text"],
                 "source": ch["story"],
                 "category": "stories",
                 "questions": ch["questions"],
-                "audio_url": "",  # Will synthesize on demand
+                "audio_url": audio_url,
             })
 
     # News with pre-generated questions + audio
