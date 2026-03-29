@@ -12,28 +12,40 @@ from blueprints.ai import ask_claude
 bp = Blueprint("listening", __name__, url_prefix="/api/listening")
 
 QUESTIONS_FILE = KNOWLEDGE_DIR / "pregenerated_questions.json"
-
-
-def _load_pregenerated():
-    if QUESTIONS_FILE.exists():
-        return json.loads(QUESTIONS_FILE.read_text(encoding="utf-8"))
-    return {}
+STORIES_FILE = KNOWLEDGE_DIR / "Reading" / "stories_parsed.json"
 
 
 def _get_clips():
-    """Get all clips with pre-generated questions and audio URLs."""
-    pregen = _load_pregenerated()
+    """Get all clips: stories + news articles."""
     clips = []
-    for key, data in pregen.items():
-        clips.append({
-            "key": key,
-            "title": data["title"],
-            "text": data["text"],
-            "source": data.get("source", ""),
-            "category": data.get("category", ""),
-            "questions": data.get("questions", []),
-            "audio_url": data.get("audio_url", ""),
-        })
+
+    # Stories with built-in questions
+    if STORIES_FILE.exists():
+        stories = json.loads(STORIES_FILE.read_text(encoding="utf-8"))
+        for ch in stories:
+            clips.append({
+                "title": f"{ch['story']} — {ch['chapter']}",
+                "text": ch["text"],
+                "source": ch["story"],
+                "category": "stories",
+                "questions": ch["questions"],
+                "audio_url": "",  # Will synthesize on demand
+            })
+
+    # News with pre-generated questions + audio
+    if QUESTIONS_FILE.exists():
+        pregen = json.loads(QUESTIONS_FILE.read_text(encoding="utf-8"))
+        for key, data in pregen.items():
+            if data.get("category") == "news":
+                clips.append({
+                    "title": data["title"],
+                    "text": data["text"],
+                    "source": data.get("source", "8sidor.se"),
+                    "category": "news",
+                    "questions": data.get("questions", []),
+                    "audio_url": data.get("audio_url", ""),
+                })
+
     return clips
 
 
