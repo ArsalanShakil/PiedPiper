@@ -74,8 +74,10 @@ export default function WritingView() {
   }, [phase, timerSeconds])
 
   // Auto-start for full exam
+  const fullExamStartedRef = useRef(false)
   useEffect(() => {
-    if (isFullExam) {
+    if (isFullExam && !fullExamStartedRef.current) {
+      fullExamStartedRef.current = true
       startLoading(true, 'Generating writing tasks...')
       generateMock()
         .then((data: WritingMockData) => {
@@ -90,7 +92,7 @@ export default function WritingView() {
         })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [isFullExam])
 
   const handleMockStart = async () => {
     startLoading(true, 'Generating writing tasks...')

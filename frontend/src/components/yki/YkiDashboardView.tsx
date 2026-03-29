@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchSessions } from '../../api/yki'
 import type { ExamSession } from '../../types/api'
-import { useFullExam, useStartNextSection } from '../../context/FullExamContext'
+import { useFullExam } from '../../context/FullExamContext'
 import { formatDate } from '../../utils/format'
 import '../../styles/yki.css'
 
@@ -10,8 +10,7 @@ export default function YkiDashboardView() {
   const [sessions, setSessions] = useState<ExamSession[]>([])
   const [sessionsLoading, setSessionsLoading] = useState(true)
   const [showConfirm, setShowConfirm] = useState(false)
-  const { state: fullExamState, startFullExam, abortExam } = useFullExam()
-  const startNextSection = useStartNextSection()
+  const { state: fullExamState, startFullExam, startNextSection, abortExam } = useFullExam()
 
   const fullExamInProgress = fullExamState !== null &&
     fullExamState.currentSection < fullExamState.sections.length

@@ -17,6 +17,7 @@ interface FullExamContextValue {
   isActive: boolean
   activeSection: string | null
   startFullExam: () => void
+  startNextSection: () => void
   completeSection: (score: number) => void
   abortExam: () => void
 }
@@ -61,15 +62,37 @@ export function FullExamProvider({ children }: { children: ReactNode }) {
   const isActive = activeSection !== null
 
   const startFullExam = useCallback(() => {
+    const sections = SECTIONS.map((s, i) =>
+      i === 0 ? { ...s, status: 'in_progress' as const } : { ...s }
+    )
     const newState: FullExamState = {
       started: new Date().toISOString(),
       currentSection: 0,
-      sections: SECTIONS.map(s => ({ ...s })),
+      sections,
       scores: {},
     }
     setState(newState)
-    setActiveSection(null)
-  }, [])
+    setActiveSection(sections[0].type)
+    navigate(sections[0].route)
+  }, [navigate])
+
+  const startNextSection = useCallback(() => {
+    if (!state || state.currentSection >= state.sections.length) return
+    const section = state.sections[state.currentSection]
+    if (!section) return
+
+    setState(prev => {
+      if (!prev) return prev
+      return {
+        ...prev,
+        sections: prev.sections.map((s, i) =>
+          i === prev.currentSection ? { ...s, status: 'in_progress' as const } : { ...s }
+        ),
+      }
+    })
+    setActiveSection(section.type)
+    navigate(section.route)
+  }, [state, navigate])
 
   const completeSection = useCallback((score: number) => {
     setState(prev => {
@@ -97,14 +120,12 @@ export function FullExamProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem(ACTIVE_KEY)
   }, [])
 
-  // Expose a way for dashboard to start the next section
-  // The dashboard will read state.currentSection and navigate
-  // We need a function to mark the current section as in_progress and set activeSection
   const contextValue: FullExamContextValue = {
     state,
     isActive,
     activeSection,
     startFullExam,
+    startNextSection,
     completeSection,
     abortExam,
   }
@@ -122,23 +143,3 @@ export function useFullExam(): FullExamContextValue {
   return ctx
 }
 
-/** Start the next section of the full exam (mark in_progress, set active flag, navigate). */
-export function useStartNextSection() {
-  const navigate = useNavigate()
-  const { state } = useFullExam()
-
-  return useCallback(() => {
-    if (!state || state.currentSection >= state.sections.length) return
-    const section = state.sections[state.currentSection]
-    if (!section) return
-
-    // Update state in localStorage directly so the section view can read it immediately
-    const updated = { ...state, sections: state.sections.map((s, i) =>
-      i === state.currentSection ? { ...s, status: 'in_progress' as const } : { ...s }
-    )}
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
-    localStorage.setItem(ACTIVE_KEY, section.type)
-
-    navigate(section.route)
-  }, [state, navigate])
-}

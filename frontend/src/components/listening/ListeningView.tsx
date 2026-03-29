@@ -128,8 +128,10 @@ export default function ListeningView() {
   }, [phase, examData])
 
   // Auto-start for full exam
+  const fullExamStartedRef = useRef(false)
   useEffect(() => {
-    if (isFullExam) {
+    if (isFullExam && !fullExamStartedRef.current) {
+      fullExamStartedRef.current = true
       startLoading(true, 'Generating listening exam...')
       generateListening('', 2)
         .then(data => {
@@ -144,7 +146,7 @@ export default function ListeningView() {
         })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [isFullExam])
 
   const handleMockStart = async () => {
     startLoading(true, 'Generating listening exam...')
