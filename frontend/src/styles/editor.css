@@ -226,6 +226,27 @@
     max-width: 250px;
 }
 
+/* Speak Player Bar */
+.speak-player-bar {
+    position: fixed;
+    bottom: 0;
+    left: var(--sidebar-width);
+    right: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+    z-index: 150;
+}
+
+.speak-speed-controls {
+    display: flex;
+    gap: 4px;
+}
+
 /* Floating Selection Toolbar */
 .selection-toolbar {
     position: absolute;

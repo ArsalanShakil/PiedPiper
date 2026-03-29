@@ -64,6 +64,11 @@ export default function EditorView() {
     visible: false, text: '', top: 0, left: 0,
   })
   const [addedWords, setAddedWords] = useState<Set<string>>(new Set())
+  const [speakUrl, setSpeakUrl] = useState<string | null>(null)
+  const [speakFile, setSpeakFile] = useState<{ folder: string; name: string } | null>(null)
+  const [speakLoading, setSpeakLoading] = useState(false)
+  const speakAudioRef = useRef<HTMLAudioElement>(null)
+  const speakFileRef = useRef<{ folder: string; name: string } | null>(null)
 
   const [lastDocId, setLastDocId] = useLocalStorage<number | null>('piedpiper_last_doc_id', null)
   const lastTransRef = useRef<LastTranslation | null>(null)
@@ -161,6 +166,10 @@ export default function EditorView() {
       }
       if (currentDocIdRef.current) {
         localStorage.setItem('piedpiper_last_doc_id', JSON.stringify(currentDocIdRef.current))
+      }
+      // Clean up speak audio file
+      if (speakFileRef.current) {
+        deleteFile(speakFileRef.current.folder, speakFileRef.current.name).catch(() => {})
       }
     }
   }, [])
@@ -441,11 +450,17 @@ export default function EditorView() {
 
   // --- Speak helper ---
   async function speakText(text: string) {
+    // Clean up previous speak file
+    if (speakFile) {
+      deleteFile(speakFile.folder, speakFile.name).catch(() => {})
+    }
+    setSpeakLoading(true)
+    setSpeakUrl(null)
     try {
       const voices = await fetchVoices()
-      if (voices.length === 0) return
+      if (voices.length === 0) { setSpeakLoading(false); return }
       const firstVoice = voices[0]
-      if (!firstVoice) return
+      if (!firstVoice) { setSpeakLoading(false); return }
       const data = await synthesize({
         text,
         voice_id: firstVoice.id,
@@ -453,14 +468,36 @@ export default function EditorView() {
         save_path: '',
         filename: '',
       })
-      const audio = new Audio(getPlayUrl(data.folder, data.filename))
-      audio.play()
-      audio.addEventListener('ended', () => {
-        deleteFile(data.folder, data.filename).catch(() => {})
-      })
+      const url = getPlayUrl(data.folder, data.filename)
+      setSpeakUrl(url)
+      setSpeakFile({ folder: data.folder, name: data.filename })
+      speakFileRef.current = { folder: data.folder, name: data.filename }
+      setSpeakLoading(false)
+      // Auto-play once ready
+      setTimeout(() => {
+        speakAudioRef.current?.play()
+      }, 100)
     } catch {
-      // TTS may not be available
+      setSpeakLoading(false)
     }
+  }
+
+  const handleSpeakSpeed = (speed: number) => {
+    if (speakAudioRef.current) {
+      speakAudioRef.current.playbackRate = speed
+    }
+  }
+
+  const closeSpeakPlayer = () => {
+    if (speakAudioRef.current) {
+      speakAudioRef.current.pause()
+    }
+    if (speakFile) {
+      deleteFile(speakFile.folder, speakFile.name).catch(() => {})
+    }
+    setSpeakUrl(null)
+    setSpeakFile(null)
+    speakFileRef.current = null
   }
 
   // --- Selection toolbar actions ---
@@ -719,6 +756,32 @@ export default function EditorView() {
         <button className="sel-btn" onClick={handleSelSpeak}>Speak</button>
         <button className="sel-btn" onClick={handleSelVocab}>+ Vocab</button>
       </div>
+
+      {/* Speak Player */}
+      {(speakUrl || speakLoading) && (
+        <div className="speak-player-bar">
+          {speakLoading ? (
+            <span style={{ fontSize: 13, color: 'var(--text-dim)' }}>Generating audio...</span>
+          ) : (
+            <>
+              <audio ref={speakAudioRef} src={speakUrl ?? undefined} controls style={{ flex: 1, height: 36 }} />
+              <div className="speak-speed-controls">
+                {[0.5, 0.75, 1, 1.25, 1.5].map(s => (
+                  <button
+                    key={s}
+                    className="btn btn-small"
+                    onClick={() => handleSpeakSpeed(s)}
+                    title={`${s}x speed`}
+                  >
+                    {s}x
+                  </button>
+                ))}
+              </div>
+              <button className="btn btn-small btn-danger" onClick={closeSpeakPlayer} title="Close">&times;</button>
+            </>
+          )}
+        </div>
+      )}
 
       {/* Translation Panel */}
       <div className={`translation-panel${transOpen ? ' visible' : ''}`}>
