@@ -77,6 +77,44 @@ def list_categories():
     return jsonify(cats)
 
 
+@bp.route("/passage/<int:index>", methods=["POST"])
+def generate_for_passage(index):
+    """Generate questions for a specific passage."""
+    passages = get_passages()
+    if index < 0 or index >= len(passages):
+        return jsonify({"error": "Invalid passage index"}), 404
+
+    p = passages[index]
+    system = (
+        "You are a YKI Swedish reading exam question generator (intermediate B1-B2). "
+        "Generate comprehension questions for the given Swedish text. "
+        "Return ONLY valid JSON."
+    )
+    prompt = (
+        f"Read this Swedish text and create 3 questions about it.\n\n"
+        f"Text: \"{p['text'][:1500]}\"\n\n"
+        f"Create questions in Swedish. Include a mix of:\n"
+        f"- 1 multiple choice question (type: 'mc', with options A, B, C and correct answer)\n"
+        f"- 1 true/false question (type: 'tf', correct: 'sant' or 'falskt')\n"
+        f"- 1 open question (type: 'open')\n\n"
+        f"Return JSON: {{\"questions\": [{{\"type\": \"mc\", \"question\": \"...\", "
+        f"\"options\": [\"A\", \"B\", \"C\"], \"correct\": \"B\"}}, "
+        f"{{\"type\": \"tf\", \"question\": \"...\", \"correct\": \"sant\"}}, "
+        f"{{\"type\": \"open\", \"question\": \"...\"}}]}}"
+    )
+    raw = ask_claude(prompt, system=system, timeout=120)
+    questions = []
+    try:
+        start = raw.find("{")
+        end = raw.rfind("}") + 1
+        if start >= 0 and end > start:
+            questions = json.loads(raw[start:end]).get("questions", [])
+    except (json.JSONDecodeError, ValueError):
+        questions = [{"type": "open", "question": "Vad handlar texten om?"}]
+
+    return jsonify({"passages": [{"title": p["title"], "text": p["text"], "source": p["source"], "questions": questions}]})
+
+
 @bp.route("/generate", methods=["POST"])
 def generate_reading():
     """Generate a reading exam — pick passages and generate questions via Claude."""

@@ -16,18 +16,34 @@
             </div>
         </div>
 
-        <div id="ls-options" class="panel" style="display:none;">
-            <h2 id="ls-options-title">Options</h2>
+        <!-- Mock options -->
+        <div id="ls-mock-options" class="panel" style="display:none;">
+            <h2>Mock Test</h2>
+            <p style="color:var(--text-dim);margin-bottom:16px;">2 clips with questions. Each clip played twice only. 40 min timer.</p>
             <div class="form-group">
                 <label>Category</label>
-                <select id="ls-category"><option value="">All</option></select>
+                <select id="ls-mock-category"><option value="">All</option><option value="news">News (8sidor)</option><option value="stories">Stories</option></select>
             </div>
-            <button class="btn btn-primary" id="ls-go">Start</button>
+            <button class="btn btn-primary" id="ls-mock-go">Start Mock Test</button>
+        </div>
+
+        <!-- Practice options -->
+        <div id="ls-practice-options" class="panel" style="display:none;">
+            <h2>Practice</h2>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="ls-practice-category"><option value="">All</option><option value="news">News (8sidor)</option><option value="stories">Stories</option></select>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:12px;">
+                <button class="btn btn-primary" id="ls-practice-random" style="flex:1;">Random Clip</button>
+                <button class="btn" id="ls-practice-browse" style="flex:1;">Browse Clips</button>
+            </div>
+            <div id="ls-passage-browser" style="display:none;max-height:400px;overflow-y:auto;"></div>
         </div>
     </div>
 
     <div id="ls-loading" class="generating-overlay" style="display:none;">
-        <h3>Generating audio & questions...</h3>
+        <h3>Generating audio &amp; questions...</h3>
         <p>Synthesizing speech and creating questions — this may take 30-90 seconds</p>
     </div>
 

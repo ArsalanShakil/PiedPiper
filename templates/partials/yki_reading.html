@@ -17,13 +17,29 @@
             </div>
         </div>
 
-        <div id="rd-options" class="panel" style="display:none;">
-            <h2 id="rd-options-title">Options</h2>
+        <!-- Mock options -->
+        <div id="rd-mock-options" class="panel" style="display:none;">
+            <h2>Mock Test</h2>
+            <p style="color:var(--text-dim);margin-bottom:16px;">3 random passages with AI-generated questions. 60 min timer.</p>
             <div class="form-group">
                 <label>Category</label>
-                <select id="rd-category"><option value="">All</option></select>
+                <select id="rd-mock-category"><option value="">All</option><option value="news">News (8sidor)</option><option value="stories">Stories</option></select>
             </div>
-            <button class="btn btn-primary" id="rd-go">Start</button>
+            <button class="btn btn-primary" id="rd-mock-go">Start Mock Test</button>
+        </div>
+
+        <!-- Practice options -->
+        <div id="rd-practice-options" class="panel" style="display:none;">
+            <h2>Practice</h2>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="rd-practice-category"><option value="">All</option><option value="news">News (8sidor)</option><option value="stories">Stories</option></select>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:12px;">
+                <button class="btn btn-primary" id="rd-practice-random" style="flex:1;">Random Passage</button>
+                <button class="btn" id="rd-practice-browse" style="flex:1;">Browse Passages</button>
+            </div>
+            <div id="rd-passage-browser" style="display:none;max-height:400px;overflow-y:auto;"></div>
         </div>
     </div>
 

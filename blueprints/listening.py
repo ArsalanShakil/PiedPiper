@@ -95,6 +95,42 @@ def list_categories():
     return jsonify(list(set(p["category"] for p in get_passages())))
 
 
+@bp.route("/clip/<int:index>", methods=["POST"])
+def generate_for_clip(index):
+    """Generate audio + questions for a specific passage."""
+    passages = get_passages()
+    if index < 0 or index >= len(passages):
+        return jsonify({"error": "Invalid index"}), 404
+
+    p = passages[index]
+    audio_url = _synthesize(p["text"])
+
+    system = (
+        "You are a YKI Swedish listening exam question generator (B1-B2). "
+        "Generate comprehension questions for text that will be heard as audio. "
+        "Return ONLY valid JSON."
+    )
+    prompt = (
+        f"This Swedish text will be played as audio:\n\"{p['text'][:1200]}\"\n\n"
+        f"Create 3 comprehension questions in Swedish:\n"
+        f"- 1 multiple choice (type: 'mc', options A/B/C, correct answer)\n"
+        f"- 1 true/false (type: 'tf', correct: 'sant'/'falskt')\n"
+        f"- 1 open question (type: 'open')\n\n"
+        f"Return JSON: {{\"questions\": [...]}}"
+    )
+    raw = ask_claude(prompt, system=system, timeout=120)
+    questions = []
+    try:
+        start = raw.find("{")
+        end = raw.rfind("}") + 1
+        if start >= 0 and end > start:
+            questions = json.loads(raw[start:end]).get("questions", [])
+    except (json.JSONDecodeError, ValueError):
+        questions = [{"type": "open", "question": "Vad handlade texten om?"}]
+
+    return jsonify({"clips": [{"title": p["title"], "audio_url": audio_url, "questions": questions, "text": p["text"]}]})
+
+
 @bp.route("/generate", methods=["POST"])
 def generate_listening():
     data = request.json or {}

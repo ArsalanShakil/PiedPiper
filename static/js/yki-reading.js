@@ -7,39 +7,97 @@ function initYkiReadingView() {
 
     if (!menu) return {};
 
-    // Load categories
-    (async () => {
-        const cats = await Api.get('/api/reading/categories');
-        const sel = document.getElementById('rd-category');
-        sel.innerHTML = '<option value="">All</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
-    })();
-
+    // Mode cards
     document.getElementById('rd-start-mock').addEventListener('click', () => {
-        isMock = true;
-        document.getElementById('rd-options-title').textContent = 'Mock Test Settings';
-        document.getElementById('rd-options').style.display = 'block';
+        document.getElementById('rd-mock-options').style.display = 'block';
+        document.getElementById('rd-practice-options').style.display = 'none';
     });
     document.getElementById('rd-start-practice').addEventListener('click', () => {
-        isMock = false;
-        document.getElementById('rd-options-title').textContent = 'Practice Settings';
-        document.getElementById('rd-options').style.display = 'block';
+        document.getElementById('rd-practice-options').style.display = 'block';
+        document.getElementById('rd-mock-options').style.display = 'none';
     });
 
-    document.getElementById('rd-go').addEventListener('click', async () => {
+    // Mock start
+    document.getElementById('rd-mock-go').addEventListener('click', async () => {
+        isMock = true;
         menu.style.display = 'none';
         loading.style.display = 'block';
 
         const { ok, data } = await Api.post('/api/reading/generate', {
-            category: document.getElementById('rd-category').value,
-            num_passages: isMock ? 3 : 1,
-            mode: isMock ? 'mock' : 'practice',
+            category: document.getElementById('rd-mock-category').value,
+            num_passages: 3,
         });
 
         loading.style.display = 'none';
         if (!ok || data.error) { alert(data.error || 'Failed'); menu.style.display = 'block'; return; }
-
         examData = data;
         renderExam();
+    });
+
+    // Practice random
+    document.getElementById('rd-practice-random').addEventListener('click', async () => {
+        isMock = false;
+        menu.style.display = 'none';
+        loading.style.display = 'block';
+
+        const { ok, data } = await Api.post('/api/reading/generate', {
+            category: document.getElementById('rd-practice-category').value,
+            num_passages: 1,
+        });
+
+        loading.style.display = 'none';
+        if (!ok || data.error) { alert(data.error || 'Failed'); menu.style.display = 'block'; return; }
+        examData = data;
+        renderExam();
+    });
+
+    // Practice browse
+    document.getElementById('rd-practice-browse').addEventListener('click', async () => {
+        const browser = document.getElementById('rd-passage-browser');
+        browser.style.display = 'block';
+        browser.innerHTML = '<p style="color:var(--text-light);padding:8px;">Loading...</p>';
+
+        const passages = await Api.get('/api/reading/passages');
+        const cat = document.getElementById('rd-practice-category').value;
+        const filtered = cat ? passages.filter(p => p.category === cat) : passages;
+
+        // Group by source
+        const grouped = {};
+        filtered.forEach((p, i) => {
+            // Need original index for the API
+            const origIdx = passages.indexOf(p);
+            const key = p.source;
+            if (!grouped[key]) grouped[key] = [];
+            grouped[key].push({ ...p, origIndex: origIdx });
+        });
+
+        let html = '';
+        for (const [source, items] of Object.entries(grouped)) {
+            html += `<div style="font-size:11px;font-weight:600;color:var(--text-light);text-transform:uppercase;padding:8px 0 4px;">${escapeHtml(source)}</div>`;
+            items.forEach(p => {
+                html += `<div class="sp-browse-item" style="padding:8px 12px;border:1px solid var(--border-light);border-radius:var(--radius-sm);margin-bottom:4px;cursor:pointer;" data-index="${p.origIndex}">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <strong style="font-size:13px;">${escapeHtml(p.title)}</strong>
+                        <span style="font-size:11px;color:var(--text-light);">${p.length} chars</span>
+                    </div>
+                </div>`;
+            });
+        }
+        browser.innerHTML = html || '<p class="empty-state">No passages found.</p>';
+
+        browser.querySelectorAll('.sp-browse-item').forEach(el => {
+            el.addEventListener('click', async () => {
+                isMock = false;
+                menu.style.display = 'none';
+                loading.style.display = 'block';
+
+                const { ok, data } = await Api.post(`/api/reading/passage/${el.dataset.index}`, {});
+                loading.style.display = 'none';
+                if (!ok || data.error) { alert(data.error || 'Failed'); menu.style.display = 'block'; return; }
+                examData = data;
+                renderExam();
+            });
+        });
     });
 
     function renderExam() {
@@ -85,11 +143,9 @@ function initYkiReadingView() {
                 }).join('')}
             </div>`).join('');
 
-        // Selection styling
         div.querySelectorAll('.option-label').forEach(l => {
             l.addEventListener('click', () => {
-                const qid = l.dataset.qid;
-                div.querySelectorAll(`[data-qid="${qid}"]`).forEach(x => x.classList.remove('selected'));
+                div.querySelectorAll(`[data-qid="${l.dataset.qid}"]`).forEach(x => x.classList.remove('selected'));
                 l.classList.add('selected');
             });
         });
@@ -99,7 +155,6 @@ function initYkiReadingView() {
 
     async function submitExam() {
         if (timer) timer.stop();
-
         const answers = [];
         const div = document.getElementById('rd-passages');
         (examData.passages || []).forEach((p, pi) => {
@@ -115,10 +170,7 @@ function initYkiReadingView() {
         loading.style.display = 'block';
         loading.querySelector('h3').textContent = 'Evaluating...';
 
-        const { ok, data } = await Api.post('/api/reading/evaluate', {
-            answers, passages: examData.passages,
-        });
-
+        const { ok, data } = await Api.post('/api/reading/evaluate', { answers, passages: examData.passages });
         loading.style.display = 'none';
         results.style.display = 'block';
         document.getElementById('rd-score').textContent = (data.score || 0) + '%';

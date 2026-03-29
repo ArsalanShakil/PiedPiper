@@ -8,40 +8,82 @@ function initYkiListeningView() {
 
     if (!menu) return {};
 
-    (async () => {
-        const cats = await Api.get('/api/listening/categories');
-        document.getElementById('ls-category').innerHTML = '<option value="">All</option>' +
-            cats.map(c => `<option value="${c}">${c}</option>`).join('');
-    })();
-
+    // Mode cards
     document.getElementById('ls-start-mock').addEventListener('click', () => {
-        isMock = true;
-        document.getElementById('ls-options-title').textContent = 'Mock Test';
-        document.getElementById('ls-options').style.display = 'block';
+        document.getElementById('ls-mock-options').style.display = 'block';
+        document.getElementById('ls-practice-options').style.display = 'none';
     });
     document.getElementById('ls-start-practice').addEventListener('click', () => {
-        isMock = false;
-        document.getElementById('ls-options-title').textContent = 'Practice';
-        document.getElementById('ls-options').style.display = 'block';
+        document.getElementById('ls-practice-options').style.display = 'block';
+        document.getElementById('ls-mock-options').style.display = 'none';
     });
 
-    document.getElementById('ls-go').addEventListener('click', async () => {
+    // Mock start
+    document.getElementById('ls-mock-go').addEventListener('click', async () => {
+        isMock = true;
+        await generateAndStart('/api/listening/generate', {
+            category: document.getElementById('ls-mock-category').value, num_clips: 2,
+        });
+    });
+
+    // Practice random
+    document.getElementById('ls-practice-random').addEventListener('click', async () => {
+        isMock = false;
+        await generateAndStart('/api/listening/generate', {
+            category: document.getElementById('ls-practice-category').value, num_clips: 1,
+        });
+    });
+
+    // Practice browse
+    document.getElementById('ls-practice-browse').addEventListener('click', async () => {
+        const browser = document.getElementById('ls-passage-browser');
+        browser.style.display = 'block';
+        browser.innerHTML = '<p style="color:var(--text-light);padding:8px;">Loading...</p>';
+
+        const passages = await Api.get('/api/listening/passages');
+        const cat = document.getElementById('ls-practice-category').value;
+        const filtered = cat ? passages.filter(p => p.category === cat) : passages;
+
+        const grouped = {};
+        filtered.forEach((p, i) => {
+            const origIdx = passages.indexOf(p);
+            if (!grouped[p.source]) grouped[p.source] = [];
+            grouped[p.source].push({ ...p, origIndex: origIdx });
+        });
+
+        let html = '';
+        for (const [source, items] of Object.entries(grouped)) {
+            html += `<div style="font-size:11px;font-weight:600;color:var(--text-light);text-transform:uppercase;padding:8px 0 4px;">${escapeHtml(source)}</div>`;
+            items.forEach(p => {
+                html += `<div class="sp-browse-item" style="padding:8px 12px;border:1px solid var(--border-light);border-radius:var(--radius-sm);margin-bottom:4px;cursor:pointer;" data-index="${p.origIndex}">
+                    <strong style="font-size:13px;">${escapeHtml(p.title)}</strong>
+                </div>`;
+            });
+        }
+        browser.innerHTML = html || '<p class="empty-state">No clips found.</p>';
+
+        browser.querySelectorAll('.sp-browse-item').forEach(el => {
+            el.addEventListener('click', async () => {
+                isMock = false;
+                await generateAndStart(`/api/listening/clip/${el.dataset.index}`, {});
+            });
+        });
+    });
+
+    async function generateAndStart(url, body) {
         menu.style.display = 'none';
         loading.style.display = 'block';
 
-        const { ok, data } = await Api.post('/api/listening/generate', {
-            category: document.getElementById('ls-category').value,
-            num_clips: isMock ? 2 : 1,
-        });
-
+        const { ok, data } = await Api.post(url, body);
         loading.style.display = 'none';
         if (!ok || data.error) { alert(data.error || 'Failed'); menu.style.display = 'block'; return; }
         examData = data;
         renderExam();
-    });
+    }
 
     function renderExam() {
         exam.style.display = 'block';
+        playCounters = {};
         if (isMock) {
             timer = new ExamTimer(document.getElementById('ls-timer'), 2400, null, () => submitExam());
             timer.start();
@@ -90,25 +132,21 @@ function initYkiListeningView() {
 
         // Play buttons
         (examData.clips || []).forEach((clip, ci) => {
-            const btn = document.getElementById(`ls-play-${ci}`);
-            const playsSpan = document.getElementById(`ls-plays-${ci}`);
-            btn.addEventListener('click', () => {
+            document.getElementById(`ls-play-${ci}`).addEventListener('click', () => {
                 if (isMock && playCounters[ci] >= 2) { alert('No plays remaining.'); return; }
                 playCounters[ci]++;
                 if (isMock) {
-                    playsSpan.textContent = `${2 - playCounters[ci]} plays remaining`;
-                    if (playCounters[ci] >= 2) btn.disabled = true;
+                    document.getElementById(`ls-plays-${ci}`).textContent = `${2 - playCounters[ci]} plays remaining`;
+                    if (playCounters[ci] >= 2) document.getElementById(`ls-play-${ci}`).disabled = true;
                 }
-                const audio = new Audio(clip.audio_url);
-                audio.play();
+                new Audio(clip.audio_url).play();
             });
         });
 
-        // Option selection styling
+        // Option styling
         div.querySelectorAll('.option-label').forEach(l => {
             l.addEventListener('click', () => {
-                const qid = l.dataset.qid;
-                div.querySelectorAll(`[data-qid="${qid}"]`).forEach(x => x.classList.remove('selected'));
+                div.querySelectorAll(`[data-qid="${l.dataset.qid}"]`).forEach(x => x.classList.remove('selected'));
                 l.classList.add('selected');
             });
         });
@@ -118,7 +156,6 @@ function initYkiListeningView() {
 
     async function submitExam() {
         if (timer) timer.stop();
-
         const answers = [];
         const div = document.getElementById('ls-clips');
         (examData.clips || []).forEach((clip, ci) => {
@@ -136,7 +173,6 @@ function initYkiListeningView() {
         loading.querySelector('p').textContent = '';
 
         const { ok, data } = await Api.post('/api/listening/evaluate', { answers, clips: examData.clips });
-
         loading.style.display = 'none';
         results.style.display = 'block';
         document.getElementById('ls-score').textContent = (data.score || 0) + '%';
