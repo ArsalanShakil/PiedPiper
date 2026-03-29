@@ -173,8 +173,27 @@ function initYkiReadingView() {
         const { ok, data } = await Api.post('/api/reading/evaluate', { answers, passages: examData.passages });
         loading.style.display = 'none';
         results.style.display = 'block';
-        document.getElementById('rd-score').textContent = (data.score || 0) + '%';
+        const score = data.score || 0;
+        document.getElementById('rd-score').textContent = score + '%';
         document.getElementById('rd-feedback').textContent = data.feedback || 'No feedback.';
+
+        // If part of full exam, auto-advance
+        if (localStorage.getItem('yki_full_exam_active') === 'reading') {
+            setTimeout(() => completeFullExamSection(score), 2000);
+        }
+    }
+
+    // Auto-start if part of full exam
+    if (localStorage.getItem('yki_full_exam_active') === 'reading') {
+        isMock = true;
+        menu.style.display = 'none';
+        loading.style.display = 'block';
+        Api.post('/api/reading/generate', { num_passages: 3 }).then(({ ok, data }) => {
+            loading.style.display = 'none';
+            if (!ok || data.error) { alert(data.error || 'Failed'); menu.style.display = 'block'; return; }
+            examData = data;
+            renderExam();
+        });
     }
 
     return { destroy() { if (timer) timer.stop(); } };

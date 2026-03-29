@@ -147,7 +147,12 @@ function initYkiWritingView() {
 
         loading.style.display = 'none';
         results.style.display = 'block';
-        document.getElementById('wr-score').textContent = (data.score || 0) + '%';
+        const score = data.score || 0;
+        document.getElementById('wr-score').textContent = score + '%';
+
+        if (localStorage.getItem('yki_full_exam_active') === 'writing') {
+            setTimeout(() => completeFullExamSection(score), 2000);
+        }
 
         let fb = data.feedback || '';
         if (data.task_feedback) {
@@ -156,6 +161,20 @@ function initYkiWritingView() {
             });
         }
         document.getElementById('wr-feedback').textContent = fb;
+    }
+
+    // Auto-start if part of full exam
+    if (localStorage.getItem('yki_full_exam_active') === 'writing') {
+        isMock = true;
+        loading.style.display = 'block';
+        menu.style.display = 'none';
+        Api.post('/api/writing/generate-mock', {}).then(({ ok, data }) => {
+            loading.style.display = 'none';
+            if (!ok || data.error) { alert(data.error || 'Failed'); menu.style.display = 'block'; return; }
+            tasks = data.tasks;
+            document.getElementById('wr-exam-title').textContent = 'Writing — Full Exam';
+            renderExam(data.total_minutes * 60);
+        });
     }
 
     return { destroy() { if (timer) timer.stop(); } };

@@ -175,8 +175,26 @@ function initYkiListeningView() {
         const { ok, data } = await Api.post('/api/listening/evaluate', { answers, clips: examData.clips });
         loading.style.display = 'none';
         results.style.display = 'block';
-        document.getElementById('ls-score').textContent = (data.score || 0) + '%';
+        const score = data.score || 0;
+        document.getElementById('ls-score').textContent = score + '%';
         document.getElementById('ls-feedback').textContent = data.feedback || 'No feedback.';
+
+        if (localStorage.getItem('yki_full_exam_active') === 'listening') {
+            setTimeout(() => completeFullExamSection(score), 2000);
+        }
+    }
+
+    // Auto-start if part of full exam
+    if (localStorage.getItem('yki_full_exam_active') === 'listening') {
+        isMock = true;
+        menu.style.display = 'none';
+        loading.style.display = 'block';
+        Api.post('/api/listening/generate', { num_clips: 2 }).then(({ ok, data }) => {
+            loading.style.display = 'none';
+            if (!ok || data.error) { alert(data.error || 'Failed'); menu.style.display = 'block'; return; }
+            examData = data;
+            renderExam();
+        });
     }
 
     return { destroy() { if (timer) timer.stop(); } };

@@ -498,7 +498,12 @@ function initYkiSpeakingView() {
         btn.textContent = 'Get AI Feedback';
         document.getElementById('sp-ai-feedback').style.display = 'block';
         document.getElementById('sp-ai-feedback').textContent = data.feedback || 'No feedback available.';
-        if (data.score) document.getElementById('sp-score').textContent = data.score + '%';
+        if (data.score) {
+            document.getElementById('sp-score').textContent = data.score + '%';
+            if (localStorage.getItem('yki_full_exam_active') === 'speaking') {
+                setTimeout(() => completeFullExamSection(data.score), 2000);
+            }
+        }
     });
 
     // --- Cleanup ---
@@ -506,6 +511,25 @@ function initYkiSpeakingView() {
         if (activeTimer) { clearInterval(activeTimer); activeTimer = null; }
         if (activeRecorder) { try { activeRecorder.stop(); } catch(e) {} activeRecorder.destroy(); activeRecorder = null; }
         if (activeRecognition) { try { activeRecognition.stop(); } catch(e) {} activeRecognition = null; }
+    }
+
+    // Auto-start if part of full exam
+    if (localStorage.getItem('yki_full_exam_active') === 'speaking') {
+        (async () => {
+            isMockMode = true;
+            menu.style.display = 'none';
+            loading.style.display = 'block';
+            const data = await Api.get('/api/speaking/random');
+            if (data.error) { alert(data.error); loading.style.display = 'none'; menu.style.display = 'block'; return; }
+            testData = data;
+            allResponses = [];
+            aborted = false;
+            document.getElementById('sp-exam-title').textContent = `Speaking — Full Exam`;
+            loading.style.display = 'none';
+            examDiv.style.display = 'block';
+            document.getElementById('sp-next-part').style.display = 'none';
+            runAllParts();
+        })();
     }
 
     return { destroy() { aborted = true; stopAll(); } };
