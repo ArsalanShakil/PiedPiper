@@ -37,45 +37,52 @@ function initEditorView() {
     });
 
     // --- Vocabulary highlighting ---
-    let vocabMap = {}; // lowercase swedish word -> translation
+    let vocabMap = {};
+    let vocabPattern = null;
     let highlightTimer = null;
+    let vocabLoaded = false;
 
     async function loadVocabWords() {
+        if (vocabLoaded) return; // Only load once per session
         const items = await Api.get('/api/vocabulary/');
         vocabMap = {};
         items.forEach(v => {
             const key = v.swedish_text.toLowerCase().replace(/[.,!?;:]/g, '').trim();
             if (key) vocabMap[key] = v.translation;
         });
+        // Pre-build regex once
+        const keys = Object.keys(vocabMap);
+        if (keys.length > 0) {
+            const escaped = keys.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+            vocabPattern = new RegExp('(?:^|[\\s.,;:!?()\\[\\]"\'—–-])(' + escaped.join('|') + ')(?=[\\s.,;:!?()\\[\\]"\'—–-]|$)', 'gi');
+        } else {
+            vocabPattern = null;
+        }
+        vocabLoaded = true;
+    }
+
+    function reloadVocab() {
+        vocabLoaded = false;
+        loadVocabWords().then(() => highlightVocabWords());
     }
 
     function highlightVocabWords() {
         clearTimeout(highlightTimer);
         highlightTimer = setTimeout(() => {
-            if (!quill || Object.keys(vocabMap).length === 0) return;
-
+            if (!quill || !vocabPattern) return;
             const text = quill.getText();
-            const vocabKeys = Object.keys(vocabMap);
-
-            // Build a regex that matches any vocab word (case-insensitive, word boundary)
-            // Escape special regex chars in vocab words
-            const escaped = vocabKeys.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-            const pattern = new RegExp('(?:^|[\\s.,;:!?()\\[\\]"\'—–-])(' + escaped.join('|') + ')(?=[\\s.,;:!?()\\[\\]"\'—–-]|$)', 'gi');
-
-            // First remove all existing vocab highlights
             const fullLen = quill.getLength();
-            quill.formatText(0, fullLen, 'background', false, 'silent');
+
+            // Clear and re-apply in one pass
             quill.formatText(0, fullLen, 'color', false, 'silent');
 
-            // Find and highlight each match
+            vocabPattern.lastIndex = 0;
             let match;
-            while (match = pattern.exec(text)) {
-                // match[1] is the captured word, match.index is for the full match including boundary char
+            while (match = vocabPattern.exec(text)) {
                 const wordStart = match.index + match[0].indexOf(match[1]);
-                const wordLen = match[1].length;
-                quill.formatText(wordStart, wordLen, { 'color': '#dc2626' }, 'silent');
+                quill.formatText(wordStart, match[1].length, { 'color': '#dc2626' }, 'silent');
             }
-        }, 400);
+        }, 500);
     }
 
     // Tooltip on hover over red words
@@ -286,8 +293,7 @@ function initEditorView() {
                 btn.disabled = true;
                 btn.classList.add('word-added');
                 // Refresh highlights with new vocab word
-                await loadVocabWords();
-                highlightVocabWords();
+                reloadVocab();
             });
         });
     });
@@ -367,8 +373,26 @@ function initEditorView() {
     transClose.addEventListener('click', () => { transPanel.classList.remove('visible'); });
 
     // --- Document list with folders ---
-    async function loadDocList() {
-        const docs = await Api.get('/api/editor/documents');
+    let cachedDocs = null;
+    let docListTimer = null;
+
+    async function loadDocList(forceRefresh) {
+        // Debounce rapid calls
+        if (!forceRefresh && cachedDocs) {
+            renderDocList(cachedDocs);
+            // Refresh in background
+            clearTimeout(docListTimer);
+            docListTimer = setTimeout(async () => {
+                cachedDocs = await Api.get('/api/editor/documents');
+                renderDocList(cachedDocs);
+            }, 500);
+            return;
+        }
+        cachedDocs = await Api.get('/api/editor/documents');
+        renderDocList(cachedDocs);
+    }
+
+    function renderDocList(docs) {
         const filterVal = folderFilter.value;
         const filtered = filterVal ? docs.filter(d => d.folder === filterVal) : docs;
 
@@ -469,7 +493,8 @@ function initEditorView() {
             highlightVocabWords();
         }, 150);
 
-        loadDocList();
+        // Just re-render cached list with new active state (no API call)
+        if (cachedDocs) renderDocList(cachedDocs);
     }
 
     async function saveDocument() {
