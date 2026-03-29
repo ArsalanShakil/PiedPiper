@@ -574,6 +574,68 @@ audio {
     font-size: 14px;
 }
 
+/* ==================== Global Vocabulary Highlighting ==================== */
+
+::highlight(vocab-words) {
+    color: #dc2626;
+    text-decoration: underline;
+    text-decoration-color: #fca5a5;
+    text-underline-offset: 3px;
+}
+
+/* ==================== Global Selection Toolbar ==================== */
+
+.selection-toolbar {
+    position: absolute;
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    padding: 4px;
+    z-index: 300;
+    gap: 2px;
+    flex-direction: row;
+}
+
+.selection-toolbar.visible {
+    display: flex;
+}
+
+.sel-btn {
+    padding: 6px 12px;
+    border: none;
+    background: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text);
+    transition: background 0.1s;
+    white-space: nowrap;
+}
+
+.sel-btn:hover {
+    background: var(--surface-hover);
+}
+
+.sel-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.sel-btn.sel-primary {
+    color: var(--primary);
+}
+
+.sel-btn.sel-danger {
+    color: var(--danger);
+}
+
+.sel-btn.sel-danger:hover {
+    background: #fef2f2;
+}
+
 /* ==================== Floating Translate Widget ==================== */
 
 .translate-fab {

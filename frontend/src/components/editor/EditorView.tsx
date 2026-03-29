@@ -11,7 +11,7 @@ import {
   fetchFolders,
   translate,
 } from '../../api/editor'
-import { addVocab, fetchVocabulary, deleteVocab } from '../../api/vocabulary'
+import { useVocab } from '../../context/VocabContext'
 import { fetchVoices, synthesize, deleteFile, getPlayUrl } from '../../api/tts'
 import { keepalivePut } from '../../api/client'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
@@ -78,7 +78,8 @@ export default function EditorView() {
   const editorContainerRef = useRef<HTMLDivElement>(null)
   const selToolbarRef = useRef<HTMLDivElement>(null)
 
-  const { refreshHighlights, getTranslation, reloadVocab } = useVocabHighlight(editorContainerRef)
+  const { refreshHighlights, getTranslation } = useVocabHighlight(editorContainerRef)
+  const { addWord, removeWord } = useVocab()
 
   // Keep refs in sync with state
   useEffect(() => { currentDocIdRef.current = currentDocId }, [currentDocId])
@@ -589,26 +590,19 @@ export default function EditorView() {
     if (!text) return
     setSelToolbarVisible(false)
     try {
-      const items = await fetchVocabulary(text)
-      const cleanText = text.toLowerCase().replace(/[.,!?;:]/g, '').trim()
-      const match = items.find(v => v.swedish_text.toLowerCase().replace(/[.,!?;:]/g, '').trim() === cleanText)
-      if (match) {
-        await deleteVocab(match.id)
-        reloadVocab()
-        setSaveStatus({ text: 'Removed from vocabulary', color: 'var(--danger)' })
-        setTimeout(() => setSaveStatus({ text: 'Auto-saved', color: 'var(--success)' }), 2000)
-      }
+      await removeWord(text)
+      setSaveStatus({ text: 'Removed from vocabulary', color: 'var(--danger)' })
+      setTimeout(() => setSaveStatus({ text: 'Auto-saved', color: 'var(--success)' }), 2000)
     } catch {
       // silently fail
     }
-  }, [reloadVocab])
+  }, [removeWord])
 
   async function saveVocabWord(swedish: string, translation: string) {
     const editor = quillRef.current?.getEditor()
     const context = editor ? editor.getText().trim().substring(0, 200) : ''
     try {
-      await addVocab({ swedish_text: swedish, translation, context })
-      reloadVocab()
+      await addWord(swedish, translation, context)
     } catch {
       // silently fail
     }
