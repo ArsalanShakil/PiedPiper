@@ -9,6 +9,7 @@ import YkiDashboardView from './components/yki/YkiDashboardView'
 import ReadingView from './components/reading/ReadingView'
 import WritingView from './components/writing/WritingView'
 import ListeningView from './components/listening/ListeningView'
+import SpeakingView from './components/speaking/SpeakingView'
 
 function Placeholder({ name }: { name: string }) {
   return (
@@ -32,7 +33,7 @@ export default function App() {
             <Route path="/yki/reading" element={<ReadingView />} />
             <Route path="/yki/writing" element={<WritingView />} />
             <Route path="/yki/listening" element={<ListeningView />} />
-            <Route path="/yki/speaking" element={<Placeholder name="Speaking Exam" />} />
+            <Route path="/yki/speaking" element={<SpeakingView />} />
             <Route path="/knowledge" element={<KnowledgeView />} />
             <Route path="/settings" element={<SettingsView />} />
             <Route path="*" element={<Navigate to="/" replace />} />
