@@ -11,6 +11,7 @@ import {
   fetchFolders,
   translate,
 } from '../../api/editor'
+import type { Document } from '../../types/api'
 import { useVocab } from '../../context/VocabContext'
 import { fetchVoices, synthesize, deleteFile, getPlayUrl } from '../../api/tts'
 import { keepalivePut } from '../../api/client'
@@ -78,8 +79,8 @@ export default function EditorView() {
   const editorContainerRef = useRef<HTMLDivElement>(null)
   const selToolbarRef = useRef<HTMLDivElement>(null)
 
-  const { refreshHighlights, getTranslation } = useVocabHighlight(editorContainerRef)
-  const { addWord, removeWord } = useVocab()
+  const { refreshHighlights } = useVocabHighlight(editorContainerRef)
+  const { addWord, removeWord, isInVocab, getTranslation } = useVocab()
 
   // Keep refs in sync with state
   useEffect(() => { currentDocIdRef.current = currentDocId }, [currentDocId])
@@ -136,12 +137,16 @@ export default function EditorView() {
     const editor = quillRef.current?.getEditor()
     if (!editor) return
     const folder = (folderValRef.current && folderValRef.current !== '__new__') ? folderValRef.current : 'General'
-    await updateDocument(docId, {
+    const html = editor.root.innerHTML
+    const text = editor.getText().trim()
+    const result = await updateDocument(docId, {
       title: titleRef.current.trim() || 'Untitled',
       folder,
-      content_html: editor.root.innerHTML,
-      content_text: editor.getText().trim(),
+      content_html: html,
+      content_text: text,
     })
+    // Update cache with latest content
+    docCacheRef.current.set(docId, result)
     setLastDocId(docId)
   }
 
@@ -176,32 +181,57 @@ export default function EditorView() {
     }
   }, [])
 
-  // --- Load document ---
+  // --- Document cache for fast switching ---
+  const docCacheRef = useRef<Map<number, Document>>(new Map())
+
   const loadDoc = useCallback(async (id: number) => {
     isLoadingRef.current = true
     isDirtyRef.current = false
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
 
-    try {
-      const doc = await fetchDocument(id)
-      setCurrentDocId(doc.id)
-      setLastDocId(doc.id)
-      setTitle(doc.title)
-      setFolderVal(doc.folder || 'General')
-
+    // Show cached version instantly if available
+    const cached = docCacheRef.current.get(id)
+    if (cached) {
+      setCurrentDocId(cached.id)
+      setLastDocId(cached.id)
+      setTitle(cached.title)
+      setFolderVal(cached.folder || 'General')
       const editor = quillRef.current?.getEditor()
       if (editor) {
-        // Safety: don't overwrite existing content with empty response
-        if (doc.content_html) {
-          editor.root.innerHTML = doc.content_html
+        if (cached.content_html) {
+          editor.root.innerHTML = cached.content_html
         } else {
           editor.setText('')
         }
       }
-
-      isLoadingRef.current = false
+      setWordCount(cached.word_count || 0)
       setSaveStatus({ text: 'Saved', color: 'var(--success)' })
+      isLoadingRef.current = false
       refreshHighlights()
+    }
+
+    try {
+      const doc = await fetchDocument(id)
+      docCacheRef.current.set(id, doc)
+      // Only update UI if this is still the current doc (user didn't switch again)
+      if (!cached || currentDocIdRef.current === id) {
+        setCurrentDocId(doc.id)
+        setLastDocId(doc.id)
+        setTitle(doc.title)
+        setFolderVal(doc.folder || 'General')
+        const editor = quillRef.current?.getEditor()
+        if (editor) {
+          if (doc.content_html) {
+            editor.root.innerHTML = doc.content_html
+          } else {
+            editor.setText('')
+          }
+        }
+        setWordCount(doc.word_count || 0)
+        setSaveStatus({ text: 'Saved', color: 'var(--success)' })
+        refreshHighlights()
+      }
+      isLoadingRef.current = false
     } catch {
       isLoadingRef.current = false
     }
@@ -380,8 +410,7 @@ export default function EditorView() {
         left: rect.left + window.scrollX + rect.width / 2 - 80,
       })
       // Check if selected word is already in vocab
-      const cleanText = text.toLowerCase().replace(/[.,!?;:]/g, '').trim()
-      setSelectionInVocab(!!getTranslation(cleanText))
+      setSelectionInVocab(isInVocab(text))
       setSelToolbarVisible(true)
     }
 
