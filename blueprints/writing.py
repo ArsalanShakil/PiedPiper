@@ -56,7 +56,7 @@ def _load_writing_prompts():
             if title:
                 prompts[cat].append({
                     "title": title,
-                    "template": template[:500],
+                    "template": template,
                 })
 
     return prompts
@@ -95,7 +95,7 @@ def generate_mock():
     if prompts["informal"]:
         p = random.choice(prompts["informal"])
         tasks.append({"type": "informal", "label": "Informellt mejl", "prompt": p["title"],
-                       "word_limit": 80, "time_minutes": 18})
+                       "template": p.get("template", ""), "word_limit": 80, "time_minutes": 18})
 
     # Task 2: Complaint or Review (random)
     cat2 = random.choice(["complaint", "review"])
@@ -103,13 +103,13 @@ def generate_mock():
         p = random.choice(prompts[cat2])
         label = "Klagomål" if cat2 == "complaint" else "Recension"
         tasks.append({"type": cat2, "label": label, "prompt": p["title"],
-                       "word_limit": 100, "time_minutes": 18})
+                       "template": p.get("template", ""), "word_limit": 100, "time_minutes": 18})
 
     # Task 3: Argumentative
     if prompts["argumentative"]:
         p = random.choice(prompts["argumentative"])
         tasks.append({"type": "argumentative", "label": "Argumenterande text", "prompt": p["title"],
-                       "word_limit": 120, "time_minutes": 18})
+                       "template": p.get("template", ""), "word_limit": 120, "time_minutes": 18})
 
     return jsonify({"tasks": tasks, "total_minutes": 54})
 
