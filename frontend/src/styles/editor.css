@@ -286,6 +286,14 @@
     color: var(--primary);
 }
 
+.sel-btn.sel-danger {
+    color: var(--danger);
+}
+
+.sel-btn.sel-danger:hover {
+    background: #fef2f2;
+}
+
 /* Translation Panel */
 .translation-panel {
     width: 340px;

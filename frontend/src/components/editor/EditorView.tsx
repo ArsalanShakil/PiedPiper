@@ -11,7 +11,7 @@ import {
   fetchFolders,
   translate,
 } from '../../api/editor'
-import { addVocab } from '../../api/vocabulary'
+import { addVocab, fetchVocabulary, deleteVocab } from '../../api/vocabulary'
 import { fetchVoices, synthesize, deleteFile, getPlayUrl } from '../../api/tts'
 import { keepalivePut } from '../../api/client'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
@@ -64,6 +64,7 @@ export default function EditorView() {
     visible: false, text: '', top: 0, left: 0,
   })
   const [addedWords, setAddedWords] = useState<Set<string>>(new Set())
+  const [selectionInVocab, setSelectionInVocab] = useState(false)
   const [speakUrl, setSpeakUrl] = useState<string | null>(null)
   const [speakFile, setSpeakFile] = useState<{ folder: string; name: string } | null>(null)
   const [speakLoading, setSpeakLoading] = useState(false)
@@ -377,6 +378,9 @@ export default function EditorView() {
         top: rect.top + window.scrollY - 44,
         left: rect.left + window.scrollX + rect.width / 2 - 80,
       })
+      // Check if selected word is already in vocab
+      const cleanText = text.toLowerCase().replace(/[.,!?;:]/g, '').trim()
+      setSelectionInVocab(!!getTranslation(cleanText))
       setSelToolbarVisible(true)
     }
 
@@ -580,6 +584,25 @@ export default function EditorView() {
     }
   }, [])
 
+  const handleRemoveVocab = useCallback(async () => {
+    const text = window.getSelection()?.toString().trim()
+    if (!text) return
+    setSelToolbarVisible(false)
+    try {
+      const items = await fetchVocabulary(text)
+      const cleanText = text.toLowerCase().replace(/[.,!?;:]/g, '').trim()
+      const match = items.find(v => v.swedish_text.toLowerCase().replace(/[.,!?;:]/g, '').trim() === cleanText)
+      if (match) {
+        await deleteVocab(match.id)
+        reloadVocab()
+        setSaveStatus({ text: 'Removed from vocabulary', color: 'var(--danger)' })
+        setTimeout(() => setSaveStatus({ text: 'Auto-saved', color: 'var(--success)' }), 2000)
+      }
+    } catch {
+      // silently fail
+    }
+  }, [reloadVocab])
+
   async function saveVocabWord(swedish: string, translation: string) {
     const editor = quillRef.current?.getEditor()
     const context = editor ? editor.getText().trim().substring(0, 200) : ''
@@ -756,7 +779,11 @@ export default function EditorView() {
       >
         <button className="sel-btn sel-primary" onClick={handleTranslate}>Translate</button>
         <button className="sel-btn" onClick={handleSelSpeak}>Speak</button>
-        <button className="sel-btn" onClick={handleSelVocab}>+ Vocab</button>
+        {selectionInVocab ? (
+          <button className="sel-btn sel-danger" onClick={handleRemoveVocab}>- Vocab</button>
+        ) : (
+          <button className="sel-btn" onClick={handleSelVocab}>+ Vocab</button>
+        )}
       </div>
 
       {/* Speak Player */}
