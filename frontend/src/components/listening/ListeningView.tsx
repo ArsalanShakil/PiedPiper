@@ -33,6 +33,16 @@ export default function ListeningView() {
   const [timerSeconds, setTimerSeconds] = useState(2400)
   const timerExpiredRef = useRef(false)
   const audioRefs = useRef<Record<number, HTMLAudioElement | null>>({})
+  const [pendingPractice, setPendingPractice] = useState<{ data: ListeningExamData; timerSecs: number } | null>(null)
+  const [pendingLoading, setPendingLoading] = useState(false)
+
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      Object.values(audioRefs.current).forEach(a => { if (a) { a.pause(); a.src = '' } })
+      audioRefs.current = {}
+    }
+  }, [])
 
   const handleTimerExpire = useCallback(() => {
     timerExpiredRef.current = true
@@ -91,18 +101,17 @@ export default function ListeningView() {
   }
 
   const handlePracticeRandom = async () => {
-    startLoading(false, 'Generating listening clip...')
+    setPendingLoading(true)
+    setPendingPractice(null)
     try {
       const data = await generateListening(practiceCategory, 1)
       const clipWords = data.clips.reduce((sum, c) => sum + c.text.split(/\s+/).length, 0)
       const secs = Math.max(420, Math.ceil(clipWords / 150) * 180)
-      setTimerSeconds(secs)
-      setExamData(data)
-      setAnswers({})
-      setPlayCounts({})
+      setPendingPractice({ data, timerSecs: secs })
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Failed')
-      backToMenu()
+    } finally {
+      setPendingLoading(false)
     }
   }
 
@@ -117,20 +126,28 @@ export default function ListeningView() {
   }
 
   const handleBrowseSelect = async (index: number) => {
-    startLoading(false, 'Loading clip...')
+    setPendingLoading(true)
+    setPendingPractice(null)
     setShowBrowser(false)
     try {
       const data = await fetchClip(index)
       const clipWords = data.clips.reduce((sum, c) => sum + c.text.split(/\s+/).length, 0)
       const secs = Math.max(420, Math.ceil(clipWords / 150) * 180)
-      setTimerSeconds(secs)
-      setExamData(data)
-      setAnswers({})
-      setPlayCounts({})
+      setPendingPractice({ data, timerSecs: secs })
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Failed')
-      backToMenu()
+    } finally {
+      setPendingLoading(false)
     }
+  }
+
+  const handleStartPendingPractice = () => {
+    if (!pendingPractice) return
+    setTimerSeconds(pendingPractice.timerSecs)
+    setExamData(pendingPractice.data)
+    setAnswers({})
+    setPlayCounts({})
+    setPendingPractice(null)
   }
 
   const handlePlay = (clipIndex: number, audioUrl: string) => {
@@ -375,14 +392,14 @@ export default function ListeningView() {
       </button>
       <h2 style={{ marginBottom: 20 }}>Listening Comprehension</h2>
       <div className="yki-dashboard">
-        <div className="yki-card" onClick={() => { setMenuSub('mock'); setShowBrowser(false) }}>
+        <div className="yki-card" onClick={() => { setMenuSub('mock'); setShowBrowser(false); setPendingPractice(null) }}>
           <div className="yki-card-icon">&#x1F3A7;</div>
           <h3>Mock Test</h3>
           <p>2 clips, timed 40 minutes</p>
           <div className="yki-card-time">40 min</div>
           <div className="yki-card-cta">Start Mock Exam &rarr;</div>
         </div>
-        <div className="yki-card" onClick={() => { setMenuSub('practice'); setShowBrowser(false) }}>
+        <div className="yki-card" onClick={() => { setMenuSub('practice'); setShowBrowser(false); setPendingPractice(null) }}>
           <div className="yki-card-icon">&#x1F50A;</div>
           <h3>Practice</h3>
           <p>Single clip, flexible timing</p>
@@ -435,13 +452,40 @@ export default function ListeningView() {
             </select>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn btn-primary" style={{ flex: 1 }} onClick={handlePracticeRandom}>
-              Random Clip
+            <button className="btn btn-primary" style={{ flex: 1 }} onClick={handlePracticeRandom} disabled={pendingLoading}>
+              {pendingLoading ? 'Loading...' : 'Random Clip'}
             </button>
-            <button className="btn" style={{ flex: 1 }} onClick={handleBrowseOpen}>
+            <button className="btn" style={{ flex: 1 }} onClick={handleBrowseOpen} disabled={pendingLoading}>
               Browse Clips
             </button>
           </div>
+
+          {/* Pending practice preview */}
+          {pendingPractice && !showBrowser && (
+            <div style={{
+              marginTop: 16, padding: 16, background: 'var(--bg)',
+              borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)',
+            }}>
+              {pendingPractice.data.clips.map((clip, i) => (
+                <div key={i} style={{ marginBottom: i < pendingPractice.data.clips.length - 1 ? 12 : 0 }}>
+                  <strong style={{ fontSize: 14 }}>{clip.title}</strong>
+                  <p style={{ fontSize: 12, color: 'var(--text-light)', marginTop: 4 }}>
+                    {clip.questions.length} question{clip.questions.length !== 1 ? 's' : ''}
+                  </p>
+                </div>
+              ))}
+              <p style={{ fontSize: 12, color: 'var(--text-light)', marginTop: 8 }}>
+                Timer: {Math.floor(pendingPractice.timerSecs / 60)} min
+              </p>
+              <button
+                className="btn btn-primary"
+                style={{ marginTop: 12, width: '100%' }}
+                onClick={handleStartPendingPractice}
+              >
+                Start Practice
+              </button>
+            </div>
+          )}
 
           {showBrowser && (
             <div style={{ marginTop: 16, maxHeight: 400, overflowY: 'auto' }}>

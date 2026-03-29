@@ -27,6 +27,8 @@ export default function ReadingView() {
   const [passages, setPassages] = useState<PassageListItem[]>([])
   const [showBrowser, setShowBrowser] = useState(false)
   const [answers, setAnswers] = useState<Record<string, string>>({})
+  const [pendingPractice, setPendingPractice] = useState<{ data: ReadingExamData; timerSecs: number } | null>(null)
+  const [pendingLoading, setPendingLoading] = useState(false)
 
   // Timer: we compute seconds when exam phase starts
   const [timerSeconds, setTimerSeconds] = useState(3600)
@@ -89,17 +91,17 @@ export default function ReadingView() {
   }
 
   const handlePracticeRandom = async () => {
-    startLoading(false, 'Generating questions with AI...')
+    setPendingLoading(true)
+    setPendingPractice(null)
     try {
       const data = await generateReading(practiceCategory, 1)
       const wordCount = data.passages.reduce((sum, p) => sum + p.text.split(/\s+/).length, 0)
       const secs = Math.max(600, Math.ceil(wordCount / 100) * 120)
-      setTimerSeconds(secs)
-      setExamData(data)
-      setAnswers({})
+      setPendingPractice({ data, timerSecs: secs })
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Failed')
-      backToMenu()
+    } finally {
+      setPendingLoading(false)
     }
   }
 
@@ -114,20 +116,28 @@ export default function ReadingView() {
   }
 
   const handleBrowseSelect = async (index: number) => {
-    startLoading(false, 'Generating questions with AI...')
+    setPendingLoading(true)
+    setPendingPractice(null)
     setShowBrowser(false)
     try {
       const { fetchPassage } = await import('../../api/reading')
       const data = await fetchPassage(index)
       const wordCount = data.passages.reduce((sum, p) => sum + p.text.split(/\s+/).length, 0)
       const secs = Math.max(600, Math.ceil(wordCount / 100) * 120)
-      setTimerSeconds(secs)
-      setExamData(data)
-      setAnswers({})
+      setPendingPractice({ data, timerSecs: secs })
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Failed')
-      backToMenu()
+    } finally {
+      setPendingLoading(false)
     }
+  }
+
+  const handleStartPendingPractice = () => {
+    if (!pendingPractice) return
+    setTimerSeconds(pendingPractice.timerSecs)
+    setExamData(pendingPractice.data)
+    setAnswers({})
+    setPendingPractice(null)
   }
 
   const setAnswer = (qid: string, value: string) => {
@@ -323,14 +333,14 @@ export default function ReadingView() {
       </button>
       <h2 style={{ marginBottom: 20 }}>Reading Comprehension</h2>
       <div className="yki-dashboard">
-        <div className="yki-card" onClick={() => { setMenuSub('mock'); setShowBrowser(false) }}>
+        <div className="yki-card" onClick={() => { setMenuSub('mock'); setShowBrowser(false); setPendingPractice(null) }}>
           <div className="yki-card-icon">&#x1F4DA;</div>
           <h3>Mock Test</h3>
           <p>3 passages, timed 60 minutes</p>
           <div className="yki-card-time">60 min</div>
           <div className="yki-card-cta">Start Mock Exam &rarr;</div>
         </div>
-        <div className="yki-card" onClick={() => { setMenuSub('practice'); setShowBrowser(false) }}>
+        <div className="yki-card" onClick={() => { setMenuSub('practice'); setShowBrowser(false); setPendingPractice(null) }}>
           <div className="yki-card-icon">&#x1F4D6;</div>
           <h3>Practice</h3>
           <p>Single passage, flexible timing</p>
@@ -383,13 +393,40 @@ export default function ReadingView() {
             </select>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn btn-primary" style={{ flex: 1 }} onClick={handlePracticeRandom}>
-              Random Passage
+            <button className="btn btn-primary" style={{ flex: 1 }} onClick={handlePracticeRandom} disabled={pendingLoading}>
+              {pendingLoading ? 'Loading...' : 'Random Passage'}
             </button>
-            <button className="btn" style={{ flex: 1 }} onClick={handleBrowseOpen}>
+            <button className="btn" style={{ flex: 1 }} onClick={handleBrowseOpen} disabled={pendingLoading}>
               Browse Passages
             </button>
           </div>
+
+          {/* Pending practice preview */}
+          {pendingPractice && !showBrowser && (
+            <div style={{
+              marginTop: 16, padding: 16, background: 'var(--bg)',
+              borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)',
+            }}>
+              {pendingPractice.data.passages.map((p, i) => (
+                <div key={i} style={{ marginBottom: i < pendingPractice.data.passages.length - 1 ? 12 : 0 }}>
+                  <strong style={{ fontSize: 14 }}>{p.title}</strong>
+                  <p style={{ fontSize: 12, color: 'var(--text-light)', marginTop: 4 }}>
+                    {p.source ? `Source: ${p.source}` : ''}{p.source ? ' | ' : ''}{p.text.length} chars | {p.questions.length} question{p.questions.length !== 1 ? 's' : ''}
+                  </p>
+                </div>
+              ))}
+              <p style={{ fontSize: 12, color: 'var(--text-light)', marginTop: 8 }}>
+                Timer: {Math.floor(pendingPractice.timerSecs / 60)} min
+              </p>
+              <button
+                className="btn btn-primary"
+                style={{ marginTop: 12, width: '100%' }}
+                onClick={handleStartPendingPractice}
+              >
+                Start Practice
+              </button>
+            </div>
+          )}
 
           {showBrowser && (
             <div style={{ marginTop: 16, maxHeight: 400, overflowY: 'auto' }}>

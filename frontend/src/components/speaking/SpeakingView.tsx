@@ -88,6 +88,10 @@ export default function SpeakingView() {
   const [feedback, setFeedback] = useState<string | null>(null)
   const [evaluating, setEvaluating] = useState(false)
 
+  /* ---- pending practice preview ---- */
+  const [pendingPractice, setPendingPractice] = useState<{ data: SpeakingTest; title: string } | null>(null)
+  const [pendingLoading, setPendingLoading] = useState(false)
+
   /* ---- refs for imperative engine ---- */
   const abortRef = useRef(false)
   const timerIdRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -97,6 +101,8 @@ export default function SpeakingView() {
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null)
   /** stable ref to know if engine is running */
   const engineRunningRef = useRef(false)
+  /** track active audio elements for cleanup on unmount */
+  const activeAudiosRef = useRef<HTMLAudioElement[]>([])
 
   /* ================================================================ */
   /*  SpeechRecognition browser shim                                   */
@@ -182,6 +188,9 @@ export default function SpeakingView() {
       try { recognitionRef.current.stop() } catch { /* ignore */ }
       recognitionRef.current = null
     }
+    // Stop all active audio elements
+    activeAudiosRef.current.forEach(a => { try { a.pause(); a.src = '' } catch { /* ignore */ } })
+    activeAudiosRef.current = []
   }
 
   /* ================================================================ */
@@ -222,45 +231,46 @@ export default function SpeakingView() {
   }, [mockChoice]) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function startPracticeRandom() {
-    setPhase('loading')
-    setIsMock(false)
-    abortRef.current = false
-    allResponsesRef.current = []
+    setPendingLoading(true)
+    setPendingPractice(null)
 
     try {
       const partData = await fetchPractice(practicePartType || undefined, practiceTopic || undefined)
-      if (abortRef.current) return
       const wrapped: SpeakingTest = {
         number: 0,
         topic: partData.test_topic || partData.topic || 'Practice',
         parts: [partData],
       }
-      setTestData(wrapped)
-      setExamTitle(`Practice \u2014 ${partData.title || partData.topic || ''}`)
-      setPhase('exam')
-      runEngine(wrapped, false)
+      setPendingPractice({ data: wrapped, title: `Practice \u2014 ${partData.title || partData.topic || ''}` })
     } catch (err) {
-      if (abortRef.current) return
       alert(err instanceof Error ? err.message : 'Failed to load practice')
-      setPhase('menu')
+    } finally {
+      setPendingLoading(false)
     }
   }
 
-  async function startPracticeBrowseItem(item: SpeakingBrowseItem) {
-    setPhase('loading')
-    setIsMock(false)
-    abortRef.current = false
-    allResponsesRef.current = []
-
+  function selectBrowseItem(item: SpeakingBrowseItem) {
     const wrapped: SpeakingTest = {
       number: 0,
       topic: item.data.test_topic || item.topic || 'Practice',
       parts: [item.data],
     }
-    setTestData(wrapped)
-    setExamTitle(`Practice \u2014 ${item.title}`)
+    setPendingPractice({ data: wrapped, title: `Practice \u2014 ${item.title}` })
+    setShowBrowser(false)
+  }
+
+  function handleStartPendingPractice() {
+    if (!pendingPractice) return
+    setPhase('loading')
+    setIsMock(false)
+    abortRef.current = false
+    allResponsesRef.current = []
+
+    setTestData(pendingPractice.data)
+    setExamTitle(pendingPractice.title)
     setPhase('exam')
-    runEngine(wrapped, false)
+    runEngine(pendingPractice.data, false)
+    setPendingPractice(null)
   }
 
   async function handleBrowse() {
@@ -413,9 +423,9 @@ export default function SpeakingView() {
       const data = await synthesizePrompt(promptText)
       if (abortRef.current) return
       if (listenOnly) {
-        await playAudioOnce(data.url)
+        await playAudioOnce(data.url, activeAudiosRef)
       } else {
-        await playAudioTwice(data.url)
+        await playAudioTwice(data.url, activeAudiosRef)
       }
     } catch {
       // TTS failure - continue anyway
@@ -446,10 +456,17 @@ export default function SpeakingView() {
     try {
       const beepUrl = getBeepUrl()
       const beepAudio = new Audio(beepUrl)
+      activeAudiosRef.current.push(beepAudio)
       beepAudio.play().catch(() => { /* ignore */ })
       await new Promise<void>(resolve => {
-        beepAudio.addEventListener('ended', () => resolve())
-        setTimeout(() => resolve(), 2000)
+        beepAudio.addEventListener('ended', () => {
+          activeAudiosRef.current = activeAudiosRef.current.filter(a => a !== beepAudio)
+          resolve()
+        })
+        setTimeout(() => {
+          activeAudiosRef.current = activeAudiosRef.current.filter(a => a !== beepAudio)
+          resolve()
+        }, 2000)
       })
     } catch { /* ignore */ }
     if (abortRef.current) return
@@ -842,7 +859,7 @@ export default function SpeakingView() {
       <div className="yki-dashboard">
         <div
           className="yki-card"
-          onClick={() => { setMenuSub('mock'); setShowBrowser(false) }}
+          onClick={() => { setMenuSub('mock'); setShowBrowser(false); setPendingPractice(null) }}
           style={{ cursor: 'pointer' }}
         >
           <div className="yki-card-icon">{'\uD83C\uDF93'}</div>
@@ -854,7 +871,7 @@ export default function SpeakingView() {
 
         <div
           className="yki-card"
-          onClick={() => { setMenuSub('practice'); setShowBrowser(false) }}
+          onClick={() => { setMenuSub('practice'); setShowBrowser(false); setPendingPractice(null) }}
           style={{ cursor: 'pointer' }}
         >
           <div className="yki-card-icon">{'\uD83C\uDFA7'}</div>
@@ -926,17 +943,52 @@ export default function SpeakingView() {
               className="btn btn-primary"
               style={{ flex: 1 }}
               onClick={startPracticeRandom}
+              disabled={pendingLoading}
             >
-              Random Question
+              {pendingLoading ? 'Loading...' : 'Random Question'}
             </button>
             <button
               className="btn"
               style={{ flex: 1 }}
               onClick={handleBrowse}
+              disabled={pendingLoading}
             >
               Browse Questions
             </button>
           </div>
+
+          {/* Pending practice preview */}
+          {pendingPractice && !showBrowser && (
+            <div style={{
+              marginTop: 16, padding: 16, background: 'var(--bg)',
+              borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)',
+            }}>
+              {pendingPractice.data.parts.map((part, i) => (
+                <div key={i} style={{ marginBottom: i < pendingPractice.data.parts.length - 1 ? 12 : 0 }}>
+                  <span className="badge" style={{ marginRight: 6 }}>
+                    {part.type === 'dialogues' ? 'Del 1: Dialoger'
+                      : part.type === 'react' ? 'Del 2: Reagera'
+                      : part.type === 'narrate' ? 'Del 3: Beratta'
+                      : part.type === 'opinion' ? 'Del 4: Din asikt'
+                      : part.type}
+                  </span>
+                  <strong style={{ fontSize: 14 }}>{part.title}</strong>
+                  {part.topic && (
+                    <p style={{ fontSize: 12, color: 'var(--text-light)', marginTop: 4 }}>
+                      Topic: {part.topic}
+                    </p>
+                  )}
+                </div>
+              ))}
+              <button
+                className="btn btn-primary"
+                style={{ marginTop: 12, width: '100%' }}
+                onClick={handleStartPendingPractice}
+              >
+                Start Practice
+              </button>
+            </div>
+          )}
 
           {/* Question browser */}
           {showBrowser && (
@@ -963,7 +1015,7 @@ export default function SpeakingView() {
                     {questions.map(q => (
                       <div
                         key={q.id}
-                        onClick={() => startPracticeBrowseItem(q)}
+                        onClick={() => selectBrowseItem(q)}
                         style={{
                           padding: '10px 12px',
                           border: '1px solid var(--border-light)',
