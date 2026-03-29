@@ -12,7 +12,8 @@
           "b. olika hus i London",
           "c. samma hus i Stockholm",
           "d. olika hus i Stockholm"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -22,7 +23,8 @@
           "b. talar svenska och övar med Daniel och Julia",
           "c. talar inte svenska",
           "d. bor inte i London"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -32,7 +34,8 @@
           "b. en resa till flygplatsen",
           "c. en science fiction-bok",
           "d. pengar"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -42,7 +45,8 @@
           "b. glad",
           "c. nervös",
           "d. rädd"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -52,7 +56,8 @@
           "b. många affärsmän",
           "c. inte många människor",
           "d. inga barn"
-        ]
+        ],
+        "correct": "b."
       }
     ]
   },
@@ -69,7 +74,8 @@
           "b. är en kompis till Julias och Daniels föräldrar",
           "c. är Julias kompis",
           "d. är Daniels kompis"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -79,7 +85,8 @@
           "b. varmt",
           "c. inte varmt och inte kallt",
           "d. varmt på natten och kallt på dagen"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -89,7 +96,8 @@
           "b. Anders kompis lägenhet",
           "c. Anders lägenhet",
           "d. Uppsala"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -99,7 +107,8 @@
           "b. han inte har några pengar",
           "c. det inte finns någon telefonkiosk",
           "d. han har glömt sin mobil"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -109,7 +118,8 @@
           "b. på en buss",
           "c. på ett hotell i Uppsala",
           "d. på flygplatsen"
-        ]
+        ],
+        "correct": "c."
       }
     ]
   },
@@ -126,7 +136,8 @@
           "b. 10:00",
           "c. 09:00",
           "d. 12:15"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -136,7 +147,8 @@
           "b. arbetar på Den galna köttbullen",
           "c. arbetar bara som chaufför",
           "d. arbetar för en annan restaurang"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -146,7 +158,8 @@
           "b. en ung kvinna",
           "c. en annan chaufför",
           "d. en annan man"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -156,7 +169,8 @@
           "b. arbeta som chaufför",
           "c. träffa sin pappa",
           "d. träffa sitt barn"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -166,7 +180,8 @@
           "b. Anders pappa",
           "c. Julias mamma",
           "d. Daniels mamma"
-        ]
+        ],
+        "correct": "b."
       }
     ]
   },
@@ -183,7 +198,8 @@
           "b. en affär",
           "c. restaurangen Den galna köttbullen",
           "d. flygplatsen"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -193,7 +209,8 @@
           "b. bara Julia där",
           "c. bara Anders där",
           "d. ingen där"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -203,7 +220,8 @@
           "b. laga middag",
           "c. ringa Anders",
           "d. ringa sina föräldrar"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -213,7 +231,8 @@
           "b. Anders",
           "c. Julia",
           "d. lastbilschauffören"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -223,12 +242,13 @@
           "b. en pizzeria",
           "c. London",
           "d. Uppsala"
-        ]
+        ],
+        "correct": "a."
       }
     ]
   },
   {
-    "story": "Den galna köttbullen",
+    "story": "En mycket ovanlig utflykt",
     "chapter": "Kapitel 1 – Varelsen",
     "text": "Dalarna ligger i västra Sverige nära gränsen till Norge. I norra delen av\nDalarna ligger Grövelsjön. Det är ett populärt område för turister. På vintern\nåker man skidor. På sommaren vandrar man eller paddlar kanot. Många åker\nockså dit för att fotografera den vackra naturen.\nDalarna har växlande väder. Ibland sol och ibland regn. Somrarna är\nlagom varma. Därför tycker vandrare från hela Sverige om Grövelsjön. Elsa\när en av alla som gärna vandrar där. Hon bor dessutom i närheten. Hon tycker\nbäst om att vandra i maj och juni. Då tycker hon att naturen är speciellt\nvacker. Varje helg packar hon sin ryggsäck och går ut i skogen. Elsas kompis\nOskar gillar också att vandra, gärna tillsammans med Elsa. Förra helgen\ntänkte de göra en utflykt igen och det blev verkligen en mycket ovanlig\nutflykt!\nElsa och Oskar träffades i skogskanten. ‘Hej Elsa!’ ropade Oskar.\n‘Hej Oskar!’ svarade Elsa.\nOskar sprang fram till Elsa.\n‘Ta det lugnt, Oskar. Du blir trött,’ skrattade Elsa.\n‘Oroa dig inte. Jag har tagit med mig tillräckligt med energidrycker,’ sade\nOskar. Han pekade på sin stora ryggsäck och skrattade.\nDet var så roligt att träffas igen och de hade så mycket att prata om. Sedan\ngick de in på en stig och började sin vandring.\nEfter någon kilometer delade sig stigen i två stigar. En gick åt vänster, en\nåt höger.\n‘Åt vilket håll ska vi gå?’ frågade Elsa. ‘Åt vänster eller åt höger?’\n‘Vi går åt vänster,’ svarade Oskar.\n‘Tja, hm … Jag tror jag föredrar att gå åt höger.’\n\n\f‘Varför då?’\nElsa tittade inåt skogen längs den vänstra stigen. Sedan sade hon, ‘Folk\nberättar historier om den där stigen. Många har sett en stor hårig varelse där\n….’\n‘Jaså? Tror du på sådana historier?’\n‘Hm … Jag vet inte. Jag tycker att vi ska ta stigen åt höger istället …,’\nsade Elsa. Hon såg lite orolig ut.\n‘Kom igen, Elsa. Vi försöker! Det här kan bli spännande,’ sade Oskar och\nlog mot Elsa som fortfarande såg lite nervös ut. ‘OK då,’ sade hon till slut.\nOch så tog de den vänstra stigen.\nEn timme senare gick Elsa och Oskar fortfarande på samma stig. Det stod\nhöga träd överallt runt omkring dem. Det var sent på eftermiddagen. Elsa\nfrågade Oskar, ‘Tror du verkligen att det finns konstiga varelser i den här\nskogen?’\n‘Nej, det tror jag inte.’\n‘Varför inte?’\n‘Tja, jag har aldrig sett någon konstig varelse här. Har du?’\n‘Inte i den här skogen.’\n‘Just det. Så det betyder att vi kan känna oss säkra!’\nElsa skrattade. ‘Jag antar det!’\nElsa och Oskar fortsatte sin vandring. Flera kilometer senare gick de\nfortfarande. Solen sken fortfarande på en klarblå himmel. Plötsligt kom de ut\nur skogen. Framför dem låg en liten sjö.\nElsa och Oskar stannade och såg sig omkring. Nere vid sjön låg en liten\nstuga. Den var röd och såg ut att vara mycket gammal. ‘Titta, Oskar,’ ropade\nElsa. ‘Titta där borta!’\n‘Var då?’\n‘Där! Det ligger en liten stuga där.’\n‘Ja, jag ser det. Ska vi gå dit och titta?’\n‘Va? Men tänk om någon är där?’\n‘Var inte rädd, Elsa. Jag är säker på att det inte är någon där.’\n\n\fDe gick fram till stu",
     "questions": [
@@ -240,7 +260,8 @@
           "b. Dalarna",
           "c. Norrland",
           "d. södra Sverige"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -250,7 +271,8 @@
           "b. strand",
           "c. by",
           "d. stad"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -260,7 +282,8 @@
           "b. en stad",
           "c. en affär",
           "d. ett litet hus"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -270,7 +293,8 @@
           "b. sover de i den",
           "c. ser de att den läcker",
           "d. tar de den och ror ut på sjön"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -280,12 +304,13 @@
           "b. stugan",
           "c. sjön",
           "d. skogen"
-        ]
+        ],
+        "correct": "b."
       }
     ]
   },
   {
-    "story": "Den galna köttbullen",
+    "story": "En mycket ovanlig utflykt",
     "chapter": "Kapitel 2 – Sökandet",
     "text": "‘Såg du?’ frågade Oskar.\n‘Ja!’ svarade Elsa. ‘Vad var det för något?’\n‘Jag vet inte! Men det var något förfärligt stort och fult!’\n‘Javisst … någon slags varelse!’\nOskar tittade på Elsa och sade, ‘Ska vi följa efter den?’\n‘Skojar du?’ svarade Elsa. ‘Inte en chans!’\n‘Kom nu! Det här är riktigt spännande! Vi går ut och letar efter den!’\n‘Åh nej! Jag vet inte riktigt ….’\nOskar och Elsa gick ut ur stugan. De följde varelsens fotspår in i skogen.\nDe såg sig omkring. Till slut sade Oskar, ‘Varelsen kan vara var som helst. Vi\nmåste dela upp oss och leta.’\n‘Dela upp oss?’ sade Elsa förvånat. ‘Är du galen, Oskar? Det finns en\nkonstig varelse där ute. Och vi vet inte vad det är för något!’\n‘Jag vet,’ svarade Oskar. ‘Men vi kan ta ett foto på den. Vi kan hamna på\nnyheterna.’\n‘Va?’\n‘Kom igen, Elsa,’ sade Oskar. ‘Det är kanske ett alldeles nytt djur! Ingen\nhar kanske fotograferat det tidigare!’ Han tittade på Elsa och fortsatte, ‘De\nkanske skriver en artikel om oss! Vi kanske blir intervjuade på TV-nyheterna!\nVi kunde ….’\n‘Sluta! Du är tokig, Oskar. Jag borde inte gå med på det här, men visst. Vi\ndelar upp oss då.’\nOskar tog en stig. Elsa tog en annan. Hon såg inga spår efter varelsen. Hon\ntänkte efter. Till sist bestämde hon sig för att hon och Oskar bara hade\ninbillat sig att de hade sett en varelse. Den fanns inte på riktigt.\n\n\fNågra minuter senare fick Elsa syn på Oskar i skogen igen. Hon sade till\nhonom att hon var säker på att varelsen inte fanns i verkligheten. Den fanns\nbara i deras fantasi. Men Oskar var alldeles säker på att den fanns. De\nbehövde bara bevisa det.\nDe gick förbi ett buskage. Oskar ville se om varelsen fanns där inne. Han\nsade till Elsa att vänta. När han gick in i buskaget log han och vinkade.\nElsa väntade på att Oskar skulle komma tillbaka. Hon väntade i flera\nminuter. Ingen Oskar. Hon väntade nästan en halvtimme. Fortfarande ingen\nOskar!\nElsa tittade på sin mobil. Den hade ingen täckning. Hon kunde inte ens\nringa efter hjälp. Vid det här laget var hon rädd. Men hon kunde inte bara\nlämna Oskar!\nPlötsligt tänkte hon, ‘Han kanske gick tillbaka till stugan. Kanske allt det\nhär bara är ett skämt!’\nElsa gick tillbaka till stugan och tittade i rummen och i köket. Ingen Oskar.\nHon bestämde sig för att vänta tills han kom tillbaka. Om han skämtade så\nkunde hon också skämta. Hon tänkte uppföra sig helt normalt, precis som om\ndet inte var något särskilt med att han hade varit borta. Ha! Det skulle bli\nroligt!\nDet stod en gammal säng i vardagsrummet. Hon satte sig på sängen och tog\nfram en smörgås. Hon åt den och tänkte på Oskar. Var var han? Vad skulle\nhon kunna göra?\nMedan Elsa tänkte blev hon sömnig. Hennes huvud fungerade inte\nordentligt. Vilken dag! ‘Jag väntar på Oskar här och ….’ Det var hennes sista\ntanke innan hon somnade.\nElsa vaknade tidigt nästa morgon. Oskar var fortfarande inte där. Hon\nhoppades på att hela upplevelsen var en dröm. Men hon insåg att det inte var\nså. Hon var verkligen orolig. Det här var kanske inte ett skämt.\nElsa",
     "questions": [
@@ -297,7 +322,8 @@
           "b. ett skämt",
           "c. Oskar",
           "d. något i hennes fantasi"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -307,7 +333,8 @@
           "b. ett annat hus",
           "c. Elsas bil",
           "d. några täta buskar"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -317,7 +344,8 @@
           "b. båten på sjön",
           "c. en säng i huset",
           "d. byn"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -327,7 +355,8 @@
           "b. går hon till buskaget",
           "c. ringer hon Oskars föräldrar",
           "d. ringer hon sina föräldrar"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -337,12 +366,13 @@
           "b. att det lyser i huset",
           "c. varelsen",
           "d. Oskar"
-        ]
+        ],
+        "correct": "b."
       }
     ]
   },
   {
-    "story": "Den galna köttbullen",
+    "story": "En mycket ovanlig utflykt",
     "chapter": "Kapitel 3 – Presenten",
     "text": "Elsa kunde inte tro sina ögon. ‘Det lyser i huset!’ tänkte hon. Hon följde\nstigen ner till sjön. Hon lämnade ryggsäcken vid ett träd och gick fram till\nhuset.\nElsa gick runt stugan. Hon försökte titta in genom fönstren. Hon ville se\nvem som var där inne. Det måste vara Oskar!\n‘Hallå?’ ropade hon. ‘Det är Elsa!’ Ingen svarade. Plötsligt hörde hon ett\nljud inne i stugan. ‘OK, Oskar,’ tänkte Elsa. ‘Det här är inte roligt längre!’\nElsa gick fram till dörren och öppnade den. Hon var helt oförberedd på vad\nhon fick se.\nDet var fullt med folk i stugan! Alla hon kände var där. Hennes mamma var\ndär, hennes syster, Oskars bror och flera av hennes vänner.\n‘Elsa!’ ropade hennes mamma. ‘Så roligt att du är här! Vi har väntat på\ndig.’\n‘Hej,’ sade Elsa försiktigt. ‘Vad är det som händer här?’\n‘Tja,’ sade hennes mamma. ‘Sätt dig. Låt mig förklara.’\nElsa satte sig på den gamla sängen. ‘Jag förstår ingenting. Vad är det som\nhänder?’ frågade hon igen. Alla runt henne såg oroliga ut. Ingen sade något.\n‘Var är pappa?’ frågade hon sin mamma.\n‘Han är på jobbet. Han kommer snart,’ svarade mamman.\nElsa såg sig omkring i rummet. ‘Kan ingen vara snäll och tala om för mig\nvad det är som händer?’ frågade hon igen.\nMamman reste sig upp. ‘Vi tror att Oskar har försvunnit,’ sade hon. ‘Vi\ntror att en skogsvarelse har tagit honom.’\n‘Va? Hur vet du att vi såg en varelse?’\n\n\f‘Oskar skickade ett sms till mig. Han sade att han behövde hjälp. Sedan\ndog hans mobiltelefon. Vi är här för att leta efter Oskar.’\n‘Nu?’ frågade Elsa förvånat.\n‘Ja, nu.’\nAlla tog sina ryggsäckar och gjorde sig klara att gå och leta efter Oskar.\nDe gick ut ur huset och delade upp sig i grupper.\nElsa stannade i dörren. Hon stod där en stund. ‘Jag förstår bara inte,’\ntänkte hon. ‘Oskar skulle inte bara gå iväg själv. Han skulle inte vilja\nskrämma mig. Och varför skulle han skicka ett sms till mamma? Varför inte\ntill mig? Och varför är mina vänner här? Och inte hans?’ Hon skakade på\nhuvudet. ‘Det är något som inte stämmer här ….’\nSedan gick Elsa ut och såg sig omkring. Hon kunde inte se grupperna! Hon\nkunde inte se någon alls! ‘Var är ni?’ ropade hon. ‘Hallå? Kan någon höra\nmig?’\nElsa gick mot skogen. ‘De är väl redan inne i skogen och letar,’ tänkte hon.\n‘Var är ni allihop? Är det någon där?’ ropade hon igen. Ingen svarade.\n‘Jag förstår absolut ingenting! Alla har försvunnit,’ tänkte hon. Hon såg sig\nomkring, men sedan vände hon om och gick tillbaka. Det var bättre att vänta i\nstugan än att gå omkring ensam i skogen.\nElsa gick in i stugan och satte sig på sängen igen. Hon väntade några\nminuter. Ingen kom. Plötsligt hördes ljud från köket.\nHon reste sig upp och gick långsamt mot köket. Hon försökte vara alldeles\ntyst. Hon ville se vem som var där. Var det kanske någon av hennes vänner?\nEller hennes mamma?\nDå såg hon den – varelsen! Den var förfärligt ful och den var på väg mot\nhenne! Elsa skrek och rusade ut ur stugan.\n‘Hjälp! Hjälp!’ skrek hon. Ingen hörde henne. Hon sprang så fort hon\nkunde. Men varelsen var sna",
     "questions": [
@@ -354,7 +384,8 @@
           "b. sin pappa",
           "c. sin familj och flera av sina vänner",
           "d. varelsen"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -364,7 +395,8 @@
           "b. kommer hennes pappa bakom henne",
           "c. möter hon varelsen",
           "d. har de försvunnit"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -374,7 +406,8 @@
           "b. ringa till Oskars mobil",
           "c. leta efter Oskar i skogen",
           "d. gå tillbaka till huset"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -384,7 +417,8 @@
           "b. ringer hennes mobiltelefon",
           "c. kommer Anna och Veronika",
           "d. somnar hon"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -394,7 +428,8 @@
           "b. Oskar",
           "c. Elsas pappa",
           "d. en riktig björn"
-        ]
+        ],
+        "correct": "c."
       }
     ]
   },
@@ -411,7 +446,8 @@
           "b. svart och vitt",
           "c. svart och blått",
           "d. vitt och rött"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -421,7 +457,8 @@
           "b. två flaskor trolldryck som ger styrka",
           "c. en flaska trolldryck för att göra guld",
           "d. två flaskor trolldryck för att göra guld"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -431,7 +468,8 @@
           "b. en arg köpman",
           "c. kungens bror",
           "d. en vakt"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -441,7 +479,8 @@
           "b. trolldrycker",
           "c. en last med guld",
           "d. vakter"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -451,7 +490,8 @@
           "b. kung Haralds brors kungarike",
           "c. Haralds kungarike",
           "d. ett torg i kungariket"
-        ]
+        ],
+        "correct": "b."
       }
     ]
   },
@@ -468,7 +508,8 @@
           "b. kan inte vägen till kungariket",
           "c. frågar efter vägen till kungariket",
           "d. går vilse på vägen"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -478,7 +519,8 @@
           "b. Två vakter och Ingemar",
           "c. En vakt och Ingemar",
           "d. Bara Ingemar"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -488,7 +530,8 @@
           "b. var det en strid mellan två bröder",
           "c. var det ett okänt krig",
           "d. finns det många djur"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -498,7 +541,8 @@
           "b. existerade aldrig",
           "c. är borta nu",
           "d. var alltid en sjö"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -508,7 +552,8 @@
           "b. kan de se havet",
           "c. bestämmer de sig för att åka tillbaka till kung Haralds rike",
           "d. kan de se kung Sigurds rike"
-        ]
+        ],
+        "correct": "d."
       }
     ]
   },
@@ -525,7 +570,8 @@
           "b. en vakt",
           "c. en bonde",
           "d. en bondes fru"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -535,7 +581,8 @@
           "b. ser ut som kung Haralds",
           "c. är stängt",
           "d. har en magisk källa"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -545,7 +592,8 @@
           "b. känner inte varandra",
           "c. känner varandra",
           "d. arbetar för kung Harald"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -555,7 +603,8 @@
           "b. en flaska trolldryck",
           "c. två flaskor trolldryck",
           "d. en flaska vanligt vatten"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -565,12 +614,13 @@
           "b. kung Harald kommer att anfalla Sigurd",
           "c. Ingemar och kung Sigurd är samma person",
           "d. guldet inte är äkta"
-        ]
+        ],
+        "correct": "a."
       }
     ]
   },
   {
-    "story": "Riddaren",
+    "story": "Klockan",
     "chapter": "Kapitel 1 – Legenden",
     "text": "Karl var urmakare. Han var i 40-årsåldern och hade ingen egen familj. Hans\nföräldrar bodde i Stockholm. Själv bodde Karl på Gotland i ett litet hus på\nen lugn gata i Visby.\nKarl var smal men stark. Han hade sin egen verkstad. Han lagade klockor\noch tillverkade också egna klockor av hög kvalitet.\nKarl arbetade många timmar varje dag och ofta till sent på kvällen. Hans\nverkstad låg nära stranden inte långt från ringmuren. Vid arbetsdagens slut\ngick han ofta ned till havet för att få lite frisk luft och för att sträcka på\nbenen.\nEn kväll mötte Karl en gammal vän på sin promenad. Hon hette Susanne.\n‘Hej Karl! Hur är det med dig?’ sade hon.\n‘Hej Susanne. Vad gör du här?’\n‘Jag är ute och går, precis som du,’ skrattade Susanne.\n‘Det låter bra. Vi kan göra sällskap.’\nKarl och Susanne var länge ute och gick. De pratade om allt möjligt. ‘Hur\när det på jobbet?’ frågade Susanne, ‘Har du mycket att göra?’\n‘Ja, jag har massor av jobb. Firman går fint. Jag är väldigt nöjd.’\n‘Kul för dig.’\nSusanne var säkerhetsvakt. Hon jobbade i hamnen. Hon berättade för\nKarl att hon gillade sitt jobb. Hon tyckte också om att gå längs stranden och\nsåg ofta intressanta saker där. Idag hade hon faktiskt hittat ett mycket speciellt\nföremål.\n‘Vet du vad,’ började Susanne. ‘Jag hoppades att jag skulle träffa dig\nidag.’\n\n\f‘Jaså?’ svarade Karl.\n‘Ja. Jag har hittat något på stranden. Och jag vet inte vad jag ska göra med\ndet.’\n‘Vad har du hittat, Susanne?’\nSusanne tog fram en klocka. Den såg gammal ut men den verkade vara av\nmycket god kvalitet. ‘Kan du tala om för mig vad det här är för sorts klocka?’\nfrågade hon.\n‘Låt mig titta efter,’ sade Karl.\nKarl tog klockan och tittade noga på den. ‘Jag har ingen aning om vad det\när för modell,’ sade han till slut.\nSusanne blev förvånad. ‘Vet du ingenting om den?’\n‘Tja, jag ser att det är en mycket gammal klocka. Jag är bara inte säker\n….’ Han gjorde en paus och tittade på henne. ‘Behöver du gå till jobbet just\nnu, Susanne?’\n‘Nej, jag är ledig ikväll.’\n‘Följ med till min verkstad. Jag har några böcker som vi kan titta i.’\nKarl och Susanne gick till Karls verkstad. Den var full av klockor och\nverktyg, allt som Karl behövde för jobbet. Susanne hade aldrig varit i\nverkstaden förut. Hon tyckte det var spännande. ‘Oj!’ sade hon. ‘Vad du har\nmånga saker här!’\n‘Ja, en urmakare behöver massor av olika verktyg för att kunna jobba med\nklockor.’\n‘Ja, jag ser verkligen det!’\nKarl bad Susanne att följa med honom. Han lade ner klockan på ett bord\noch de gick in i ett annat rum. Där fanns det många böcker. Några var mycket\ngamla. Många namn var svåra att läsa.\n‘Vad gör vi här?’ frågade Susanne.\n‘Vi letar efter information,’ svarade Karl.\n‘Information om vad?’\n‘Om vad det är för typ av klocka. Jag har aldrig sett någon sådan förut!’\n\n\fKarl och Susanne letade i böckerna. Efter en stund hittade Susanne\nnågonting intressant i en bok om Östersjön. ‘Karl! Lyssna på det här!’\nropade hon.\nKarl stängde sin bok och gick till Susanne.\n‘Vad är det?’\n‘Det är en bok om pir",
     "questions": [
@@ -582,7 +632,8 @@
           "b. fiskare",
           "c. pirat",
           "d. säkerhetsvakt"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -592,7 +643,8 @@
           "b. promenera runt i sin verkstad",
           "c. promenera längs stranden",
           "d. jobba med klockor"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -602,7 +654,8 @@
           "b. fru",
           "c. dotter",
           "d. vän"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -612,7 +665,8 @@
           "b. kan visa tiden",
           "c. har magiska krafter",
           "d. ägs av en känd urmakare"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -622,7 +676,8 @@
           "b. en okänd man tar den",
           "c. de tappar bort den",
           "d. de glömmer den på stranden"
-        ]
+        ],
+        "correct": "b."
       }
     ]
   },
@@ -639,7 +694,8 @@
           "b. bara resa till 1600-talet",
           "c. bara resa till 2000-talet",
           "d. bara se vilken tid det är"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -649,7 +705,8 @@
           "b. Susanne",
           "c. Karl och Susanne",
           "d. Frans"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -659,7 +716,8 @@
           "b. fly från de svenska skeppen",
           "c. bo på Gotland med Karl och Susanne",
           "d. ge klockan till en svensk kapten"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -669,7 +727,8 @@
           "b. tala om för honom vad som kommer att hända i striden",
           "c. tala med de svenska anfallarna",
           "d. hjälpa Frans på skeppet"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -679,7 +738,8 @@
           "b. stjäla klockan",
           "c. strida mot de svenska skeppen",
           "d. ge sig iväg från Erik"
-        ]
+        ],
+        "correct": "d."
       }
     ]
   },
@@ -696,7 +756,8 @@
           "b. Eriks son",
           "c. Eriks styrman",
           "d. en annan pirat"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -706,7 +767,8 @@
           "b. resa tillbaka till 2000-talet",
           "c. resa till 1600-talet",
           "d. använda den för att strida mot svenskarna"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -716,7 +778,8 @@
           "b. ger inte Erik klockan till honom",
           "c. stjäl Erik klockan",
           "d. försöker Erik att gå därifrån"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -726,7 +789,8 @@
           "b. Erik och Karl",
           "c. Erik och Frans",
           "d. Erik, Karl, Frans och Susanne"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -736,12 +800,13 @@
           "b. förstöra klockan",
           "c. ge honom sitt piratskepp",
           "d. låta honom behålla klockan"
-        ]
+        ],
+        "correct": "b."
       }
     ]
   },
   {
-    "story": "Klockan",
+    "story": "Kistan",
     "chapter": "Kapitel 1 – I Göteborg",
     "text": "Det var en gång en gammal man som bodde i Borås. Han hette Valter.\nValter hade aldrig gift sig. Han hade ingen familj och inga barn. Han hade\nbott ensam i många år. Han var mycket vänlig och var alltid trevlig mot alla.\nValter hade aldrig rest långt hemifrån. Han hade bara rest runt omkring\nBorås. Men nu var det dags. Han hade nämligen ett uppdrag.\nValter hade inte så mycket pengar men han var inte fattig. Han hade sparat\nlite pengar när han var yngre. Han tänkte använda pengarna för sitt uppdrag.\nHan behövde resa till tre olika platser. Han behövde pengar till resan och till\nmat och hotell. Han var fast besluten att utföra sitt uppdrag.\nFörst reste Valter till Göteborg. Många människor tittade på honom när han\ngick förbi. Han hade inte klippt sig på mycket länge. Han hade långt skägg.\nKläderna var också väldigt speciella. Han såg annorlunda ut än de flesta\nandra människor på Göteborgs gator.\nValter gick till Slottsskogen. Det är en stor park i Göteborg. Det var\nmycket folk där. Valter gick fram till en ung man i 25-årsåldern. Mannen satt\noch läste en tidning med ryggen mot ett träd. Han såg lugn ut.\nValter satte sig ner bredvid honom. ‘Goddag,’ sade Valter.\n‘Hej …,’ svarade mannen. Han tittade frågande på Valter. Sedan fortsatte\nhan att läsa.\n‘Hur mår du, David?’ frågade Valter.\nMannen tittade upp. Han blev mycket förvånad. Hur kunde den här okände\nmannen veta vad han hette? Han tittade noga på honom. ‘Sade du David?’\nfrågade han.\n‘Ja, det gjorde jag.’\n‘Hur vet du vad jag heter?’\n\n\f‘Det kan jag inte tala om för dig.’\nDavid slutade läsa tidningen. Han tittade på Valter igen. Den här gången\nännu noggrannare. Han försökte föreställa sig honom utan skägg. Men han\nhade ingen aning om vem han var.\n‘Vad vill du?’ frågade David. Vid det här laget var han misstänksam.\n‘Var inte orolig,’ sade Valter. ‘Jag är inte här för att skada dig. Jag är här\nför att säga dig något.’\n‘Jaha.’\nValter tog fram ett foto ur fickan. På fotot fanns det en kista. Den såg\nväldigt gammal ut. Det såg också ut som om det skulle kunna finnas någonting\nvärdefullt i den.\n‘Vad är det där?’ frågade David.\n‘Ser du inte vad det är?’\n‘Det ser ut som en kista. Jag har aldrig sett den i hela mitt liv.’\nValter tittade på David. Sedan pekade han på bilden. ‘Titta på det här.’\nDavid tittade. Kistan hade ett lås. Låskoden hade tre nollor. ‘Det är ett\nlås.’\n‘Ja, och …?’ fortsatte Valter.\n‘Fattas det siffror i koden?’ frågade David.\n‘Just det!’ sade Valter. ‘Alla tre siffrorna fattas!’ Sedan tittade han på\nDavid och log. ‘Jag behöver de tre siffrorna för att klara av att utföra mitt\nuppdrag.’\n‘Uppdrag? Vad då för uppdrag?’\n‘Det kan jag inte tala om för dig än,’ svarade Valter lugnt.\nDavid förstod ingenting. Han visste inte vad mannen ville ha. Hur kunde\nhan ge honom siffror som han inte visste något om? Till slut sade Valter, ‘Jag\när säker på att du har en av siffrorna.’\n‘Jag förstår inte alls vad du pratar om.’\n‘Tänk efter, David. Du måste ha ett gammalt föremål någonstans. Kanske\nett föremål m",
     "questions": [
@@ -753,7 +818,8 @@
           "b. en man i 40-årsåldern",
           "c. en gammal man",
           "d. en ung pojke"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -763,7 +829,8 @@
           "b. i en park",
           "c. på en flygplats",
           "d. i ett garage"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -773,7 +840,8 @@
           "b. ett garage",
           "c. ett halsband",
           "d. en stad"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -783,7 +851,8 @@
           "b. en taxi",
           "c. Stockholm",
           "d. ett garage"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -793,7 +862,8 @@
           "b. Malmö",
           "c. Stockholm",
           "d. en park"
-        ]
+        ],
+        "correct": "c."
       }
     ]
   },
@@ -810,7 +880,8 @@
           "b. litet men vackert",
           "c. medelstort",
           "d. stort men inte särskilt vackert"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -820,7 +891,8 @@
           "b. Christian",
           "c. Valter",
           "d. Lisa"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -830,7 +902,8 @@
           "b. visar henne ett foto av kistan",
           "c. pratar om kistan",
           "d. pratar om ett halsband"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -840,7 +913,8 @@
           "b. vet vad Valter gör",
           "c. tycker inte om Valter",
           "d. kan inte hjälpa Valter"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -850,7 +924,8 @@
           "b. Göteborg",
           "c. Borås",
           "d. Malmö"
-        ]
+        ],
+        "correct": "d."
       }
     ]
   },
@@ -867,7 +942,8 @@
           "b. tillbaka till Göteborg",
           "c. Malmö och Borås",
           "d. Malmö"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -877,7 +953,8 @@
           "b. Valters familj",
           "c. en konsthall",
           "d. resan till Malmö"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -887,7 +964,8 @@
           "b. på en båt",
           "c. i en liten by",
           "d. nära ett torg"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -897,7 +975,8 @@
           "b. ett brev och många saker",
           "c. ett brev från personernas föräldrar",
           "d. pengar"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -907,12 +986,13 @@
           "b. kusiner",
           "c. vänner",
           "d. barn"
-        ]
+        ],
+        "correct": "a."
       }
     ]
   },
   {
-    "story": "Kistan",
+    "story": "Okänt land",
     "chapter": "Kapitel 1 – Hemma i byn",
     "text": "För mer än tusen år sedan bodde det vikingar i Skandinavien. Därför kallas\nden tidsperioden för vikingatiden. Det var en ganska kall period. Vikingarna\nmåste arbeta hårt för att kunna skaffa tillräckligt med mat. Det kan vara en av\nanledningarna till att de ofta letade efter nya landområden.\nUnder vikingatiden fanns det en by som hette Askenäs. Det var en ganska\nstor by. En av dem som bodde där var en ung man som hette Toralf. Han var\nlite över 20 år gammal.\nToralf var lång och stark och såg bra ut. Han hade långt brunt hår, stor näsa\noch kraftiga armar och ben. Han var en mycket duktig jägare.\nEn eftermiddag kom Toralf tillbaka från jakten. Solen sken men det var\nlite kallt. På vägen mötte Toralf en man som hette Nils. Han var välkänd i\nbyn. Nils reste ofta till främmande platser långt bort. Han letade efter nya\noch bättre platser där man lättare kunde skaffa bra mat. Han var ofta borta\nmycket länge.\nToralf vinkade till Nils. ‘Hallå!’ ropade han.\n‘Toralf!’ svarade Nils.\n‘Nils! Är du fortfarande hemma?’\n‘Ja. Jag är kvar ett tag till.’\n‘Och vart ska du åka sedan?’\n‘Jag vet inte precis. Vår hövding Egil säger att jag ska snart resa väldigt\nlångt bort.’\nToralf hade mycket respekt för Askenäs hövding Egil. Hövdingen var en\nstor och stark man. Han hade det längsta hår Toralf någonsin sett. Han talade\nalltid med stort allvar. Han var en mycket sträng man som hade bestämt\n\n\fmånga lagar. Ibland var han också elak, men de flesta ansåg att Egil var en\nbra ledare. ‘Har hövdingen nya planer?’ frågade Toralf intresserat.\n‘Ja, men han har inte berättat för oss om dem. Han har bara sagt att vi ska\nåka långt bort.’\nAskenäs låg vid en sjö nära några berg. En flod ledde från sjön ner till\nhavet. På sommaren fanns det tillräckligt med mat i byn, men på vintern var\ndet svårt. Det fanns inte tillräckligt att äta. Förra vintern hade många\nmänniskor dött. Hövdingen visste att han måste hitta nya landområden snart,\ndär man skulle kunna odla mer. Han skickade ofta ut expeditioner. De\nutforskade områden långt bort från Askenäs.\n‘Goda nyheter!’ sade Toralf. ‘Jag vill inte gå hungrig i vinter!’\n‘Inte jag heller. Min familj måste äta bättre. Vi vill inte bara äta saltad fisk\nhela vintern.’\nToralf visste att Nils pappa var död och att Nils mamma och hans syskon\nfick arbeta hårt för att överleva. Nils pappa hade tidigare ofta gjort långa\nresor till främmande länder.\n‘Jag måste gå nu, Nils,’ sade Toralf till slut. ‘Jag måste göra iordning\ndjuren som jag har dödat idag. Min familj ska sälja köttet.’\n‘Det låter bra. Gör det.’\nToralf gick tillbaka hem. Han pratade med sina föräldrar och syskon. Hans\npappa var bonde. Familjen hade en egen liten bit jord. De odlade en del\ngrönsaker. De hade också grisar och getter. De sålde en del av djuren. De\nsålde också köttet från Toralfs jakt. De tjänade pengar men det var aldrig\ntillräckligt.\nToralf kunde inte sova den natten. Det fanns för mycket att tänka på. Vart\nskulle männen resa? Vad var målet för den här nya expeditionen?\nTvå dagar sena",
     "questions": [
@@ -924,7 +1004,8 @@
           "b. jägare",
           "c. byns hövding",
           "d. bonde"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -934,7 +1015,8 @@
           "b. jägare",
           "c. byns hövding",
           "d. bonde"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -944,7 +1026,8 @@
           "b. präst",
           "c. bonde",
           "d. byns hövding"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -954,7 +1037,8 @@
           "b. behöver mer mat på sommaren",
           "c. behöver mer mat på vintern",
           "d. behöver fler jägare"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -964,12 +1048,13 @@
           "b. att Nils vill resa iväg",
           "c. Toralfs planer på bättre jakt",
           "d. hövdingens planer på en lång resa"
-        ]
+        ],
+        "correct": "d."
       }
     ]
   },
   {
-    "story": "Kistan",
+    "story": "Okänt land",
     "chapter": "Kapitel 2 – Resan västerut",
     "text": "Mötet gick som Toralf hade hoppats. Det handlade om hövdingens planer för\nnästa expedition. Egil ville resa mycket längre bort än förra gången och han\nville själv följa med.\nEgil berättade hur han hade tänkt. Han ville resa längs floden ner till havet.\nSedan ville han segla över havet för att hitta nytt land. Där skulle man kunna\nodla mer mat. Han ville resa så långt västerut som möjligt.\nAlla i byn var förvånade, även Toralf och Nils, men alla var överens om\nexpeditionen. Man började reparera skeppen och planera resan. Det var\nmycket arbete som måste göras. Alla i byn hjälpte till.\nDet gick en månad. Det var sent på sommaren och de ville kunna ge sig\niväg innan höststormarna kom.\nNils ledde arbetet med att reparera skeppen. Man använde virke från träd\ni närheten. Hövdingen kom ofta och tittade. Han ville se hur fort det gick.\n‘Säg mig, Nils,’ sade Egil, ‘När kan vi ge oss iväg? Jag ser att skeppen\nbörjar bli färdiga.’ Sedan blev han allvarlig. ‘Vi måste segla snart.’\n‘Jag är inte säker, Egil. Kanske om en vecka. Kanske tidigare.’\n‘En vecka? Bra!’\n‘Ja, virket är perfekt och våra män är väldigt duktiga,’ sade Nils.\nHövdingen höll ett nytt tal i Stora Hallen den kvällen. Det var dags att\nbestämma vem som skulle följa med på resan. Det fanns plats för 75 män.\nEn efter en räckte männen upp händerna för att visa att de ville följa med.\nDe flesta var vältränade krigare. Deras skicklighet var nödvändig för\nexpeditionen.\nToralf ville också följa med. Även om han inte var skicklig i strid så var\nhan en bra jägare. Maten var alltid viktig på en expedition. I ett nytt land\nskulle det behövas duktiga jägare. Toralf räckte upp handen. ‘Du vet inte\n\n\fvilken sorts djur det finns,’ sade Toralf till hövdingen. ‘Du behöver jägare.\nJag kan jaga överallt och vad som helst,’ sade han.\nEgil tittade på honom och sade, ‘Nåväl, Toralf. Följ med oss.’\nFrån den stunden längtade Toralf efter den dag då expeditionen skulle\nbörja. När dagen äntligen kom förberedde sig Egil, Nils, Toralf och de andra\nvikingarna noga inför resan. Först bad de gudarna om hjälp. Deras hustrur\noch familjer tog farväl. Egil överlät makten över sitt hus och sina tjänare till\nsin hustru medan han var borta. Hon uppmuntrade dem inför den långa\nresan. Till slut gick männen ombord. Den långa resan hade börjat.\nDe tre skeppen rodde längs floden. När de kom till havet kunde de segla\noch behövde inte ro så ofta. De seglade västerut. Oftast var vinden god.\nSkeppen var i utmärkt skick. Männen var glada. Vädret var perfekt. De första\nveckorna gick utan några problem.\nFlera veckor senare seglade skeppen fortfarande västerut. Männen ombord\nsåg inget land ännu, bara vatten. De såg inte ens fåglar. Fåglar betydde att det\nfanns land i närheten.\nNågra av männen började ifrågasätta Egils beslut. ‘Egil, är du säker på att\ndet finns land västerut?’ frågade en man.\n‘Jag är bergsäker.’\n‘Tänk om vi inte kan hitta det?’\nHövdingen blev rasande. ‘Vi kommer inte att misslyckas!’ skrek han. ‘Det\nfinns land västerut. Någon har",
     "questions": [
@@ -981,7 +1066,8 @@
           "b. 60",
           "c. 75",
           "d. 85"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -991,7 +1077,8 @@
           "b. 3",
           "c. 4",
           "d. 5"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -1001,7 +1088,8 @@
           "b. kan skeppen inte hålla ihop",
           "c. börjar skeppen läcka vatten",
           "d. seglar skeppen in i en stor storm"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -1011,7 +1099,8 @@
           "b. Nils",
           "c. Egil",
           "d. Nils pappa"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -1021,12 +1110,13 @@
           "b. odla mat, jaga, undersöka området",
           "c. jaga, odla mat, undersöka området",
           "d. jaga, undersöka området, odla mat"
-        ]
+        ],
+        "correct": "d."
       }
     ]
   },
   {
-    "story": "Kistan",
+    "story": "Okänt land",
     "chapter": "Kapitel 3 – Beslutet",
     "text": "Männen steg upp med solen. De åt lite av den proviant som fanns kvar efter\nresan. De hade också kött från jakten.\nToralf gick för att prata med Egil så snart han var färdig.\n‘God morgon, Egil,’ sade han.\n‘God morgon, Toralf. Vill du något?’\n‘Jag måste prata med dig.’\n‘Javisst.’\nToralf ville fråga om en sak. ‘I början av resan,’ började han, ‘tvivlade\nmännen ofta. De ställde många frågor. De visste inte om det fanns något land\ni väster. Men du var en bra hövding. Vi har kommit fram välbehållna till det\nhär nya landet.’\n‘Ja. Vad är det du vill säga, Toralf?’\n‘Mannen som berättade för dig om landet. Han som gav dig bevisen. Vem\nvar han?’\n‘Du menar mannen som talade om för mig att det här landet fanns?’\n‘Ja, precis.’\nEgil såg sig omkring.\n‘Är det något som är fel?’ frågade Toralf.\n‘Var är Nils?’\n‘Han äter, tror jag.’\n‘Bra. Mannen som berättade för mig om den här platsen var Nils far.’\n‘Nils pappa?’\n‘Ja.’\nToralf blev mycket förvånad. Var Nils pappa den mystiske mannen? Men\nhan var ju död. Toralf förstod ingenting. ‘Jag trodde att Nils pappa dog på en\n\n\ftidigare expedition som färdades österut,’ sade han.\n‘Nej. Det var lögn. Jag skickade honom västerut tillsammans med en\nexpedition från en annan by. Ingen i Askenäs visste något.’\n‘Skickade du honom till det här landet? Ensam?’\n‘Nej. Jag skickade honom på en expedition västerut med 60 andra män från\nen by några dagars resa från Askenäs. Några män dog på resan och några dog\nhär. De andra männen kom tillbaka hem. De var alla utmattade och sjuka\noch dog. Nils far var den siste som dog. Han kom aldrig tillbaka till Askenäs.\nMen jag hann träffa honom och han berättade för mig om det nya landet. Han\ngav mig också tygbiten som jag visade er. Jag berättade aldrig om det här för\nnågon i vår by.’\nEgil lade fram tyget med bilderna på bordet. Det var någon slags skrift på\ntyget, men det var inte runor. Toralf hade aldrig sett något liknande. Han\ntittade på hövdingen igen. Ja, Egil hade kanske beviset. Nu. Men förut då?\n‘Hur visste du?’ frågar Toralf. ‘Varför skickade du Nils pappa med de\nandra männen västerut? Du trodde att det inte fanns något mer än bara hav.’\n‘Gudarna visade mig det här landet i en dröm.’\n‘Hade du en dröm? Dog Nils pappa och alla de andra männen för att du\nhade en dröm?’ Toralf tittade på Egil. ‘Om Nils får veta det här kommer han\naldrig att förlåta dig.’\nEgil lade en hand på Toralfs arm. ‘Du får inte berätta det här för Nils. Nils\när den bäste vi har när vi behöver hitta nya platser. Han är nästan lika bra\nsom sin far. Han får inte bli upprörd. Vi behöver honom.’\nToralf nickade. ‘Jag förstår.’\n‘Gå tillbaka till de andra männen,’ sade hövdingen. ‘Och tala aldrig om\ndet här igen.’\nEn kort stund senare tog männen med sig sina vapen. De gick över stranden\nin i skogen. De var beredda på strid. Nils ledde gruppen. Det var väldigt\nvarmt. De vandrade i flera timmar. Till slut såg de något nedanför ett lågt\nberg. Det såg ut som en by. Nils gjorde tecken till männen att stanna.\nNils, Egil och Toralf och ",
     "questions": [
@@ -1038,7 +1128,8 @@
           "b. Toralfs pappa",
           "c. Nils pappa",
           "d. Byns hövding"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -1048,7 +1139,8 @@
           "b. en annan grupp vikingar",
           "c. en grupp bofasta människor",
           "d. en bondgård"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -1058,7 +1150,8 @@
           "b. de måste strida",
           "c. de vill göra olika saker",
           "d. deras kurs ändrades"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -1068,7 +1161,8 @@
           "b. fortsätta resan till andra platser",
           "c. stanna i det nya landet",
           "d. strida mot människorna i byn"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -1078,7 +1172,8 @@
           "b. Nordamerika",
           "c. Storbritannien",
           "d. Sydamerika"
-        ]
+        ],
+        "correct": "b."
       }
     ]
   },
@@ -1095,7 +1190,8 @@
           "b. kock",
           "c. chaufför",
           "d. försäljare"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -1105,7 +1201,8 @@
           "b. en medellång kvinna",
           "c. en gammal kvinna",
           "d. inte väl beskriven i historien"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -1115,7 +1212,8 @@
           "b. Josef och Anna",
           "c. Amir och Sofia",
           "d. Jimmy och Sara"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -1125,7 +1223,8 @@
           "b. inte arbetar tillräckligt",
           "c. arbetar för mycket",
           "d. kunde vara en bättre anställd"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -1135,7 +1234,8 @@
           "b. ringa till sina vänner",
           "c. njuta av sina nya kraft",
           "d. tjuvlyssna på folk hon inte känner"
-        ]
+        ],
+        "correct": "c."
       }
     ]
   },
@@ -1152,7 +1252,8 @@
           "b. i en park",
           "c. förbi ett kafé",
           "d. i skogen"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -1162,7 +1263,8 @@
           "b. sitt kontor",
           "c. en by",
           "d. en annan affär"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -1172,7 +1274,8 @@
           "b. vill gå på dejt med Anna",
           "c. ljuger om ett projekt",
           "d. vill ge alla löneförhöjning"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -1182,7 +1285,8 @@
           "b. Han älskar henne inte",
           "c. Hon vill förbättra deras förhållande",
           "d. Hon vill lämna honom"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -1192,7 +1296,8 @@
           "b. förstöra metallklotet",
           "c. köra metallklotet till Sundsvall",
           "d. prata med Peter"
-        ]
+        ],
+        "correct": "a."
       }
     ]
   },
@@ -1209,7 +1314,8 @@
           "b. sin chef och Amir",
           "c. sin man och Sofia",
           "d. Amir och Sofia"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -1219,7 +1325,8 @@
           "b. hitta det konstiga föremålet igen",
           "c. ringa till polisen",
           "d. ringa till Jakob"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -1229,7 +1336,8 @@
           "b. hitta klotet före sina vänner",
           "c. gömma sig bland träden",
           "d. tjuvlyssna på polisen"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -1239,7 +1347,8 @@
           "b. fortsätter att vara osynlig",
           "c. blir rädd",
           "b. inget händer"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -1249,7 +1358,8 @@
           "b. berätta sanningen direkt",
           "c. berätta sanningen en annan dag",
           "d. försöka bli osynlig igen"
-        ]
+        ],
+        "correct": "c."
       }
     ]
   },
@@ -1266,7 +1376,8 @@
           "b. jordborna och Kiras man",
           "c. jordborna och kalkianerna",
           "d. Kira och kung Valior"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -1276,7 +1387,8 @@
           "b. sina ministrar",
           "c. Kira och hennes man",
           "d. flickan och Aldin"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -1286,7 +1398,8 @@
           "b. det finns en rymdkapsel på hennes gård",
           "c. hennes man dog i kriget",
           "d. Aldin måste komma hem till henne"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -1296,7 +1409,8 @@
           "b. vill inte prata för hon är blyg",
           "c. gråter mycket",
           "d. kan inte prata för hon är medvetslös"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -1306,7 +1420,8 @@
           "b. kaffe",
           "c. te",
           "d. något att äta"
-        ]
+        ],
+        "correct": "d."
       }
     ]
   },
@@ -1323,7 +1438,8 @@
           "b. verkar först förvirrad",
           "c. vill prata jättemycket",
           "d. vill prata med sin pappa"
-        ]
+        ],
+        "correct": "b."
       },
       {
         "type": "mc",
@@ -1333,7 +1449,8 @@
           "b. hennes föräldrar har bett henne resa",
           "c. hon har rest vilse",
           "d. hon inte vet var hon bor någonstans"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -1343,7 +1460,8 @@
           "b. hon inte känner sina föräldrar",
           "c. hon älskar sina sköterskor",
           "d. hon inte är nöjd med sina föräldrar"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -1353,7 +1471,8 @@
           "b. Valior besökte henne",
           "c. Valior hade skickat spioner från jorden",
           "d. spioner från Kalkia hjälpte henne"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -1363,7 +1482,8 @@
           "b. Hon är dotter till Kalkias kung",
           "c. Hon är en kalkiansk spion",
           "d. Aldin vill inte att hon ska åka hem"
-        ]
+        ],
+        "correct": "b."
       }
     ]
   },
@@ -1380,7 +1500,8 @@
           "b. kapseln",
           "c. huvudstaden",
           "d. sitt hus"
-        ]
+        ],
+        "correct": "c."
       },
       {
         "type": "mc",
@@ -1390,7 +1511,8 @@
           "b. vill ha fred",
           "c. alltid talar sanning",
           "d. är vän med Kalkias kung"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -1400,7 +1522,8 @@
           "b. låta flickan stanna hos Kira",
           "c. döda flickan",
           "d. inte göra någonting"
-        ]
+        ],
+        "correct": "a."
       },
       {
         "type": "mc",
@@ -1410,7 +1533,8 @@
           "b. vill inte stanna på Jorden",
           "c. vill ringa sina föräldrar",
           "d. är inte glad över att åka hem"
-        ]
+        ],
+        "correct": "d."
       },
       {
         "type": "mc",
@@ -1420,7 +1544,8 @@
           "b. fred",
           "c. ett jobb",
           "d. en chans att stanna på Kalkia"
-        ]
+        ],
+        "correct": "b."
       }
     ]
   }
