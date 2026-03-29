@@ -31,21 +31,40 @@ function initYkiWritingView() {
     document.getElementById('wr-start-practice').addEventListener('click', () => {
         isMock = false;
         document.getElementById('wr-practice-options').style.display = 'block';
+        document.getElementById('wr-mock-confirm').style.display = 'none';
     });
+
+    let pendingPracticeData = null;
 
     document.getElementById('wr-practice-random').addEventListener('click', async () => {
         const type = document.getElementById('wr-type').value;
-        menu.style.display = 'none';
         loading.style.display = 'block';
 
         const { ok, data } = await Api.post('/api/writing/generate-practice', { type });
         loading.style.display = 'none';
-        if (!ok || data.error) { alert(data.error || 'Failed'); menu.style.display = 'block'; return; }
+        if (!ok || data.error) { alert(data.error || 'Failed'); return; }
 
-        tasks = [data];
-        document.getElementById('wr-exam-title').textContent = `Practice — ${data.label}`;
-        renderExam(data.time_minutes * 60);
+        showPracticeConfirm(data);
     });
+
+    function showPracticeConfirm(data) {
+        pendingPracticeData = data;
+        const browser = document.getElementById('wr-prompt-browser');
+        browser.style.display = 'block';
+        browser.innerHTML = `
+            <div style="padding:16px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);">
+                <span class="badge" style="margin-bottom:8px;display:inline-block;">${escapeHtml(data.label)}</span>
+                <h3 style="font-size:15px;margin-bottom:8px;">${escapeHtml(data.prompt)}</h3>
+                <p style="font-size:12px;color:var(--text-light);">~${data.word_limit} words | ${data.time_minutes} min timer</p>
+                <button class="btn btn-primary" id="wr-practice-confirm" style="margin-top:12px;width:100%;">Start Practice</button>
+            </div>`;
+        document.getElementById('wr-practice-confirm').addEventListener('click', () => {
+            tasks = [pendingPracticeData];
+            document.getElementById('wr-exam-title').textContent = `Practice — ${pendingPracticeData.label}`;
+            menu.style.display = 'none';
+            renderExam(pendingPracticeData.time_minutes * 60);
+        });
+    }
 
     // Browse prompts
     document.getElementById('wr-practice-browse').addEventListener('click', async () => {
@@ -72,16 +91,13 @@ function initYkiWritingView() {
 
         browser.querySelectorAll('.sp-browse-item').forEach(el => {
             el.addEventListener('click', async () => {
-                menu.style.display = 'none';
                 loading.style.display = 'block';
                 const { ok, data } = await Api.post('/api/writing/generate-practice', {
                     type: el.dataset.type, index: parseInt(el.dataset.index),
                 });
                 loading.style.display = 'none';
-                if (!ok || data.error) { alert(data.error || 'Failed'); menu.style.display = 'block'; return; }
-                tasks = [data];
-                document.getElementById('wr-exam-title').textContent = `Practice — ${data.label}`;
-                renderExam(data.time_minutes * 60);
+                if (!ok || data.error) { alert(data.error || 'Failed'); return; }
+                showPracticeConfirm(data);
             });
         });
     });
