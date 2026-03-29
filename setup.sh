@@ -13,6 +13,25 @@ if ! command -v python3 &> /dev/null; then
 fi
 echo "[OK] Python found: $(python3 --version)"
 
+# --- Node.js check ---
+if ! command -v node &> /dev/null; then
+    echo "ERROR: Node.js not found. Please install Node.js 18+ first."
+    echo "     Install from: https://nodejs.org/"
+    exit 1
+fi
+NODE_VERSION=$(node --version | cut -d'v' -f2 | cut -d'.' -f1)
+if [ "$NODE_VERSION" -lt 18 ]; then
+    echo "ERROR: Node.js 18+ required. Found: $(node --version)"
+    exit 1
+fi
+echo "[OK] Node.js found: $(node --version)"
+
+if ! command -v npm &> /dev/null; then
+    echo "ERROR: npm not found. Please install npm."
+    exit 1
+fi
+echo "[OK] npm found: $(npm --version)"
+
 # --- Install ffmpeg if missing ---
 if ! command -v ffmpeg &> /dev/null; then
     echo "[..] Installing ffmpeg..."
@@ -41,6 +60,15 @@ fi
 echo "[..] Installing Python packages..."
 pip3 install -q -r "$APP_DIR/requirements.txt"
 echo "[OK] Python packages installed"
+
+# --- Install frontend dependencies and build ---
+echo "[..] Installing frontend dependencies..."
+cd "$APP_DIR/frontend" && npm install --silent
+echo "[OK] Frontend dependencies installed"
+
+echo "[..] Building frontend..."
+cd "$APP_DIR/frontend" && npm run build
+echo "[OK] Frontend built"
 
 # --- Download Swedish voice model ---
 VOICES_DIR="$HOME/piper-voices"
@@ -183,5 +211,10 @@ echo "Launch options:"
 echo "  1. Double-click PiedPiper.app on your Desktop"
 echo "  2. Run: piedpiper     (native window)"
 echo "  3. Run: start-tts     (browser mode)"
+echo ""
+echo "Development (hot reload):"
+echo "  Terminal 1: python3 app.py"
+echo "  Terminal 2: cd frontend && npm run dev"
+echo "  Open: http://localhost:5173"
 echo ""
 echo "(open a new terminal first, or run: source ~/.zshrc)"

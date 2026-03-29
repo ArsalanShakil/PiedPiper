@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, send_from_directory
 
 from config import OUTPUT_DIR, BASE_DIR
 from db import init_db
@@ -40,23 +40,13 @@ def create_app():
     app.register_blueprint(writing_bp)
 
     # React SPA — serve built frontend
-    if DIST_DIR.exists():
-        @app.route("/", defaults={"path": ""})
-        @app.route("/<path:path>")
-        def serve_spa(path):
-            file_path = DIST_DIR / path
-            if path and file_path.exists():
-                return send_from_directory(DIST_DIR, path)
-            return send_from_directory(DIST_DIR, "index.html")
-    else:
-        # Fallback to old templates during migration
-        @app.route("/")
-        def index():
-            return render_template("index.html")
-
-        @app.route("/partials/<name>")
-        def partial(name):
-            return render_template(f"partials/{name}")
+    @app.route("/", defaults={"path": ""})
+    @app.route("/<path:path>")
+    def serve_spa(path):
+        file_path = DIST_DIR / path
+        if path and file_path.exists():
+            return send_from_directory(DIST_DIR, path)
+        return send_from_directory(DIST_DIR, "index.html")
 
     return app
 
