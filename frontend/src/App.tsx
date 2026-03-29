@@ -10,15 +10,7 @@ import ReadingView from './components/reading/ReadingView'
 import WritingView from './components/writing/WritingView'
 import ListeningView from './components/listening/ListeningView'
 import SpeakingView from './components/speaking/SpeakingView'
-
-function Placeholder({ name }: { name: string }) {
-  return (
-    <div className="placeholder-page">
-      <h2>{name}</h2>
-      <p>Coming soon...</p>
-    </div>
-  )
-}
+import EditorView from './components/editor/EditorView'
 
 export default function App() {
   return (
@@ -27,7 +19,7 @@ export default function App() {
         <Routes>
           <Route element={<AppLayout />}>
             <Route path="/" element={<TtsView />} />
-            <Route path="/editor" element={<Placeholder name="Writing Editor" />} />
+            <Route path="/editor" element={<EditorView />} />
             <Route path="/vocabulary" element={<VocabularyView />} />
             <Route path="/yki" element={<YkiDashboardView />} />
             <Route path="/yki/reading" element={<ReadingView />} />
