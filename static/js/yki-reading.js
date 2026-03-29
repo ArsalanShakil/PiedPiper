@@ -102,12 +102,9 @@ function initYkiReadingView() {
 
     function renderExam() {
         exam.style.display = 'block';
-        if (isMock) {
-            timer = new ExamTimer(document.getElementById('rd-timer'), 3600, null, () => submitExam());
-            timer.start();
-        } else {
-            document.getElementById('rd-timer').textContent = 'Practice';
-        }
+        const totalSeconds = isMock ? 3600 : 1200; // Mock: 60min, Practice: 20min
+        timer = new ExamTimer(document.getElementById('rd-timer'), totalSeconds, null, () => submitExam());
+        timer.start();
 
         const div = document.getElementById('rd-passages');
         div.innerHTML = (examData.passages || []).map((p, pi) => `

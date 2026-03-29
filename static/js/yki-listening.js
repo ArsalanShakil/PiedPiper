@@ -84,12 +84,9 @@ function initYkiListeningView() {
     function renderExam() {
         exam.style.display = 'block';
         playCounters = {};
-        if (isMock) {
-            timer = new ExamTimer(document.getElementById('ls-timer'), 2400, null, () => submitExam());
-            timer.start();
-        } else {
-            document.getElementById('ls-timer').textContent = 'Practice';
-        }
+        const totalSeconds = isMock ? 2400 : 900; // Mock: 40min, Practice: 15min
+        timer = new ExamTimer(document.getElementById('ls-timer'), totalSeconds, null, () => submitExam());
+        timer.start();
 
         const div = document.getElementById('ls-clips');
         div.innerHTML = (examData.clips || []).map((clip, ci) => {
