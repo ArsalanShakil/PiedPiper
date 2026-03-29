@@ -84,7 +84,7 @@ function initYkiListeningView() {
     function renderExam() {
         exam.style.display = 'block';
         playCounters = {};
-        const totalSeconds = isMock ? 2400 : 900; // Mock: 40min, Practice: 15min
+        const totalSeconds = isMock ? 2400 : 420; // Mock: 40min, Practice: 7min per clip
         timer = new ExamTimer(document.getElementById('ls-timer'), totalSeconds, null, () => submitExam());
         timer.start();
 

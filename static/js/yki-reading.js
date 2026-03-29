@@ -102,7 +102,7 @@ function initYkiReadingView() {
 
     function renderExam() {
         exam.style.display = 'block';
-        const totalSeconds = isMock ? 3600 : 1200; // Mock: 60min, Practice: 20min
+        const totalSeconds = isMock ? 3600 : 600; // Mock: 60min, Practice: 10min per passage
         timer = new ExamTimer(document.getElementById('rd-timer'), totalSeconds, null, () => submitExam());
         timer.start();
 
