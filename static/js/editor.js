@@ -73,44 +73,53 @@ function initEditorView() {
             const text = quill.getText();
             const fullLen = quill.getLength();
 
-            // Clear and re-apply in one pass
+            // Clear all color formatting first
             quill.formatText(0, fullLen, 'color', false, 'silent');
 
+            // Apply red to every occurrence of every vocab word
             vocabPattern.lastIndex = 0;
             let match;
             while (match = vocabPattern.exec(text)) {
                 const wordStart = match.index + match[0].indexOf(match[1]);
                 quill.formatText(wordStart, match[1].length, { 'color': '#dc2626' }, 'silent');
             }
-        }, 500);
+        }, 200); // Fast response
     }
 
-    // Tooltip on hover over red words
+    // Tooltip on hover — look up word under cursor in vocabMap
     const tooltip = document.createElement('div');
     tooltip.className = 'vocab-tooltip';
     tooltip.style.display = 'none';
     document.body.appendChild(tooltip);
 
     document.addEventListener('mouseover', (e) => {
-        // Check if hovering over a colored (vocab) word in Quill
-        if (e.target.closest && e.target.closest('.ql-editor')) {
-            const el = e.target;
-            if (el.tagName === 'SPAN' && el.style && el.style.color === 'rgb(220, 38, 38)') {
-                const word = el.textContent.toLowerCase().replace(/[.,!?;:]/g, '').trim();
+        if (!e.target.closest || !e.target.closest('.ql-editor')) return;
+        const el = e.target;
+
+        // Check if this element or any parent span has red color
+        let span = el;
+        while (span && span !== document.body) {
+            if (span.tagName === 'SPAN' && span.style && span.style.color) {
+                // Extract the word text and look it up
+                const word = span.textContent.toLowerCase().replace(/[.,!?;:]/g, '').trim();
                 const translation = vocabMap[word];
                 if (translation) {
                     tooltip.textContent = translation;
                     tooltip.style.display = 'block';
-                    const rect = el.getBoundingClientRect();
+                    const rect = span.getBoundingClientRect();
                     tooltip.style.top = (rect.bottom + window.scrollY + 4) + 'px';
                     tooltip.style.left = (rect.left + window.scrollX) + 'px';
+                    return;
                 }
+                break; // Found a span with color but no vocab match, stop walking
             }
+            span = span.parentElement;
         }
     });
 
     document.addEventListener('mouseout', (e) => {
-        if (e.target.tagName === 'SPAN' && e.target.style && e.target.style.color === 'rgb(220, 38, 38)') {
+        // Hide tooltip when leaving any span
+        if (e.target.tagName === 'SPAN') {
             tooltip.style.display = 'none';
         }
     });
