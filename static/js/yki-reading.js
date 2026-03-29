@@ -102,7 +102,10 @@ function initYkiReadingView() {
 
     function renderExam() {
         exam.style.display = 'block';
-        const totalSeconds = isMock ? 3600 : 600; // Mock: 60min, Practice: 10min per passage
+        // Practice timer based on passage length
+        const passageWords = (examData.passages || []).reduce((sum, p) => sum + p.text.split(/\s+/).length, 0);
+        const practiceSeconds = Math.max(600, Math.ceil(passageWords / 100) * 120); // ~2min per 100 words, min 10min
+        const totalSeconds = isMock ? 3600 : practiceSeconds;
         timer = new ExamTimer(document.getElementById('rd-timer'), totalSeconds, null, () => submitExam());
         timer.start();
 
