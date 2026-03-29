@@ -106,6 +106,16 @@ export default function GlobalVocab() {
     }
   }, [applyHighlights, version])
 
+  // --- Toast ---
+  const [toast, setToast] = useState<{ message: string; type: 'info' | 'success' | 'error' } | null>(null)
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  function showToast(message: string, type: 'info' | 'success' | 'error' = 'info', duration = 2000) {
+    setToast({ message, type })
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+    toastTimerRef.current = setTimeout(() => setToast(null), duration)
+  }
+
   // --- Global Selection Toolbar ---
   const [toolbarVisible, setToolbarVisible] = useState(false)
   const [toolbarPos, setToolbarPos] = useState({ top: 0, left: 0 })
@@ -169,20 +179,55 @@ export default function GlobalVocab() {
     }
   }, [isInVocab])
 
+  // --- Translation popup ---
+  const [transPopup, setTransPopup] = useState<{
+    text: string; translation: string;
+    wordByWord: { src: string; dst: string }[];
+    pos: { top: number; left: number };
+  } | null>(null)
+  const transPopupRef = useRef<HTMLDivElement>(null)
+
+  // Close popup on click outside
+  useEffect(() => {
+    if (!transPopup) return
+    function handleClick(e: MouseEvent) {
+      if (transPopupRef.current && !transPopupRef.current.contains(e.target as Node)) {
+        setTransPopup(null)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [transPopup])
+
   const handleTranslate = useCallback(async () => {
-    const text = window.getSelection()?.toString().trim()
-    if (!text) return
+    const sel = window.getSelection()
+    const text = sel?.toString().trim()
+    if (!text || !sel) return
+
+    // Get position for popup
+    const range = sel.getRangeAt(0)
+    const rect = range.getBoundingClientRect()
+
     setToolbarVisible(false)
     setBusy(true)
+    showToast('Translating...', 'info', 10000)
     try {
       const result = await translate(text)
-      // Show result in an alert for now (the floating translate widget is available for full UX)
-      const wbw = result.word_by_word.length > 1
-        ? '\n\n' + result.word_by_word.map(w => `${w.src || w.sv || ''} → ${w.dst || w.en || ''}`).join('\n')
-        : ''
-      alert(`${text}\n→ ${result.translation}${wbw}`)
+      setToast(null)
+      setTransPopup({
+        text,
+        translation: result.translation,
+        wordByWord: result.word_by_word.map(w => ({
+          src: w.src || w.sv || '',
+          dst: w.dst || w.en || '',
+        })),
+        pos: {
+          top: rect.bottom + window.scrollY + 8,
+          left: Math.max(16, rect.left + window.scrollX - 20),
+        },
+      })
     } catch {
-      alert('Translation failed')
+      showToast('Translation failed', 'error')
     }
     setBusy(false)
   }, [])
@@ -210,11 +255,13 @@ export default function GlobalVocab() {
     if (!text) return
     setToolbarVisible(false)
     setBusy(true)
+    showToast('Translating & saving...', 'info', 10000)
     try {
       const result = await translate(text)
       await addWord(text, result.translation)
+      showToast('Saved to vocabulary!', 'success')
     } catch {
-      alert('Failed to add to vocabulary')
+      showToast('Failed to add to vocabulary', 'error')
     }
     setBusy(false)
   }, [addWord])
@@ -224,10 +271,12 @@ export default function GlobalVocab() {
     if (!text) return
     setToolbarVisible(false)
     setBusy(true)
+    showToast('Removing from vocabulary...', 'info')
     try {
       await removeWord(text)
+      showToast('Removed from vocabulary', 'success')
     } catch {
-      alert('Failed to remove from vocabulary')
+      showToast('Failed to remove', 'error')
     }
     setBusy(false)
   }, [removeWord])
@@ -252,6 +301,36 @@ export default function GlobalVocab() {
           ) : (
             <button className="sel-btn" onClick={handleAddVocab} disabled={busy}>+ Vocab</button>
           )}
+        </div>
+      )}
+
+      {/* Translation popup */}
+      {transPopup && (
+        <div
+          ref={transPopupRef}
+          className="global-trans-popup"
+          style={{ top: transPopup.pos.top, left: transPopup.pos.left }}
+        >
+          <div className="global-trans-original">{transPopup.text}</div>
+          <div className="global-trans-result">{transPopup.translation}</div>
+          {transPopup.wordByWord.length > 1 && (
+            <div className="global-trans-words">
+              {transPopup.wordByWord.map((w, i) => (
+                <span key={i} className="translate-word-pair">
+                  <span className="tw-src">{w.src}</span>
+                  <span className="tw-dst">{w.dst}</span>
+                </span>
+              ))}
+            </div>
+          )}
+          <button className="global-trans-close" onClick={() => setTransPopup(null)}>&times;</button>
+        </div>
+      )}
+
+      {/* Toast */}
+      {toast && (
+        <div className={`editor-toast editor-toast-${toast.type}`}>
+          {toast.message}
         </div>
       )}
     </>

@@ -636,6 +636,61 @@ audio {
     background: #fef2f2;
 }
 
+/* ==================== Global Translation Popup ==================== */
+
+.global-trans-popup {
+    position: absolute;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    padding: 16px;
+    z-index: 350;
+    max-width: 400px;
+    min-width: 200px;
+    animation: toast-in 0.15s ease;
+}
+
+.global-trans-original {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+    font-style: italic;
+}
+
+.global-trans-result {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.5;
+    margin-bottom: 8px;
+}
+
+.global-trans-words {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-light);
+}
+
+.global-trans-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--text-light);
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1;
+}
+
+.global-trans-close:hover {
+    color: var(--text);
+}
+
 /* ==================== Floating Translate Widget ==================== */
 
 .translate-fab {
