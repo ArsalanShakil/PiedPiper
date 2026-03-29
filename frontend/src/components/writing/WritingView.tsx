@@ -255,7 +255,7 @@ export default function WritingView() {
               Word limit: ~{t.word_limit} words | Time: {t.time_minutes} min
             </p>
             {t.template && (
-              <details style={{ marginBottom: 12 }}>
+              <details open style={{ marginBottom: 12 }}>
                 <summary style={{ fontSize: 12, color: 'var(--primary)', cursor: 'pointer' }}>
                   Show example template
                 </summary>
