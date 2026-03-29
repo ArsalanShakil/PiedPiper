@@ -35,6 +35,8 @@ export default function ListeningView() {
   const audioRefs = useRef<Record<number, HTMLAudioElement | null>>({})
   const [pendingPractice, setPendingPractice] = useState<{ data: ListeningExamData; timerSecs: number } | null>(null)
   const [pendingLoading, setPendingLoading] = useState(false)
+  const [autoPlayStatus, setAutoPlayStatus] = useState<string | null>(null)
+  const autoPlayAbortRef = useRef(false)
 
   // Cleanup audio on unmount
   useEffect(() => {
@@ -58,14 +60,71 @@ export default function ListeningView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timerExpiredRef.current, phase])
 
+  // Auto-play clips sequentially when exam starts, then start timer
   useEffect(() => {
-    if (phase === 'exam') {
+    if (phase !== 'exam' || !examData) return
+    autoPlayAbortRef.current = false
+
+    const runAutoPlay = async () => {
+      setAutoPlayStatus('Preparing audio...')
+      await new Promise(r => setTimeout(r, 1000))
+      if (autoPlayAbortRef.current) return
+
+      for (let ci = 0; ci < examData.clips.length; ci++) {
+        const clip = examData.clips[ci]
+        if (!clip || autoPlayAbortRef.current) break
+        const resolvedUrl = clip.audio_url.startsWith('/') ? clip.audio_url : getAudioUrl(clip.audio_url)
+
+        // Play 1
+        setAutoPlayStatus(`Playing clip ${ci + 1} of ${examData.clips.length}... (1st listen)`)
+        setPlayCounts(prev => ({ ...prev, [ci]: (prev[ci] || 0) + 1 }))
+        await playOnce(resolvedUrl, ci)
+        if (autoPlayAbortRef.current) break
+
+        // Brief pause between plays
+        await new Promise(r => setTimeout(r, 1500))
+        if (autoPlayAbortRef.current) break
+
+        // Play 2
+        setAutoPlayStatus(`Playing clip ${ci + 1} of ${examData.clips.length}... (2nd listen)`)
+        setPlayCounts(prev => ({ ...prev, [ci]: (prev[ci] || 0) + 1 }))
+        await playOnce(resolvedUrl, ci)
+        if (autoPlayAbortRef.current) break
+
+        // Pause between clips
+        if (ci < examData.clips.length - 1) {
+          setAutoPlayStatus('Next clip starting soon...')
+          await new Promise(r => setTimeout(r, 2000))
+        }
+      }
+      if (autoPlayAbortRef.current) return
+
+      // All clips played — start the timer for answering
+      setAutoPlayStatus(null)
       timer.reset(timerSeconds)
       timer.start()
     }
-    return () => { timer.stop() }
+
+    function playOnce(url: string, clipIndex: number): Promise<void> {
+      return new Promise(resolve => {
+        const audio = new Audio(url)
+        audioRefs.current[clipIndex] = audio
+        audio.addEventListener('ended', () => { audioRefs.current[clipIndex] = null; resolve() })
+        audio.addEventListener('error', () => { audioRefs.current[clipIndex] = null; resolve() })
+        audio.play().catch(() => { audioRefs.current[clipIndex] = null; resolve() })
+      })
+    }
+
+    runAutoPlay()
+
+    return () => {
+      autoPlayAbortRef.current = true
+      timer.stop()
+      Object.values(audioRefs.current).forEach(a => { if (a) { a.pause(); a.src = '' } })
+      audioRefs.current = {}
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, timerSeconds])
+  }, [phase, examData])
 
   // Auto-start for full exam
   useEffect(() => {
@@ -186,10 +245,12 @@ export default function ListeningView() {
 
   const handleSubmit = async () => {
     if (!examData) return
+    autoPlayAbortRef.current = true
+    setAutoPlayStatus(null)
     timer.stop()
 
     // Stop any playing audio
-    Object.values(audioRefs.current).forEach(a => { if (a) a.pause() })
+    Object.values(audioRefs.current).forEach(a => { if (a) { a.pause(); a.src = '' } })
     audioRefs.current = {}
 
     startEvaluating()
@@ -222,8 +283,10 @@ export default function ListeningView() {
   }
 
   const handleBack = () => {
+    autoPlayAbortRef.current = true
+    setAutoPlayStatus(null)
     timer.stop()
-    Object.values(audioRefs.current).forEach(a => { if (a) a.pause() })
+    Object.values(audioRefs.current).forEach(a => { if (a) { a.pause(); a.src = '' } })
     audioRefs.current = {}
     if (isFullExam) {
       navigate('/yki')
@@ -346,8 +409,26 @@ export default function ListeningView() {
       <div>
         <div className="exam-header">
           <h2>{isMock ? 'Listening Mock Exam' : 'Listening Practice'}</h2>
-          <div className={`exam-timer ${timer.timerClass}`}>{timer.display}</div>
+          <div className={`exam-timer ${timer.timerClass}`}>
+            {autoPlayStatus ? 'Listening phase' : timer.display}
+          </div>
         </div>
+
+        {autoPlayStatus && (
+          <div style={{
+            padding: '16px 20px', marginBottom: 16, background: '#eff6ff',
+            borderRadius: 'var(--radius-sm)', border: '1px solid #bfdbfe',
+            display: 'flex', alignItems: 'center', gap: 12,
+          }}>
+            <span style={{ fontSize: 20 }}>{'\uD83C\uDFA7'}</span>
+            <div>
+              <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--primary)' }}>{autoPlayStatus}</div>
+              <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 2 }}>
+                Listen carefully. The timer will start after all clips have been played.
+              </div>
+            </div>
+          </div>
+        )}
 
         {examData.clips.map((clip, ci) => {
           const plays = playCounts[ci] || 0
@@ -360,13 +441,17 @@ export default function ListeningView() {
               <div className="audio-player-block">
                 <button
                   className="btn"
-                  disabled={isMock && playsLeft <= 0}
+                  disabled={(isMock && playsLeft <= 0) || !!autoPlayStatus}
                   onClick={() => handlePlay(ci, clip.audio_url)}
                 >
-                  Play Audio
+                  {plays > 0 ? 'Replay Audio' : 'Play Audio'}
                 </button>
                 <span className="plays-remaining">
-                  {isMock ? `${Math.max(0, playsLeft)} plays remaining` : 'Unlimited plays'}
+                  {autoPlayStatus
+                    ? 'Auto-playing...'
+                    : isMock
+                      ? playsLeft > 0 ? `${playsLeft} extra replay${playsLeft !== 1 ? 's' : ''} available` : 'No replays remaining'
+                      : 'Unlimited replays'}
                 </span>
               </div>
               {clip.questions.map((q, qi) => renderQuestion(q, ci, qi))}
