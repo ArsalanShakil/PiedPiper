@@ -6,6 +6,10 @@ interface VocabMap {
   [key: string]: string
 }
 
+function cleanText(text: string): string {
+  return text.toLowerCase().replace(/[.,!?;:]/g, '').replace(/\s+/g, ' ').trim()
+}
+
 interface VocabContextValue {
   vocabMap: VocabMap
   getTranslation: (word: string) => string | undefined
@@ -35,7 +39,7 @@ export function VocabProvider({ children }: { children: ReactNode }) {
       allItemsRef.current = items
       const map: VocabMap = {}
       for (const v of items) {
-        const key = v.swedish_text.toLowerCase().replace(/[.,!?;:]/g, '').trim()
+        const key = cleanText(v.swedish_text)
         if (key) map[key] = v.translation
       }
       vocabMapRef.current = map
@@ -48,12 +52,11 @@ export function VocabProvider({ children }: { children: ReactNode }) {
   useEffect(() => { load() }, [load])
 
   const getTranslation = useCallback((word: string): string | undefined => {
-    return vocabMapRef.current[word.toLowerCase().replace(/[.,!?;:]/g, '').trim()]
+    return vocabMapRef.current[cleanText(word)]
   }, [])
 
   const isInVocab = useCallback((text: string): boolean => {
-    const clean = text.toLowerCase().replace(/[.,!?;:]/g, '').trim()
-    return clean in vocabMapRef.current
+    return cleanText(text) in vocabMapRef.current
   }, [])
 
   const reloadVocab = useCallback(() => { load() }, [load])
@@ -64,9 +67,9 @@ export function VocabProvider({ children }: { children: ReactNode }) {
   }, [load])
 
   const removeWord = useCallback(async (text: string) => {
-    const clean = text.toLowerCase().replace(/[.,!?;:]/g, '').trim()
+    const clean = cleanText(text)
     const match = allItemsRef.current.find(
-      v => v.swedish_text.toLowerCase().replace(/[.,!?;:]/g, '').trim() === clean
+      v => cleanText(v.swedish_text) === clean
     )
     if (match) {
       await deleteVocab(match.id)
