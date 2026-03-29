@@ -1,0 +1,480 @@
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useExamFlow } from '../../hooks/useExamFlow'
+import { useTimer } from '../../hooks/useTimer'
+import {
+  generateListening, evaluateListening, fetchPassages as fetchClips,
+  fetchClip, getAudioUrl,
+} from '../../api/listening'
+import type { ListeningExamData, ListeningPassageItem, ExamQuestion } from '../../types/exam'
+import type { EvalResult } from '../../types/api'
+import { useFullExam } from '../../context/FullExamContext'
+import '../../styles/yki.css'
+
+type MenuSubView = 'none' | 'mock' | 'practice'
+
+export default function ListeningView() {
+  const navigate = useNavigate()
+  const { activeSection, completeSection } = useFullExam()
+  const isFullExam = activeSection === 'listening'
+
+  const {
+    phase, examData, isMock, score, feedback, loadingMessage,
+    startLoading, setExamData, setResults, backToMenu, startEvaluating,
+  } = useExamFlow<ListeningExamData>()
+
+  const [menuSub, setMenuSub] = useState<MenuSubView>('none')
+  const [mockCategory, setMockCategory] = useState('')
+  const [practiceCategory, setPracticeCategory] = useState('')
+  const [clipList, setClipList] = useState<ListeningPassageItem[]>([])
+  const [showBrowser, setShowBrowser] = useState(false)
+  const [answers, setAnswers] = useState<Record<string, string>>({})
+  const [playCounts, setPlayCounts] = useState<Record<number, number>>({})
+  const [timerSeconds, setTimerSeconds] = useState(2400)
+  const timerExpiredRef = useRef(false)
+  const audioRefs = useRef<Record<number, HTMLAudioElement | null>>({})
+
+  const handleTimerExpire = useCallback(() => {
+    timerExpiredRef.current = true
+  }, [])
+
+  const timer = useTimer(timerSeconds, { onExpire: handleTimerExpire })
+
+  useEffect(() => {
+    if (timerExpiredRef.current && phase === 'exam') {
+      timerExpiredRef.current = false
+      handleSubmit()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timerExpiredRef.current, phase])
+
+  useEffect(() => {
+    if (phase === 'exam') {
+      timer.reset(timerSeconds)
+      timer.start()
+    }
+    return () => { timer.stop() }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, timerSeconds])
+
+  // Auto-start for full exam
+  useEffect(() => {
+    if (isFullExam) {
+      startLoading(true, 'Generating listening exam...')
+      generateListening('', 2)
+        .then(data => {
+          setTimerSeconds(2400)
+          setExamData(data)
+          setAnswers({})
+          setPlayCounts({})
+        })
+        .catch(err => {
+          alert(err instanceof Error ? err.message : 'Failed')
+          backToMenu()
+        })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const handleMockStart = async () => {
+    startLoading(true, 'Generating listening exam...')
+    try {
+      const data = await generateListening(mockCategory, 2)
+      setTimerSeconds(2400)
+      setExamData(data)
+      setAnswers({})
+      setPlayCounts({})
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed')
+      backToMenu()
+    }
+  }
+
+  const handlePracticeRandom = async () => {
+    startLoading(false, 'Generating listening clip...')
+    try {
+      const data = await generateListening(practiceCategory, 1)
+      const clipWords = data.clips.reduce((sum, c) => sum + c.text.split(/\s+/).length, 0)
+      const secs = Math.max(420, Math.ceil(clipWords / 150) * 180)
+      setTimerSeconds(secs)
+      setExamData(data)
+      setAnswers({})
+      setPlayCounts({})
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed')
+      backToMenu()
+    }
+  }
+
+  const handleBrowseOpen = async () => {
+    setShowBrowser(true)
+    try {
+      const all = await fetchClips()
+      setClipList(all)
+    } catch {
+      setClipList([])
+    }
+  }
+
+  const handleBrowseSelect = async (index: number) => {
+    startLoading(false, 'Loading clip...')
+    setShowBrowser(false)
+    try {
+      const data = await fetchClip(index)
+      const clipWords = data.clips.reduce((sum, c) => sum + c.text.split(/\s+/).length, 0)
+      const secs = Math.max(420, Math.ceil(clipWords / 150) * 180)
+      setTimerSeconds(secs)
+      setExamData(data)
+      setAnswers({})
+      setPlayCounts({})
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed')
+      backToMenu()
+    }
+  }
+
+  const handlePlay = (clipIndex: number, audioUrl: string) => {
+    const current = playCounts[clipIndex] || 0
+    if (isMock && current >= 2) {
+      alert('No plays remaining.')
+      return
+    }
+
+    // Stop any currently playing audio for this clip
+    if (audioRefs.current[clipIndex]) {
+      audioRefs.current[clipIndex]!.pause()
+      audioRefs.current[clipIndex] = null
+    }
+
+    const resolvedUrl = audioUrl.startsWith('/') ? audioUrl : getAudioUrl(audioUrl)
+    const audio = new Audio(resolvedUrl)
+    audioRefs.current[clipIndex] = audio
+
+    setPlayCounts(prev => ({ ...prev, [clipIndex]: current + 1 }))
+
+    audio.addEventListener('ended', () => {
+      audioRefs.current[clipIndex] = null
+    })
+    audio.addEventListener('error', () => {
+      audioRefs.current[clipIndex] = null
+    })
+    audio.play().catch(() => {
+      audioRefs.current[clipIndex] = null
+    })
+  }
+
+  const setAnswer = (qid: string, value: string) => {
+    setAnswers(prev => ({ ...prev, [qid]: value }))
+  }
+
+  const handleSubmit = async () => {
+    if (!examData) return
+    timer.stop()
+
+    // Stop any playing audio
+    Object.values(audioRefs.current).forEach(a => { if (a) a.pause() })
+    audioRefs.current = {}
+
+    startEvaluating()
+
+    const answerList: string[] = []
+    examData.clips.forEach((clip, ci) => {
+      clip.questions.forEach((_q, qi) => {
+        const qid = `ls-${ci}-${qi}`
+        answerList.push(answers[qid] || '')
+      })
+    })
+
+    try {
+      const result: EvalResult = await evaluateListening(answerList, examData.clips)
+      const evalScore = result.score || 0
+      let fb = result.feedback || 'No feedback.'
+      if (result.details) {
+        result.details.forEach((d, i) => {
+          fb += `\nQ${i + 1}: ${d.correct ? 'Correct' : 'Incorrect'} (your: ${d.your_answer}, correct: ${d.correct_answer})`
+        })
+      }
+      setResults(evalScore, fb)
+
+      if (isFullExam) {
+        setTimeout(() => completeSection(evalScore), 2000)
+      }
+    } catch (err) {
+      setResults(0, err instanceof Error ? err.message : 'Evaluation failed')
+    }
+  }
+
+  const handleBack = () => {
+    timer.stop()
+    Object.values(audioRefs.current).forEach(a => { if (a) a.pause() })
+    audioRefs.current = {}
+    if (isFullExam) {
+      navigate('/yki')
+    } else {
+      backToMenu()
+    }
+  }
+
+  // Group clips by source for browser
+  const filteredClips = practiceCategory
+    ? clipList.filter(c => c.category === practiceCategory)
+    : clipList
+  const groupedClips: Record<string, (ListeningPassageItem & { origIndex: number })[]> = {}
+  filteredClips.forEach(c => {
+    const idx = clipList.indexOf(c)
+    if (!groupedClips[c.source]) groupedClips[c.source] = []
+    groupedClips[c.source]!.push({ ...c, origIndex: idx })
+  })
+
+  const renderQuestion = (q: ExamQuestion, ci: number, qi: number) => {
+    const qid = `ls-${ci}-${qi}`
+    if (q.type === 'mc') {
+      return (
+        <div className="question-block" key={qid}>
+          <div className="question-text">{ci + 1}.{qi + 1} {q.question}</div>
+          <div className="question-options">
+            {(q.options || []).map(opt => (
+              <label
+                key={opt}
+                className={`option-label${answers[qid] === opt ? ' selected' : ''}`}
+                onClick={() => setAnswer(qid, opt)}
+              >
+                <input
+                  type="radio"
+                  name={qid}
+                  value={opt}
+                  checked={answers[qid] === opt}
+                  onChange={() => setAnswer(qid, opt)}
+                />
+                <span>{opt}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )
+    }
+    if (q.type === 'tf') {
+      return (
+        <div className="question-block" key={qid}>
+          <div className="question-text">{ci + 1}.{qi + 1} {q.question}</div>
+          <div className="question-options">
+            {['sant', 'falskt'].map(val => (
+              <label
+                key={val}
+                className={`option-label${answers[qid] === val ? ' selected' : ''}`}
+                onClick={() => setAnswer(qid, val)}
+              >
+                <input
+                  type="radio"
+                  name={qid}
+                  value={val}
+                  checked={answers[qid] === val}
+                  onChange={() => setAnswer(qid, val)}
+                />
+                <span>{val === 'sant' ? 'Sant' : 'Falskt'}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )
+    }
+    // open
+    return (
+      <div className="question-block" key={qid}>
+        <div className="question-text">{ci + 1}.{qi + 1} {q.question}</div>
+        <textarea
+          className="answer-textarea"
+          rows={2}
+          placeholder="Skriv ditt svar..."
+          value={answers[qid] || ''}
+          onChange={e => setAnswer(qid, e.target.value)}
+        />
+      </div>
+    )
+  }
+
+  // ---- LOADING ----
+  if (phase === 'loading') {
+    return (
+      <div className="generating-overlay">
+        <h3>{loadingMessage}</h3>
+        <p>This may take a moment...</p>
+      </div>
+    )
+  }
+
+  // ---- RESULTS ----
+  if (phase === 'results') {
+    return (
+      <div>
+        <div className="results-panel">
+          <div className="score-display">
+            <div className="score-number">{score}%</div>
+            <div className="score-label">Listening Score</div>
+          </div>
+          <div className="feedback-text">{feedback}</div>
+        </div>
+        {!isFullExam && (
+          <button className="btn" style={{ marginTop: 16 }} onClick={handleBack}>
+            Back to Menu
+          </button>
+        )}
+      </div>
+    )
+  }
+
+  // ---- EXAM ----
+  if (phase === 'exam' && examData) {
+    return (
+      <div>
+        <div className="exam-header">
+          <h2>{isMock ? 'Listening Mock Exam' : 'Listening Practice'}</h2>
+          <div className={`exam-timer ${timer.timerClass}`}>{timer.display}</div>
+        </div>
+
+        {examData.clips.map((clip, ci) => {
+          const plays = playCounts[ci] || 0
+          const maxPlays = isMock ? 2 : Infinity
+          const playsLeft = maxPlays - plays
+
+          return (
+            <div className="passage-block" key={ci}>
+              <h3 style={{ marginBottom: 12 }}>{clip.title}</h3>
+              <div className="audio-player-block">
+                <button
+                  className="btn"
+                  disabled={isMock && playsLeft <= 0}
+                  onClick={() => handlePlay(ci, clip.audio_url)}
+                >
+                  Play Audio
+                </button>
+                <span className="plays-remaining">
+                  {isMock ? `${Math.max(0, playsLeft)} plays remaining` : 'Unlimited plays'}
+                </span>
+              </div>
+              {clip.questions.map((q, qi) => renderQuestion(q, ci, qi))}
+            </div>
+          )
+        })}
+
+        <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
+          <button className="btn btn-primary" onClick={handleSubmit}>Submit Answers</button>
+          {!isFullExam && (
+            <button className="btn" onClick={handleBack}>Back</button>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  // ---- MENU ----
+  return (
+    <div>
+      <button className="btn" style={{ marginBottom: 16 }} onClick={() => navigate('/yki')}>
+        &larr; Back to YKI
+      </button>
+      <h2 style={{ marginBottom: 20 }}>Listening Comprehension</h2>
+      <div className="yki-dashboard">
+        <div className="yki-card" onClick={() => { setMenuSub('mock'); setShowBrowser(false) }}>
+          <div className="yki-card-icon">&#x1F3A7;</div>
+          <h3>Mock Test</h3>
+          <p>2 clips, timed 40 minutes</p>
+          <div className="yki-card-time">40 min</div>
+        </div>
+        <div className="yki-card" onClick={() => { setMenuSub('practice'); setShowBrowser(false) }}>
+          <div className="yki-card-icon">&#x1F50A;</div>
+          <h3>Practice</h3>
+          <p>Single clip, flexible timing</p>
+        </div>
+      </div>
+
+      {menuSub === 'mock' && (
+        <div style={{
+          background: 'var(--surface)', border: '1px solid var(--border)',
+          borderRadius: 'var(--radius)', padding: 20, marginBottom: 16,
+        }}>
+          <h3 style={{ fontSize: 15, marginBottom: 12 }}>Mock Test Options</h3>
+          <div className="form-group">
+            <label style={{ fontSize: 13, fontWeight: 500 }}>Category (optional)</label>
+            <select
+              className="form-select"
+              value={mockCategory}
+              onChange={e => setMockCategory(e.target.value)}
+              style={{ width: '100%', marginTop: 4 }}
+            >
+              <option value="">Any</option>
+              <option value="stories">Stories</option>
+              <option value="news">News</option>
+            </select>
+          </div>
+          <button className="btn btn-primary" style={{ width: '100%' }} onClick={handleMockStart}>
+            Start Mock Exam (40 min)
+          </button>
+        </div>
+      )}
+
+      {menuSub === 'practice' && (
+        <div style={{
+          background: 'var(--surface)', border: '1px solid var(--border)',
+          borderRadius: 'var(--radius)', padding: 20, marginBottom: 16,
+        }}>
+          <h3 style={{ fontSize: 15, marginBottom: 12 }}>Practice Options</h3>
+          <div className="form-group">
+            <label style={{ fontSize: 13, fontWeight: 500 }}>Category (optional)</label>
+            <select
+              className="form-select"
+              value={practiceCategory}
+              onChange={e => setPracticeCategory(e.target.value)}
+              style={{ width: '100%', marginTop: 4 }}
+            >
+              <option value="">Any</option>
+              <option value="stories">Stories</option>
+              <option value="news">News</option>
+            </select>
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button className="btn btn-primary" style={{ flex: 1 }} onClick={handlePracticeRandom}>
+              Random Clip
+            </button>
+            <button className="btn" style={{ flex: 1 }} onClick={handleBrowseOpen}>
+              Browse Clips
+            </button>
+          </div>
+
+          {showBrowser && (
+            <div style={{ marginTop: 16, maxHeight: 400, overflowY: 'auto' }}>
+              {clipList.length === 0 ? (
+                <p style={{ color: 'var(--text-light)', padding: 8 }}>Loading...</p>
+              ) : Object.keys(groupedClips).length === 0 ? (
+                <p className="empty-state">No clips found.</p>
+              ) : (
+                Object.entries(groupedClips).map(([source, items]) => (
+                  <div key={source}>
+                    <div style={{
+                      fontSize: 11, fontWeight: 600, color: 'var(--text-light)',
+                      textTransform: 'uppercase', padding: '8px 0 4px',
+                    }}>
+                      {source}
+                    </div>
+                    {items.map(c => (
+                      <div
+                        key={c.origIndex}
+                        onClick={() => handleBrowseSelect(c.origIndex)}
+                        style={{
+                          padding: '8px 12px', border: '1px solid var(--border-light)',
+                          borderRadius: 'var(--radius-sm)', marginBottom: 4, cursor: 'pointer',
+                        }}
+                      >
+                        <strong style={{ fontSize: 13 }}>{c.title}</strong>
+                      </div>
+                    ))}
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
