@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useExamFlow } from '../../hooks/useExamFlow'
 import { useTimer } from '../../hooks/useTimer'
-import { generateReading, evaluateReading, fetchPassages } from '../../api/reading'
+import { generateReading, evaluateReading, fetchPassages, fetchPassage } from '../../api/reading'
 import type { ReadingExamData, PassageListItem, ExamQuestion } from '../../types/exam'
 import type { EvalResult } from '../../types/api'
 import { useFullExam } from '../../context/FullExamContext'
@@ -120,7 +120,6 @@ export default function ReadingView() {
     setPendingPractice(null)
     setShowBrowser(false)
     try {
-      const { fetchPassage } = await import('../../api/reading')
       const data = await fetchPassage(index)
       const wordCount = data.passages.reduce((sum, p) => sum + p.text.split(/\s+/).length, 0)
       const secs = Math.max(600, Math.ceil(wordCount / 100) * 120)

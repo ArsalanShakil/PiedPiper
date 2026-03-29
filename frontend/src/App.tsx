@@ -14,6 +14,7 @@ import SpeakingView from './components/speaking/SpeakingView'
 import EditorView from './components/editor/EditorView'
 import TranslateWidget from './components/common/TranslateWidget'
 import GlobalVocab from './components/common/GlobalVocab'
+import ErrorBoundary from './components/common/ErrorBoundary'
 
 export default function App() {
   return (
@@ -21,7 +22,7 @@ export default function App() {
       <VocabProvider>
         <FullExamProvider>
           <Routes>
-            <Route element={<AppLayout />}>
+            <Route element={<ErrorBoundary><AppLayout /></ErrorBoundary>}>
               <Route path="/" element={<TtsView />} />
               <Route path="/editor" element={<EditorView />} />
               <Route path="/vocabulary" element={<VocabularyView />} />
