@@ -80,7 +80,9 @@ export default function EditorView() {
   const selToolbarRef = useRef<HTMLDivElement>(null)
 
   const { refreshHighlights } = useVocabHighlight(editorContainerRef)
-  const { addWord, removeWord, isInVocab, getTranslation } = useVocab()
+  const vocab = useVocab()
+  const vocabRef = useRef(vocab)
+  vocabRef.current = vocab
 
   // Keep refs in sync with state
   useEffect(() => { currentDocIdRef.current = currentDocId }, [currentDocId])
@@ -410,7 +412,7 @@ export default function EditorView() {
         left: rect.left + window.scrollX + rect.width / 2 - 80,
       })
       // Check if selected word is already in vocab
-      setSelectionInVocab(isInVocab(text))
+      setSelectionInVocab(vocabRef.current.isInVocab(text))
       setSelToolbarVisible(true)
     }
 
@@ -465,7 +467,7 @@ export default function EditorView() {
         }
       }
 
-      const translation = word ? getTranslation(word) : undefined
+      const translation = word ? vocabRef.current.getTranslation(word) : undefined
       if (word && translation) {
         setTooltipState({
           visible: true,
@@ -480,7 +482,7 @@ export default function EditorView() {
 
     document.addEventListener('mousemove', handleMouseMove)
     return () => document.removeEventListener('mousemove', handleMouseMove)
-  }, [getTranslation])
+  }, [])
 
   // --- Speak helper ---
   async function speakText(text: string) {
@@ -619,19 +621,19 @@ export default function EditorView() {
     if (!text) return
     setSelToolbarVisible(false)
     try {
-      await removeWord(text)
+      await vocabRef.current.removeWord(text)
       setSaveStatus({ text: 'Removed from vocabulary', color: 'var(--danger)' })
       setTimeout(() => setSaveStatus({ text: 'Auto-saved', color: 'var(--success)' }), 2000)
     } catch {
       // silently fail
     }
-  }, [removeWord])
+  }, [])
 
   async function saveVocabWord(swedish: string, translation: string) {
     const editor = quillRef.current?.getEditor()
     const context = editor ? editor.getText().trim().substring(0, 200) : ''
     try {
-      await addWord(swedish, translation, context)
+      await vocabRef.current.addWord(swedish, translation, context)
     } catch {
       // silently fail
     }
