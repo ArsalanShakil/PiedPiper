@@ -364,9 +364,7 @@ function initEditorView() {
         await Api.post('/api/vocabulary/', {
             swedish_text: swedish, translation, context: quill.getText().trim().substring(0, 200),
         });
-        // Refresh highlights
-        await loadVocabWords();
-        highlightVocabWords();
+        reloadVocab(); // Clears cache, re-fetches vocab, re-highlights
     }
 
     function showToast(msg) {
