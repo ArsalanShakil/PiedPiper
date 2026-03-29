@@ -680,6 +680,10 @@ export default function EditorView() {
     if (!grouped[f]) grouped[f] = []
     grouped[f]!.push(d)
   }
+  // Sort docs alphabetically within each folder
+  for (const f of Object.keys(grouped)) {
+    grouped[f]!.sort((a, b) => a.title.localeCompare(b.title))
+  }
 
   // Post-process trans body to mark added words
   let processedTransBody = transBody
