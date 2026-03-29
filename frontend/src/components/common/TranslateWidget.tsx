@@ -11,36 +11,75 @@ export default function TranslateWidget() {
   const [direction, setDirection] = useState<Direction>('sv-en')
   const [loading, setLoading] = useState(false)
 
-  // Dragging state
-  const [pos, setPos] = useState({ x: window.innerWidth - 420, y: 80 })
-  const dragRef = useRef<{ dragging: boolean; startX: number; startY: number; origX: number; origY: number }>({
+  // FAB position (draggable)
+  const [fabPos, setFabPos] = useState({ x: window.innerWidth - 72, y: window.innerHeight - 72 })
+  const fabDragRef = useRef<{ dragging: boolean; startX: number; startY: number; origX: number; origY: number; moved: boolean }>({
+    dragging: false, startX: 0, startY: 0, origX: 0, origY: 0, moved: false,
+  })
+
+  // Widget position (draggable)
+  const [widgetPos, setWidgetPos] = useState({ x: 0, y: 0 })
+  const widgetDragRef = useRef<{ dragging: boolean; startX: number; startY: number; origX: number; origY: number }>({
     dragging: false, startX: 0, startY: 0, origX: 0, origY: 0,
   })
   const widgetRef = useRef<HTMLDivElement>(null)
 
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+  // FAB drag handlers
+  const handleFabMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    fabDragRef.current = { dragging: true, startX: e.clientX, startY: e.clientY, origX: fabPos.x, origY: fabPos.y, moved: false }
+  }, [fabPos])
+
+  // Widget drag handlers
+  const handleWidgetMouseDown = useCallback((e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest('input, textarea, button, select, .translate-body')) return
     e.preventDefault()
-    dragRef.current = { dragging: true, startX: e.clientX, startY: e.clientY, origX: pos.x, origY: pos.y }
-  }, [pos])
+    widgetDragRef.current = { dragging: true, startX: e.clientX, startY: e.clientY, origX: widgetPos.x, origY: widgetPos.y }
+  }, [widgetPos])
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      const d = dragRef.current
-      if (!d.dragging) return
-      setPos({
-        x: Math.max(0, Math.min(window.innerWidth - 380, d.origX + (e.clientX - d.startX))),
-        y: Math.max(0, Math.min(window.innerHeight - 100, d.origY + (e.clientY - d.startY))),
-      })
+      // FAB drag
+      const fd = fabDragRef.current
+      if (fd.dragging) {
+        const dx = e.clientX - fd.startX
+        const dy = e.clientY - fd.startY
+        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) fd.moved = true
+        setFabPos({
+          x: Math.max(0, Math.min(window.innerWidth - 48, fd.origX + dx)),
+          y: Math.max(0, Math.min(window.innerHeight - 48, fd.origY + dy)),
+        })
+      }
+      // Widget drag
+      const wd = widgetDragRef.current
+      if (wd.dragging) {
+        setWidgetPos({
+          x: Math.max(0, Math.min(window.innerWidth - 380, wd.origX + (e.clientX - wd.startX))),
+          y: Math.max(0, Math.min(window.innerHeight - 100, wd.origY + (e.clientY - wd.startY))),
+        })
+      }
     }
-    const handleMouseUp = () => { dragRef.current.dragging = false }
+    const handleMouseUp = () => {
+      // If FAB wasn't dragged (just clicked), open the widget
+      const fd = fabDragRef.current
+      if (fd.dragging && !fd.moved) {
+        // Position widget near the FAB
+        setWidgetPos({
+          x: Math.max(0, Math.min(window.innerWidth - 380, fabPos.x - 320)),
+          y: Math.max(0, Math.min(window.innerHeight - 400, fabPos.y - 200)),
+        })
+        setOpen(true)
+      }
+      fabDragRef.current.dragging = false
+      widgetDragRef.current.dragging = false
+    }
     window.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('mouseup', handleMouseUp)
     return () => {
       window.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('mouseup', handleMouseUp)
     }
-  }, [])
+  }, [fabPos])
 
   const handleTranslate = async () => {
     const text = input.trim()
@@ -73,7 +112,6 @@ export default function TranslateWidget() {
 
   const swapDirection = () => {
     setDirection(d => d === 'sv-en' ? 'en-sv' : 'sv-en')
-    // Swap input/output
     if (output) {
       setInput(output)
       setOutput(input)
@@ -84,12 +122,13 @@ export default function TranslateWidget() {
   const sourceLang = direction === 'sv-en' ? 'Svenska' : 'English'
   const targetLang = direction === 'sv-en' ? 'English' : 'Svenska'
 
-  // Toggle button (always visible)
-  if (!open) {
-    return (
+  return (
+    <>
+      {/* Draggable FAB — always visible */}
       <button
         className="translate-fab"
-        onClick={() => setOpen(true)}
+        style={{ left: fabPos.x, top: fabPos.y, right: 'auto', bottom: 'auto' }}
+        onMouseDown={handleFabMouseDown}
         title="Translate"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -97,68 +136,65 @@ export default function TranslateWidget() {
           <path d="M22 22l-5-10-5 10" /><path d="M14 18h6" />
         </svg>
       </button>
-    )
-  }
 
-  return (
-    <div
-      ref={widgetRef}
-      className="translate-widget"
-      style={{ left: pos.x, top: pos.y }}
-      onMouseDown={handleMouseDown}
-    >
-      {/* Header - draggable */}
-      <div className="translate-header">
-        <span className="translate-grip">{'\u2630'}</span>
-        <span className="translate-title">Translate</span>
-        <button className="translate-close" onClick={() => setOpen(false)}>&times;</button>
-      </div>
-
-      <div className="translate-body">
-        {/* Direction selector */}
-        <div className="translate-direction">
-          <span className={`translate-lang${direction === 'sv-en' ? ' active' : ''}`}>{sourceLang}</span>
-          <button className="translate-swap" onClick={swapDirection} title="Swap languages">
-            {'\u21C4'}
-          </button>
-          <span className={`translate-lang${direction === 'en-sv' ? '' : ''}`}>{targetLang}</span>
-        </div>
-
-        {/* Input */}
-        <textarea
-          className="translate-input"
-          placeholder={`Type ${sourceLang} text...`}
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          rows={3}
-        />
-
-        <button
-          className="btn btn-primary translate-btn"
-          onClick={handleTranslate}
-          disabled={loading || !input.trim()}
+      {/* Widget panel */}
+      {open && (
+        <div
+          ref={widgetRef}
+          className="translate-widget"
+          style={{ left: widgetPos.x, top: widgetPos.y }}
+          onMouseDown={handleWidgetMouseDown}
         >
-          {loading ? 'Translating...' : 'Translate'}
-        </button>
+          <div className="translate-header">
+            <span className="translate-grip">{'\u2630'}</span>
+            <span className="translate-title">Translate</span>
+            <button className="translate-close" onClick={() => setOpen(false)}>&times;</button>
+          </div>
 
-        {/* Output */}
-        {output && (
-          <div className="translate-output">
-            <div className="translate-result">{output}</div>
-            {wordByWord.length > 1 && (
-              <div className="translate-words">
-                {wordByWord.map((w, i) => (
-                  <span key={i} className="translate-word-pair">
-                    <span className="tw-src">{w.src}</span>
-                    <span className="tw-dst">{w.dst}</span>
-                  </span>
-                ))}
+          <div className="translate-body">
+            <div className="translate-direction">
+              <span className="translate-lang">{sourceLang}</span>
+              <button className="translate-swap" onClick={swapDirection} title="Swap languages">
+                {'\u21C4'}
+              </button>
+              <span className="translate-lang">{targetLang}</span>
+            </div>
+
+            <textarea
+              className="translate-input"
+              placeholder={`Type ${sourceLang} text...`}
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              rows={3}
+            />
+
+            <button
+              className="btn btn-primary translate-btn"
+              onClick={handleTranslate}
+              disabled={loading || !input.trim()}
+            >
+              {loading ? 'Translating...' : 'Translate'}
+            </button>
+
+            {output && (
+              <div className="translate-output">
+                <div className="translate-result">{output}</div>
+                {wordByWord.length > 1 && (
+                  <div className="translate-words">
+                    {wordByWord.map((w, i) => (
+                      <span key={i} className="translate-word-pair">
+                        <span className="tw-src">{w.src}</span>
+                        <span className="tw-dst">{w.dst}</span>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </>
   )
 }
