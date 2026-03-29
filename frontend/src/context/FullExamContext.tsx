@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
+import { flushSync } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import type { FullExamState, FullExamSection } from '../types/exam'
 
@@ -71,9 +72,13 @@ export function FullExamProvider({ children }: { children: ReactNode }) {
       sections,
       scores: {},
     }
-    setState(newState)
-    setActiveSection(sections[0].type)
-    navigate(sections[0].route)
+    const first = sections[0]!
+    // flushSync ensures state is committed before navigate renders the section view
+    flushSync(() => {
+      setState(newState)
+      setActiveSection(first.type)
+    })
+    navigate(first.route)
   }, [navigate])
 
   const startNextSection = useCallback(() => {
@@ -81,16 +86,18 @@ export function FullExamProvider({ children }: { children: ReactNode }) {
     const section = state.sections[state.currentSection]
     if (!section) return
 
-    setState(prev => {
-      if (!prev) return prev
-      return {
-        ...prev,
-        sections: prev.sections.map((s, i) =>
-          i === prev.currentSection ? { ...s, status: 'in_progress' as const } : { ...s }
-        ),
-      }
+    flushSync(() => {
+      setState(prev => {
+        if (!prev) return prev
+        return {
+          ...prev,
+          sections: prev.sections.map((s, i) =>
+            i === prev.currentSection ? { ...s, status: 'in_progress' as const } : { ...s }
+          ),
+        }
+      })
+      setActiveSection(section.type)
     })
-    setActiveSection(section.type)
     navigate(section.route)
   }, [state, navigate])
 
