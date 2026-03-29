@@ -7,8 +7,13 @@ function initYkiWritingView() {
 
     if (!menu) return {};
 
-    // Mock test
-    document.getElementById('wr-start-mock').addEventListener('click', async () => {
+    // Mock test — show confirm first
+    document.getElementById('wr-start-mock').addEventListener('click', () => {
+        document.getElementById('wr-mock-confirm').style.display = 'block';
+        document.getElementById('wr-practice-options').style.display = 'none';
+    });
+
+    document.getElementById('wr-mock-go').addEventListener('click', async () => {
         isMock = true;
         menu.style.display = 'none';
         loading.style.display = 'block';
