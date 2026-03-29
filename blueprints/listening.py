@@ -1,9 +1,8 @@
-"""Listening exam blueprint — converts reading passages to TTS audio + questions."""
+"""Listening exam blueprint — uses pre-generated questions + cached TTS audio."""
 import json
 import hashlib
 import subprocess
 import random
-import re
 
 from flask import Blueprint, jsonify, request, send_file
 
@@ -12,47 +11,33 @@ from blueprints.ai import ask_claude
 
 bp = Blueprint("listening", __name__, url_prefix="/api/listening")
 
-
-def _load_passages():
-    """Load passages suitable for listening from knowledge base."""
-    passages = []
-    listen_dir = KNOWLEDGE_DIR / "Listening"
-    if not listen_dir.exists():
-        return passages
-
-    for f in sorted(listen_dir.iterdir()):
-        if f.suffix not in (".md", ".txt"):
-            continue
-        text = f.read_text(encoding="utf-8")
-
-        if "8sidor" in f.name:
-            articles = re.split(r'^## (.+)', text, flags=re.MULTILINE)
-            for i in range(1, len(articles) - 1, 2):
-                title = articles[i].strip()
-                body = articles[i + 1].strip()
-                if len(body) > 50:
-                    passages.append({"title": title, "text": body, "source": "8sidor.se", "category": "news"})
-        elif "stories" in f.name:
-            chapters = re.split(r'^## (Kapitel .+)', text, flags=re.MULTILINE)
-            for i in range(1, len(chapters) - 1, 2):
-                title = chapters[i].strip()
-                body = chapters[i + 1].strip()[:1500]
-                if len(body) > 100:
-                    passages.append({"title": title, "text": body, "source": "Short Stories", "category": "stories"})
-
-    return passages
+QUESTIONS_FILE = KNOWLEDGE_DIR / "pregenerated_questions.json"
 
 
-_cached = None
-def get_passages():
-    global _cached
-    if _cached is None:
-        _cached = _load_passages()
-    return _cached
+def _load_pregenerated():
+    if QUESTIONS_FILE.exists():
+        return json.loads(QUESTIONS_FILE.read_text(encoding="utf-8"))
+    return {}
+
+
+def _get_clips():
+    """Get all clips with pre-generated questions and audio URLs."""
+    pregen = _load_pregenerated()
+    clips = []
+    for key, data in pregen.items():
+        clips.append({
+            "key": key,
+            "title": data["title"],
+            "text": data["text"],
+            "source": data.get("source", ""),
+            "category": data.get("category", ""),
+            "questions": data.get("questions", []),
+            "audio_url": data.get("audio_url", ""),
+        })
+    return clips
 
 
 def _synthesize(text):
-    """Convert text to audio, return URL path."""
     text_hash = hashlib.sha256(text.encode()).hexdigest()[:16]
     audio_dir = OUTPUT_DIR / "audio_cache"
     audio_dir.mkdir(exist_ok=True)
@@ -86,49 +71,32 @@ def serve_audio(hash_id):
 
 @bp.route("/passages")
 def list_passages():
-    return jsonify([{"title": p["title"], "source": p["source"], "category": p["category"]}
-                     for p in get_passages()])
+    clips = _get_clips()
+    return jsonify([{"title": c["title"], "source": c["source"], "category": c["category"],
+                     "index": i, "has_audio": bool(c["audio_url"])}
+                    for i, c in enumerate(clips)])
 
 
 @bp.route("/categories")
 def list_categories():
-    return jsonify(list(set(p["category"] for p in get_passages())))
+    return jsonify(list(set(c["category"] for c in _get_clips())))
 
 
 @bp.route("/clip/<int:index>", methods=["POST"])
-def generate_for_clip(index):
-    """Generate audio + questions for a specific passage."""
-    passages = get_passages()
-    if index < 0 or index >= len(passages):
+def get_clip(index):
+    clips = _get_clips()
+    if index < 0 or index >= len(clips):
         return jsonify({"error": "Invalid index"}), 404
 
-    p = passages[index]
-    audio_url = _synthesize(p["text"])
+    c = clips[index]
+    audio_url = c["audio_url"] or _synthesize(c["text"])
+    questions = c["questions"]
+    if not questions:
+        questions = _generate_questions(c["text"], c["title"])
 
-    system = (
-        "You are a YKI Swedish listening exam question generator (B1-B2). "
-        "Generate comprehension questions for text that will be heard as audio. "
-        "Return ONLY valid JSON."
-    )
-    prompt = (
-        f"This Swedish text will be played as audio:\n\"{p['text'][:1200]}\"\n\n"
-        f"Create 3 comprehension questions in Swedish:\n"
-        f"- 1 multiple choice (type: 'mc', options A/B/C, correct answer)\n"
-        f"- 1 true/false (type: 'tf', correct: 'sant'/'falskt')\n"
-        f"- 1 open question (type: 'open')\n\n"
-        f"Return JSON: {{\"questions\": [...]}}"
-    )
-    raw = ask_claude(prompt, system=system, timeout=120)
-    questions = []
-    try:
-        start = raw.find("{")
-        end = raw.rfind("}") + 1
-        if start >= 0 and end > start:
-            questions = json.loads(raw[start:end]).get("questions", [])
-    except (json.JSONDecodeError, ValueError):
-        questions = [{"type": "open", "question": "Vad handlade texten om?"}]
-
-    return jsonify({"clips": [{"title": p["title"], "audio_url": audio_url, "questions": questions, "text": p["text"]}]})
+    return jsonify({"clips": [{
+        "title": c["title"], "audio_url": audio_url, "questions": questions, "text": c["text"],
+    }]})
 
 
 @bp.route("/generate", methods=["POST"])
@@ -137,52 +105,46 @@ def generate_listening():
     category = data.get("category", "")
     num_clips = data.get("num_clips", 2)
 
-    passages = get_passages()
+    clips = _get_clips()
     if category:
-        passages = [p for p in passages if p["category"] == category]
-    if not passages:
-        return jsonify({"error": "No passages available"}), 404
+        clips = [c for c in clips if c["category"] == category]
+    if not clips:
+        return jsonify({"error": "No clips available. Run: python3 pregenerate.py"}), 404
 
-    selected = random.sample(passages, min(num_clips, len(passages)))
+    selected = random.sample(clips, min(num_clips, len(clips)))
 
-    system = (
-        "You are a YKI Swedish listening exam question generator (B1-B2). "
-        "Generate comprehension questions for text that will be heard as audio. "
-        "Return ONLY valid JSON."
-    )
-
-    clips = []
-    for p in selected:
-        # Synthesize audio
-        audio_url = _synthesize(p["text"])
-
-        prompt = (
-            f"This Swedish text will be played as audio:\n\"{p['text'][:1200]}\"\n\n"
-            f"Create 3 comprehension questions in Swedish:\n"
-            f"- 1 multiple choice (type: 'mc', options A/B/C, correct answer)\n"
-            f"- 1 true/false (type: 'tf', correct: 'sant'/'falskt')\n"
-            f"- 1 open question (type: 'open')\n\n"
-            f"Return JSON: {{\"questions\": [...]}}"
-        )
-
-        raw = ask_claude(prompt, system=system, timeout=120)
-        questions = []
-        try:
-            start = raw.find("{")
-            end = raw.rfind("}") + 1
-            if start >= 0 and end > start:
-                questions = json.loads(raw[start:end]).get("questions", [])
-        except (json.JSONDecodeError, ValueError):
-            questions = [{"type": "open", "question": "Vad handlade texten om?"}]
-
-        clips.append({
-            "title": p["title"],
-            "audio_url": audio_url,
-            "questions": questions,
-            "text": p["text"],  # Include for evaluation
+    result = []
+    for c in selected:
+        audio_url = c["audio_url"] or _synthesize(c["text"])
+        questions = c["questions"]
+        if not questions:
+            questions = _generate_questions(c["text"], c["title"])
+        result.append({
+            "title": c["title"], "audio_url": audio_url, "questions": questions, "text": c["text"],
         })
 
-    return jsonify({"clips": clips})
+    return jsonify({"clips": result})
+
+
+def _generate_questions(text, title):
+    system = (
+        "You are a YKI Swedish listening exam question generator (B1-B2). "
+        "Return ONLY valid JSON."
+    )
+    prompt = (
+        f"This Swedish text is played as audio:\n\"{text[:1200]}\"\n\n"
+        f"Create 3 questions in Swedish:\n- 1 mc (options A/B/C, correct)\n- 1 tf (correct: sant/falskt)\n- 1 open\n\n"
+        f"Return JSON: {{\"questions\": [...]}}"
+    )
+    raw = ask_claude(prompt, system=system, timeout=120)
+    try:
+        start = raw.find("{")
+        end = raw.rfind("}") + 1
+        if start >= 0 and end > start:
+            return json.loads(raw[start:end]).get("questions", [])
+    except (json.JSONDecodeError, ValueError):
+        pass
+    return [{"type": "open", "question": "Vad handlade texten om?"}]
 
 
 @bp.route("/evaluate", methods=["POST"])
@@ -197,7 +159,7 @@ def evaluate_listening():
     )
     prompt = "Evaluate these listening answers:\n\n"
     for i, c in enumerate(clips):
-        prompt += f"Clip: {c['title']}\nOriginal text: {c.get('text', '')[:500]}\n"
+        prompt += f"Clip: {c['title']}\nText: {c.get('text', '')[:500]}\n"
         for j, q in enumerate(c.get('questions', [])):
             idx = sum(len(clips[k].get('questions', [])) for k in range(i)) + j
             ans = answers[idx] if idx < len(answers) else ""

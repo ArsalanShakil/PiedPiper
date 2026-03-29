@@ -70,6 +70,16 @@ cd "$APP_DIR" && python3 -c "from db import init_db; init_db()"
 cd "$APP_DIR" && python3 dbexport.py import
 echo "[OK] Database initialized"
 
+# --- Pre-generate questions (if Claude CLI available and not already done) ---
+if command -v claude &> /dev/null; then
+    if [ ! -f "$APP_DIR/knowledge/pregenerated_questions.json" ]; then
+        echo "[..] Pre-generating reading/listening questions (this takes a few minutes)..."
+        cd "$APP_DIR" && python3 pregenerate.py
+    else
+        echo "[OK] Pre-generated questions already exist"
+    fi
+fi
+
 # --- Create macOS Desktop App ---
 if [[ "$(uname)" == "Darwin" ]]; then
     APP_BUNDLE="$HOME/Desktop/PiedPiper.app"

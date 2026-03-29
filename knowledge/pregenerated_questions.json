@@ -1,0 +1,36 @@
+{
+  "58e647a038bd78c3": {
+    "title": "Flicka misstänkt för två mord",
+    "text": "På måndagen blev en ung pojke skjuten i Huddinge nära Stockholm. Han dog av sina skador. På onsdagen blev en till ung pojke skjuten till döds. Det var i Malmö. Poliserna har tagit fast en 15-årig flicka. Hon är misstänkt för båda morden. Det skriver tidningen Expressen. Poliserna tog flickan i Malmö. Då var hon tillsammans med en 17-årig pojke. Han är också misstänkt för mord. Poliserna tror att brotten kan ha med gänget Foxtrot att göra. Flickan kan ha fått i uppdrag av Foxtrot att skjuta pojkarna. Det skriver Expressen. Den senaste veckan har även två andra unga män skjutits ihjäl. De skjutningarna var i Örebro och Tyresö.",
+    "source": "8sidor.se",
+    "category": "news",
+    "questions": [
+      {
+        "id": 1,
+        "type": "mc",
+        "question": "Var blev den första pojken skjuten?",
+        "options": {
+          "A": "I Malmö",
+          "B": "I Huddinge nära Stockholm",
+          "C": "I Örebro"
+        },
+        "correct": "B",
+        "explanation": "Texten säger: 'På måndagen blev en ung pojke skjuten i Huddinge nära Stockholm.'"
+      },
+      {
+        "id": 2,
+        "type": "tf",
+        "question": "Den misstänkta flickan är 17 år gammal.",
+        "correct": "falskt",
+        "explanation": "Flickan är 15 år gammal. Det var pojken som hon var tillsammans med när hon greps som är 17 år."
+      },
+      {
+        "id": 3,
+        "type": "open",
+        "question": "Vilken koppling tror poliserna att brotten har, och vad kan flickans roll ha varit enligt tidningen Expressen?",
+        "sample_answer": "Poliserna tror att brotten kan ha med gänget Foxtrot att göra. Enligt Expressen kan flickan ha fått i uppdrag av Foxtrot att skjuta pojkarna."
+      }
+    ],
+    "audio_url": "/api/listening/audio/58dd541e4d206cc8"
+  }
+}
