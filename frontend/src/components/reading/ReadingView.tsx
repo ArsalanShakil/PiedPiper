@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useExamFlow } from '../../hooks/useExamFlow'
 import { useTimer } from '../../hooks/useTimer'
 import { generateReading, evaluateReading, fetchPassages, fetchPassage } from '../../api/reading'
 import type { ReadingExamData, PassageListItem, ExamQuestion } from '../../types/exam'
 import type { EvalResult } from '../../types/api'
-import { useFullExam, ACTIVE_KEY } from '../../context/FullExamContext'
+import { useFullExam } from '../../context/FullExamContext'
 import { escapeHtml } from '../../utils/format'
 import { normalizeOptions } from '../../utils/exam'
 import '../../styles/yki.css'
@@ -14,8 +14,9 @@ type MenuSubView = 'none' | 'mock' | 'practice'
 
 export default function ReadingView() {
   const navigate = useNavigate()
-  const { activeSection, completeSection } = useFullExam()
-  const [isFullExam] = useState(() => activeSection === 'reading' || localStorage.getItem(ACTIVE_KEY) === 'reading')
+  const location = useLocation()
+  const { completeSection } = useFullExam()
+  const [isFullExam] = useState(() => (location.state as { fullExam?: boolean })?.fullExam === true)
 
   const {
     phase, examData, isMock, score, feedback, loadingMessage,

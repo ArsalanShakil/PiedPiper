@@ -2,8 +2,8 @@ import { createContext, useContext, useState, useCallback, useEffect, type React
 import { useNavigate } from 'react-router-dom'
 import type { FullExamState, FullExamSection } from '../types/exam'
 
-export const STORAGE_KEY = 'yki_full_exam'
-export const ACTIVE_KEY = 'yki_full_exam_active'
+const STORAGE_KEY = 'yki_full_exam'
+const ACTIVE_KEY = 'yki_full_exam_active'
 
 const SECTIONS: FullExamSection[] = [
   { type: 'reading', label: 'Reading', icon: '\uD83D\uDCD6', time: '60 min', status: 'pending', route: '/yki/reading' },
@@ -74,10 +74,7 @@ export function FullExamProvider({ children }: { children: ReactNode }) {
     const first = sections[0]!
     setState(newState)
     setActiveSection(first.type)
-    // Write synchronously so section view can read on mount (before React state propagates)
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(newState))
-    localStorage.setItem(ACTIVE_KEY, first.type)
-    navigate(first.route)
+    navigate(first.route, { state: { fullExam: true } })
   }, [navigate])
 
   const startNextSection = useCallback(() => {
@@ -93,10 +90,7 @@ export function FullExamProvider({ children }: { children: ReactNode }) {
     }
     setState(updated)
     setActiveSection(section.type)
-    // Write synchronously so section view can read on mount
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
-    localStorage.setItem(ACTIVE_KEY, section.type)
-    navigate(section.route)
+    navigate(section.route, { state: { fullExam: true } })
   }, [state, navigate])
 
   const completeSection = useCallback((score: number) => {

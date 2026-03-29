@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import {
   fetchTests, fetchTopics, fetchTest, fetchRandom, fetchMix,
   fetchPractice, browseSpeaking, synthesizePrompt, getBeepUrl,
@@ -10,7 +10,7 @@ import type {
   SpeakingTestListItem, SpeakingBrowseItem,
   DialogueItem, ReactItem,
 } from '../../types/exam'
-import { useFullExam, ACTIVE_KEY } from '../../context/FullExamContext'
+import { useFullExam } from '../../context/FullExamContext'
 import { playAudioTwice, playAudioOnce, fmtTime } from '../../utils/audio'
 import { sleep } from '../../utils/sleep'
 import '../../styles/yki.css'
@@ -51,8 +51,9 @@ function isReactItems(_items: unknown[], partType: string): _items is ReactItem[
 
 export default function SpeakingView() {
   const navigate = useNavigate()
-  const { activeSection, completeSection } = useFullExam()
-  const [isFullExam] = useState(() => activeSection === 'speaking' || localStorage.getItem(ACTIVE_KEY) === 'speaking')
+  const location = useLocation()
+  const { completeSection } = useFullExam()
+  const [isFullExam] = useState(() => (location.state as { fullExam?: boolean })?.fullExam === true)
 
   /* ---- top-level view state ---- */
   const [phase, setPhase] = useState<ViewPhase>('menu')
