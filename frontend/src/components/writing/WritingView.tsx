@@ -236,7 +236,10 @@ export default function WritingView() {
     return (
       <div>
         <div className="exam-header">
-          <h2>{examData.title}</h2>
+          <button className="btn btn-small" onClick={handleBack} style={{ marginRight: 12 }}>
+            &larr; Exit
+          </button>
+          <h2 style={{ flex: 1 }}>{examData.title}</h2>
           <div className={`exam-timer ${timer.timerClass}`}>{timer.display}</div>
         </div>
 

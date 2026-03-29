@@ -9,6 +9,7 @@ import {
 import type { ListeningExamData, ListeningPassageItem, ExamQuestion } from '../../types/exam'
 import type { EvalResult } from '../../types/api'
 import { useFullExam } from '../../context/FullExamContext'
+import { normalizeOptions } from '../../utils/exam'
 import '../../styles/yki.css'
 
 type MenuSubView = 'none' | 'mock' | 'practice'
@@ -313,7 +314,7 @@ export default function ListeningView() {
         <div className="question-block" key={qid}>
           <div className="question-text">{ci + 1}.{qi + 1} {q.question}</div>
           <div className="question-options">
-            {(q.options || []).map(opt => (
+            {normalizeOptions(q.options).map(opt => (
               <label
                 key={opt}
                 className={`option-label${answers[qid] === opt ? ' selected' : ''}`}
@@ -408,7 +409,10 @@ export default function ListeningView() {
     return (
       <div>
         <div className="exam-header">
-          <h2>{isMock ? 'Listening Mock Exam' : 'Listening Practice'}</h2>
+          <button className="btn btn-small" onClick={handleBack} style={{ marginRight: 12 }}>
+            &larr; Exit
+          </button>
+          <h2 style={{ flex: 1 }}>{isMock ? 'Listening Mock Exam' : 'Listening Practice'}</h2>
           <div className={`exam-timer ${timer.timerClass}`}>
             {autoPlayStatus ? 'Listening phase' : timer.display}
           </div>

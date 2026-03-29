@@ -7,6 +7,7 @@ import type { ReadingExamData, PassageListItem, ExamQuestion } from '../../types
 import type { EvalResult } from '../../types/api'
 import { useFullExam } from '../../context/FullExamContext'
 import { escapeHtml } from '../../utils/format'
+import { normalizeOptions } from '../../utils/exam'
 import '../../styles/yki.css'
 
 type MenuSubView = 'none' | 'mock' | 'practice'
@@ -204,7 +205,7 @@ export default function ReadingView() {
         <div className="question-block" key={qid}>
           <div className="question-text">{pi + 1}.{qi + 1} {q.question}</div>
           <div className="question-options">
-            {(q.options || []).map(opt => (
+            {normalizeOptions(q.options).map(opt => (
               <label
                 key={opt}
                 className={`option-label${answers[qid] === opt ? ' selected' : ''}`}
@@ -299,7 +300,10 @@ export default function ReadingView() {
     return (
       <div>
         <div className="exam-header">
-          <h2>{isMock ? 'Reading Mock Exam' : 'Reading Practice'}</h2>
+          <button className="btn btn-small" onClick={handleBack} style={{ marginRight: 12 }}>
+            &larr; Exit
+          </button>
+          <h2 style={{ flex: 1 }}>{isMock ? 'Reading Mock Exam' : 'Reading Practice'}</h2>
           <div className={`exam-timer ${timer.timerClass}`}>{timer.display}</div>
         </div>
 
