@@ -62,40 +62,92 @@ export default function VocabularyView() {
     loadVocab()
   }
 
+  // Keyboard shortcuts for review
+  useEffect(() => {
+    if (mode !== 'review') return
+    const handler = (e: KeyboardEvent) => {
+      if (reviewIndex >= reviewItems.length) return
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault()
+        setRevealed(true)
+      } else if (revealed && (e.key === 'ArrowLeft' || e.key === '1')) {
+        handleReviewAnswer(false)
+      } else if (revealed && (e.key === 'ArrowRight' || e.key === '2')) {
+        handleReviewAnswer(true)
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [mode, revealed, reviewIndex, reviewItems.length])
+
   if (mode === 'review') {
     const currentItem = reviewItems[reviewIndex]
     const isComplete = reviewIndex >= reviewItems.length
+    const progress = reviewItems.length > 0 ? ((reviewIndex) / reviewItems.length) * 100 : 0
 
     return (
-      <div id="vocab-page">
-        <div className="vocab-header">
-          <h2>Flashcard Review</h2>
-          <button className="btn" onClick={backToList}>Back to List</button>
+      <div id="vocab-page" className="review-page">
+        {/* Top bar */}
+        <div className="review-topbar">
+          <button className="btn btn-small" onClick={backToList}>&larr; Exit</button>
+          <div className="review-counter">{Math.min(reviewIndex + 1, reviewItems.length)} / {reviewItems.length}</div>
+          <div style={{ width: 60 }} />
         </div>
+
+        {/* Progress bar */}
+        <div className="review-progress-bar">
+          <div className="review-progress-fill" style={{ width: `${progress}%` }} />
+        </div>
+
         <div className="flashcard-container">
           {isComplete ? (
             <div className="review-complete">
+              <div className="review-complete-icon">&#x1F389;</div>
               <h3>Review Complete!</h3>
-              <p>You got {reviewScore} out of {reviewItems.length} correct.</p>
-              <button className="btn btn-primary" style={{ width: 'auto' }} onClick={backToList}>Back to List</button>
+              <div className="review-score-ring">
+                <span className="review-score-number">{reviewItems.length > 0 ? Math.round((reviewScore / reviewItems.length) * 100) : 0}%</span>
+              </div>
+              <p>{reviewScore} of {reviewItems.length} correct</p>
+              <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: 24 }}>
+                <button className="btn btn-primary" style={{ width: 'auto' }} onClick={startReview}>Review Again</button>
+                <button className="btn" onClick={backToList}>Back to List</button>
+              </div>
             </div>
           ) : currentItem && (
             <>
-              <div className="flashcard" onClick={() => setRevealed(true)}>
-                <div className="flashcard-word">{currentItem.swedish_text}</div>
-                {!revealed && <div className="flashcard-hint">Click to reveal translation</div>}
-                <div className={`flashcard-answer${revealed ? ' revealed' : ''}`}>{currentItem.translation}</div>
-                {currentItem.context && (
-                  <div className={`flashcard-grammar${revealed ? ' revealed' : ''}`}>{currentItem.context}</div>
-                )}
-              </div>
-              {revealed && (
-                <div className="flashcard-buttons" style={{ display: 'flex' }}>
-                  <button className="btn btn-danger" style={{ minWidth: 120 }} onClick={() => handleReviewAnswer(false)}>Didn't know</button>
-                  <button className="btn btn-primary" style={{ width: 'auto', minWidth: 120 }} onClick={() => handleReviewAnswer(true)}>Knew it!</button>
+              {/* Flip card */}
+              <div className={`flashcard-flip${revealed ? ' flipped' : ''}`} onClick={() => setRevealed(r => !r)}>
+                <div className="flashcard-inner">
+                  <div className="flashcard-front">
+                    <div className="flashcard-label">SWEDISH</div>
+                    <div className="flashcard-word">{currentItem.swedish_text}</div>
+                    <div className="flashcard-hint">Tap to flip</div>
+                  </div>
+                  <div className="flashcard-back">
+                    <div className="flashcard-label">TRANSLATION</div>
+                    <div className="flashcard-translation">{currentItem.translation}</div>
+                    {currentItem.context && (
+                      <div className="flashcard-context">{currentItem.context}</div>
+                    )}
+                  </div>
                 </div>
+              </div>
+
+              {/* Answer buttons */}
+              <div className={`flashcard-actions${revealed ? ' visible' : ''}`}>
+                <button className="review-btn review-btn-miss" onClick={() => handleReviewAnswer(false)}>
+                  <span className="review-btn-icon">&#x2717;</span>
+                  <span>Still learning</span>
+                </button>
+                <button className="review-btn review-btn-hit" onClick={() => handleReviewAnswer(true)}>
+                  <span className="review-btn-icon">&#x2713;</span>
+                  <span>Got it!</span>
+                </button>
+              </div>
+
+              {!revealed && (
+                <div className="flashcard-shortcut-hint">Press Space to flip</div>
               )}
-              <div className="flashcard-progress">{reviewIndex + 1} / {reviewItems.length}</div>
             </>
           )}
         </div>
