@@ -66,6 +66,8 @@ export default function EditorView() {
   })
   const [addedWords, setAddedWords] = useState<Set<string>>(new Set())
   const [selectionInVocab, setSelectionInVocab] = useState(false)
+  const [toast, setToast] = useState<{ message: string; type: 'info' | 'success' | 'error' } | null>(null)
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [speakUrl, setSpeakUrl] = useState<string | null>(null)
   const [speakFile, setSpeakFile] = useState<{ folder: string; name: string } | null>(null)
   const [speakLoading, setSpeakLoading] = useState(false)
@@ -114,6 +116,12 @@ export default function EditorView() {
       scheduleSave()
     }
   }, [])
+
+  function showToast(message: string, type: 'info' | 'success' | 'error' = 'info', duration = 2000) {
+    setToast({ message, type })
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+    toastTimerRef.current = setTimeout(() => setToast(null), duration)
+  }
 
   // --- Save logic ---
   function scheduleSave() {
@@ -598,20 +606,18 @@ export default function EditorView() {
 
     const last = lastTransRef.current
     if (last && last.swedish === text) {
+      showToast('Saving to vocabulary...', 'info')
       await saveVocabWord(text, last.translation)
-      setSaveStatus({ text: 'Saved to vocabulary!', color: 'var(--primary)' })
-      setTimeout(() => setSaveStatus({ text: 'Auto-saved', color: 'var(--success)' }), 2000)
+      showToast('Saved to vocabulary!', 'success')
     } else {
-      setTransOpen(true)
-      setTransBody('<p class="trans-loading">Translating &amp; saving...</p>')
+      showToast('Translating & saving...', 'info', 10000)
       try {
         const data = await translate(text)
         lastTransRef.current = { swedish: text, ...data }
         await saveVocabWord(text, data.translation)
-        setTransBody(`<p class="trans-loading">Saved "${escapeHtml(text)}" to vocabulary!</p>`)
-        setTimeout(() => setTransOpen(false), 1500)
+        showToast('Saved to vocabulary!', 'success')
       } catch {
-        setTransBody('<p class="trans-loading">Failed to translate</p>')
+        showToast('Failed to save', 'error')
       }
     }
   }, [])
@@ -621,11 +627,11 @@ export default function EditorView() {
     if (!text) return
     setSelToolbarVisible(false)
     try {
+      showToast('Removing from vocabulary...', 'info')
       await vocabRef.current.removeWord(text)
-      setSaveStatus({ text: 'Removed from vocabulary', color: 'var(--danger)' })
-      setTimeout(() => setSaveStatus({ text: 'Auto-saved', color: 'var(--success)' }), 2000)
+      showToast('Removed from vocabulary', 'success')
     } catch {
-      // silently fail
+      showToast('Failed to remove', 'error')
     }
   }, [])
 
@@ -868,6 +874,13 @@ export default function EditorView() {
           }}
         >
           {tooltipState.text}
+        </div>
+      )}
+
+      {/* Toast notification */}
+      {toast && (
+        <div className={`editor-toast editor-toast-${toast.type}`}>
+          {toast.message}
         </div>
       )}
     </div>
