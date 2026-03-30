@@ -93,6 +93,55 @@ function wordDiff(expected: string[], actual: string[]): { word: string; status:
 }
 
 /** Generate blank positions for fill-the-blanks mode */
+/** Clear feedback component for Recall & Write / Speed Round */
+function RecallFeedback({ userInput, original, diffResult, score }: {
+  userInput: string; original: string;
+  diffResult: { word: string; status: string }[];
+  score: number;
+}) {
+  const missing = diffResult.filter(d => d.status === 'missing')
+  const extra = diffResult.filter(d => d.status === 'extra')
+  const isPerfect = score >= 100
+
+  return (
+    <div className="mem-feedback">
+      {isPerfect ? (
+        <div className="mem-feedback-perfect">Perfect! You got it exactly right.</div>
+      ) : (
+        <>
+          <div className="mem-feedback-section">
+            <div className="mem-feedback-label">Your answer</div>
+            <div className="mem-feedback-text mem-feedback-user">{userInput || '(empty)'}</div>
+          </div>
+          <div className="mem-feedback-section">
+            <div className="mem-feedback-label">Correct answer</div>
+            <div className="mem-feedback-text mem-feedback-correct">{original}</div>
+          </div>
+          {(missing.length > 0 || extra.length > 0) && (
+            <div className="mem-feedback-section">
+              <div className="mem-feedback-label">What went wrong</div>
+              <div className="mem-feedback-errors">
+                {missing.length > 0 && (
+                  <div className="mem-feedback-error-row">
+                    <span className="mem-feedback-error-tag missing">Missing</span>
+                    <span>{missing.map(d => d.word).join(', ')}</span>
+                  </div>
+                )}
+                {extra.length > 0 && (
+                  <div className="mem-feedback-error-row">
+                    <span className="mem-feedback-error-tag extra">Extra</span>
+                    <span>{extra.map(d => d.word).join(', ')}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  )
+}
+
 function generateBlanks(words: string[], ratio = 0.3): Set<number> {
   const blanks = new Set<number>()
   const count = Math.max(1, Math.round(words.length * ratio))
@@ -734,14 +783,7 @@ export default function MemorizationView() {
                 </>
               ) : (
                 <>
-                  <div className="mem-diff-display">
-                    {diffResult.map((d, i) => (
-                      <span key={i} className={`mem-diff-word mem-diff-${d.status}`}>{d.word} </span>
-                    ))}
-                  </div>
-                  <div className="mem-original-reveal">
-                    <strong>Original:</strong> {currentChunk}
-                  </div>
+                  <RecallFeedback userInput={userInput} original={currentChunk} diffResult={diffResult} score={drillScore ?? 0} />
                   <div className="mem-drill-actions">
                     <div className="mem-score-display">{drillScore}%</div>
                     <button className="btn btn-primary" onClick={handleNext}>{nextLabel}</button>
@@ -784,14 +826,7 @@ export default function MemorizationView() {
                 </>
               ) : (
                 <>
-                  <div className="mem-diff-display">
-                    {diffResult.map((d, i) => (
-                      <span key={i} className={`mem-diff-word mem-diff-${d.status}`}>{d.word} </span>
-                    ))}
-                  </div>
-                  <div className="mem-original-reveal">
-                    <strong>Original:</strong> {currentChunk}
-                  </div>
+                  <RecallFeedback userInput={userInput} original={currentChunk} diffResult={diffResult} score={drillScore ?? 0} />
                   <div className="mem-drill-actions">
                     <div className="mem-score-display">{drillScore}%</div>
                     <button className="btn btn-primary" onClick={handleNext}>{nextLabel}</button>
