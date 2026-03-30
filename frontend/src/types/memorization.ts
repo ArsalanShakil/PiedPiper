@@ -1,6 +1,7 @@
 export interface MemorizationItem {
   id: number
   title: string
+  folder: string
   original_text: string
   chunks: string[]
   mastery_level: number

@@ -4,8 +4,11 @@ import type { MemorizationItem, DrillSubmission } from '../types/memorization'
 export const fetchItems = (search?: string) =>
   apiGet<MemorizationItem[]>(`/api/memorization/${search ? `?search=${encodeURIComponent(search)}` : ''}`)
 
-export const createItem = (data: { title: string; original_text: string }) =>
+export const createItem = (data: { title: string; folder?: string; original_text: string }) =>
   apiPost<MemorizationItem>('/api/memorization/', data)
+
+export const fetchFolders = () =>
+  apiGet<string[]>('/api/memorization/folders')
 
 export const fetchItem = (id: number) =>
   apiGet<MemorizationItem>(`/api/memorization/${id}`)

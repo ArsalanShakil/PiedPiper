@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS settings (
 CREATE TABLE IF NOT EXISTS memorization_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL DEFAULT 'Untitled',
+    folder TEXT NOT NULL DEFAULT 'General',
     original_text TEXT NOT NULL,
     chunks_json TEXT NOT NULL DEFAULT '[]',
     mastery_level INTEGER DEFAULT 0,

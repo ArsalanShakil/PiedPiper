@@ -149,10 +149,21 @@ def list_items():
     return jsonify([item_to_dict(r) for r in rows])
 
 
+@bp.route("/folders")
+def list_folders():
+    conn = get_db()
+    rows = conn.execute(
+        "SELECT DISTINCT folder FROM memorization_items WHERE folder IS NOT NULL AND folder != '' ORDER BY folder"
+    ).fetchall()
+    conn.close()
+    return jsonify([r["folder"] for r in rows])
+
+
 @bp.route("/", methods=["POST"])
 def create_item():
     data = request.json
     title = data.get("title", "Untitled").strip()
+    folder = data.get("folder", "General").strip() or "General"
     original_text = data.get("original_text", "").strip()
 
     if not original_text:
@@ -163,8 +174,8 @@ def create_item():
 
     conn = get_db()
     cur = conn.execute(
-        "INSERT INTO memorization_items (title, original_text, chunks_json) VALUES (?, ?, ?)",
-        (title, original_text, chunks_json),
+        "INSERT INTO memorization_items (title, folder, original_text, chunks_json) VALUES (?, ?, ?, ?)",
+        (title, folder, original_text, chunks_json),
     )
     conn.commit()
     row = conn.execute("SELECT * FROM memorization_items WHERE id = ?", (cur.lastrowid,)).fetchone()
@@ -197,6 +208,10 @@ def update_item(item_id):
     if "title" in data:
         fields.append("title = ?")
         params.append(data["title"].strip())
+
+    if "folder" in data:
+        fields.append("folder = ?")
+        params.append(data["folder"].strip() or "General")
 
     if "original_text" in data:
         new_text = data["original_text"].strip()

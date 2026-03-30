@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
-import { fetchItems, createItem, deleteItem, submitDrill, fetchDueItems } from '../../api/memorization'
+import { fetchItems, createItem, deleteItem, submitDrill, fetchDueItems, fetchFolders } from '../../api/memorization'
 import { fetchVoices, synthesize, deleteFile, getPlayUrl } from '../../api/tts'
 import { useTimer } from '../../hooks/useTimer'
 import type { MemorizationItem, DrillSubmission } from '../../types/memorization'
@@ -179,11 +179,14 @@ export default function MemorizationView() {
   const [mode, setMode] = useState<ViewMode>('list')
   const [items, setItems] = useState<MemorizationItem[]>([])
   const [dueItems, setDueItems] = useState<MemorizationItem[]>([])
+  const [folders, setFolders] = useState<string[]>([])
+  const [collapsedFolders, setCollapsedFolders] = useState<Set<string>>(new Set())
   const [search, setSearch] = useState('')
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Create state
   const [newTitle, setNewTitle] = useState('')
+  const [newFolder, setNewFolder] = useState('General')
   const [newText, setNewText] = useState('')
 
   // Drill state
@@ -232,8 +235,13 @@ export default function MemorizationView() {
     setDueItems(data)
   }, [])
 
+  const loadFolders = useCallback(async () => {
+    const data = await fetchFolders()
+    setFolders(data)
+  }, [])
+
   useEffect(() => { loadItems() }, [loadItems])
-  useEffect(() => { loadDue() }, [])
+  useEffect(() => { loadDue(); loadFolders() }, [])
 
   const handleSearchInput = (val: string) => {
     setSearch(val)
@@ -271,9 +279,10 @@ export default function MemorizationView() {
   /* ---- Create ---- */
   const handleCreate = async () => {
     if (!newText.trim()) return
-    const item = await createItem({ title: newTitle.trim() || 'Untitled', original_text: newText.trim() })
+    const item = await createItem({ title: newTitle.trim() || 'Untitled', folder: newFolder || 'General', original_text: newText.trim() })
     setNewTitle('')
     setNewText('')
+    setNewFolder('General')
     startDrill(item)
   }
 
@@ -436,6 +445,16 @@ export default function MemorizationView() {
     timer.stop()
     loadItems()
     loadDue()
+    loadFolders()
+  }
+
+  const toggleFolder = (folder: string) => {
+    setCollapsedFolders(prev => {
+      const next = new Set(prev)
+      if (next.has(folder)) next.delete(folder)
+      else next.add(folder)
+      return next
+    })
   }
 
   /* ---- Keyboard shortcuts for drill ---- */
@@ -500,28 +519,55 @@ export default function MemorizationView() {
           </div>
         )}
 
-        {/* All items */}
-        <h3 className="mem-section-title">All Items</h3>
+        {/* All items grouped by folder */}
         {items.length === 0 ? (
           <p className="empty-state">No memorization items yet. Create one to get started!</p>
-        ) : (
-          <div className="mem-grid">
-            {items.map(item => (
-              <div key={item.id} className="mem-card" onClick={() => startDrill(item)}>
-                <div className="mem-card-header">
-                  <div className="mem-card-title">{item.title}</div>
-                  <button className="mem-delete-btn" title="Delete" onClick={e => { e.stopPropagation(); handleDelete(item.id) }}>&times;</button>
-                </div>
-                <div className="mem-card-preview">{item.original_text.substring(0, 80)}{item.original_text.length > 80 ? '...' : ''}</div>
-                <div className="mem-card-meta">
-                  <div className="mem-mastery-bar"><div className="mem-mastery-fill" style={{ width: `${item.mastery_level}%` }} /></div>
-                  <span className="mem-mastery-label">{item.mastery_level}%</span>
-                  <span className="mem-card-chunks">{item.chunks.length} chunk{item.chunks.length !== 1 ? 's' : ''}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        ) : (() => {
+          const grouped: Record<string, MemorizationItem[]> = {}
+          for (const item of items) {
+            const f = item.folder || 'General'
+            if (!grouped[f]) grouped[f] = []
+            grouped[f]!.push(item)
+          }
+          const sortedFolders = Object.keys(grouped).sort((a, b) =>
+            a === 'General' ? -1 : b === 'General' ? 1 : a.localeCompare(b)
+          )
+          return (
+            <div className="mem-folders">
+              {sortedFolders.map(folder => {
+                const folderItems = grouped[folder]!
+                const isCollapsed = collapsedFolders.has(folder)
+                return (
+                  <div key={folder} className="mem-folder">
+                    <div className="mem-folder-header" onClick={() => toggleFolder(folder)}>
+                      <span className={`mem-folder-arrow${isCollapsed ? '' : ' open'}`}>&#x25B6;</span>
+                      <span className="mem-folder-name">{folder}</span>
+                      <span className="mem-folder-count">{folderItems.length}</span>
+                    </div>
+                    {!isCollapsed && (
+                      <div className="mem-folder-items">
+                        {folderItems.map(item => (
+                          <div key={item.id} className="mem-card" onClick={() => startDrill(item)}>
+                            <div className="mem-card-header">
+                              <div className="mem-card-title">{item.title}</div>
+                              <button className="mem-delete-btn" title="Delete" onClick={e => { e.stopPropagation(); handleDelete(item.id) }}>&times;</button>
+                            </div>
+                            <div className="mem-card-preview">{item.original_text.substring(0, 80)}{item.original_text.length > 80 ? '...' : ''}</div>
+                            <div className="mem-card-meta">
+                              <div className="mem-mastery-bar"><div className="mem-mastery-fill" style={{ width: `${item.mastery_level}%` }} /></div>
+                              <span className="mem-mastery-label">{item.mastery_level}%</span>
+                              <span className="mem-card-chunks">{item.chunks.length} chunk{item.chunks.length !== 1 ? 's' : ''}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          )
+        })()}
       </div>
     )
   }
@@ -541,6 +587,24 @@ export default function MemorizationView() {
           <div className="form-group">
             <label>Title</label>
             <input type="text" placeholder="E.g. 'Swedish national anthem'" value={newTitle} onChange={e => setNewTitle(e.target.value)} />
+          </div>
+          <div className="form-group">
+            <label>Folder</label>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <select value={newFolder} onChange={e => {
+                if (e.target.value === '__new__') {
+                  const name = prompt('New folder name:')
+                  if (name?.trim()) setNewFolder(name.trim())
+                } else {
+                  setNewFolder(e.target.value)
+                }
+              }} style={{ flex: 1 }}>
+                {['General', ...folders.filter(f => f !== 'General')].map(f => (
+                  <option key={f} value={f}>{f}</option>
+                ))}
+                <option value="__new__">+ New folder...</option>
+              </select>
+            </div>
           </div>
           <div className="form-group">
             <label>Text to memorize</label>
