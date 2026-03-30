@@ -501,6 +501,15 @@ export default function MemorizationView() {
   /* ================================================================ */
   /*  RENDER: List mode                                                */
   /* ================================================================ */
+  // Build a stable folder→color map from all items
+  const folderColorMap = useMemo(() => {
+    const allFolders = Array.from(new Set(items.map(i => i.folder || 'General')))
+    allFolders.sort((a, b) => a === 'General' ? -1 : b === 'General' ? 1 : a.localeCompare(b))
+    const map: Record<string, string> = {}
+    allFolders.forEach((f, i) => { map[f] = FOLDER_COLORS[i % FOLDER_COLORS.length]! })
+    return map
+  }, [items])
+
   if (mode === 'list') {
     return (
       <div className="mem-page">
@@ -518,17 +527,23 @@ export default function MemorizationView() {
           <div className="mem-due-section">
             <h3 className="mem-section-title">Due for Review</h3>
             <div className="mem-grid">
-              {dueItems.map(item => (
-                <div key={item.id} className="mem-card mem-card-due" onClick={() => startDrill(item)}>
-                  <div className="mem-card-title">{item.title}</div>
-                  <div className="mem-card-preview">{item.original_text.substring(0, 80)}{item.original_text.length > 80 ? '...' : ''}</div>
-                  <div className="mem-card-meta">
-                    <div className="mem-mastery-bar"><div className="mem-mastery-fill" style={{ width: `${item.mastery_level}%` }} /></div>
-                    <span className="mem-mastery-label">{item.mastery_level}%</span>
-                    <span className="badge mem-due-badge">Due</span>
+              {dueItems.map(item => {
+                const fc = folderColorMap[item.folder || 'General'] || FOLDER_COLORS[0]!
+                return (
+                  <div key={item.id} className="mem-card mem-card-due" onClick={() => startDrill(item)}>
+                    <div className="mem-card-header">
+                      <div className="mem-card-title">{item.title}</div>
+                      <span className="mem-folder-tag" style={{ background: fc + '18', color: fc, borderColor: fc + '40' }}>{item.folder || 'General'}</span>
+                    </div>
+                    <div className="mem-card-preview">{item.original_text.substring(0, 100)}{item.original_text.length > 100 ? '...' : ''}</div>
+                    <div className="mem-card-footer">
+                      <div className="mem-mastery-bar"><div className="mem-mastery-fill" style={{ width: `${item.mastery_level}%` }} /></div>
+                      <span className="mem-mastery-label">{item.mastery_level}%</span>
+                      <span className="badge mem-due-badge">Due</span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         )}
@@ -548,10 +563,10 @@ export default function MemorizationView() {
           )
           return (
             <div className="mem-folders">
-              {sortedFolders.map((folder, fi) => {
+              {sortedFolders.map(folder => {
                 const folderItems = grouped[folder]!
                 const isCollapsed = collapsedFolders.has(folder)
-                const color = FOLDER_COLORS[fi % FOLDER_COLORS.length]!
+                const color = folderColorMap[folder] || FOLDER_COLORS[0]!
                 return (
                   <div key={folder} className="mem-folder">
                     <div className="mem-folder-header" onClick={() => toggleFolder(folder)} style={{ borderLeftColor: color }}>
