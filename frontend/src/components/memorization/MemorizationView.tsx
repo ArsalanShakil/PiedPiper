@@ -233,13 +233,6 @@ export default function MemorizationView() {
     }
   }, [drillMode, chunkIndex, chunkWords.length, revealed])
 
-  // Auto-play TTS in Read & Listen mode
-  useEffect(() => {
-    if (drillMode === 0 && mode === 'drill' && currentChunk) {
-      speakText(currentChunk)
-    }
-  }, [drillMode, chunkIndex, mode])
-
   // Start timer for speed round
   useEffect(() => {
     if (drillMode === 4 && mode === 'drill' && !revealed) {
@@ -543,7 +536,7 @@ export default function MemorizationView() {
               <div className="mem-read-text">{currentChunk}</div>
               <div className="mem-drill-actions">
                 <button className="btn" onClick={() => speakText(currentChunk)} disabled={speakLoading}>
-                  {speakLoading ? 'Loading...' : 'Replay Audio'}
+                  {speakLoading ? 'Loading...' : speakUrl ? 'Replay Audio' : 'Play Audio'}
                 </button>
                 {!revealed ? (
                   <button className="btn btn-primary" onClick={handleSubmitDrill}>Mark as Read</button>
