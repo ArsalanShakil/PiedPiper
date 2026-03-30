@@ -354,7 +354,15 @@ export default function MemorizationView() {
   useEffect(() => {
     if (mode !== 'drill') return
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Enter' && e.ctrlKey && !revealed) {
+      if (e.key !== 'Enter' || revealed) return
+      // Fill Blanks: plain Enter submits (inputs, not textareas)
+      if (drillMode === 1 && !e.ctrlKey) {
+        e.preventDefault()
+        handleSubmitDrill()
+        return
+      }
+      // Textarea modes: Ctrl+Enter submits
+      if (e.ctrlKey) {
         e.preventDefault()
         handleSubmitDrill()
       }
