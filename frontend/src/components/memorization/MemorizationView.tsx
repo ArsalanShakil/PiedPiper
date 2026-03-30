@@ -223,6 +223,10 @@ export default function MemorizationView() {
 
   const currentChunk = drillItem?.chunks[chunkIndex] ?? ''
   const chunkWords = useMemo(() => currentChunk.split(/\s+/).filter(Boolean), [currentChunk])
+  const fullText = drillItem?.original_text ?? ''
+  const fullTextWords = useMemo(() => fullText.split(/\s+/).filter(Boolean), [fullText])
+  // For modes 3 & 4, we use the full text instead of individual chunks
+  const isFullTextMode = drillMode === 3 || drillMode === 4
 
   // Init blanks when entering mode 1
   useEffect(() => {
@@ -236,7 +240,7 @@ export default function MemorizationView() {
   // Start timer for speed round
   useEffect(() => {
     if (drillMode === 4 && mode === 'drill' && !revealed) {
-      const secs = Math.max(15, chunkWords.length * 3)
+      const secs = Math.max(15, fullTextWords.length * 3)
       timer.reset(secs)
       timer.start()
       setDrillStartTime(Date.now())
@@ -277,14 +281,14 @@ export default function MemorizationView() {
       const correct = diff.filter(d => d.status === 'correct').length
       score = chunkWords.length > 0 ? correct / chunkWords.length : 1.0
     } else if (drillMode === 3 || drillMode === 4) {
-      // Recall & Write / Speed Round
+      // Recall & Write / Speed Round — compare against FULL text
       const actualWords = userInput.trim().split(/\s+/).filter(Boolean)
-      diff = wordDiff(chunkWords, actualWords)
+      diff = wordDiff(fullTextWords, actualWords)
       const correct = diff.filter(d => d.status === 'correct').length
-      score = chunkWords.length > 0 ? correct / chunkWords.length : 1.0
+      score = fullTextWords.length > 0 ? correct / fullTextWords.length : 1.0
       if (hintUsed) score = Math.max(0, score - 0.1)
       if (drillMode === 4) {
-        const maxTime = Math.max(15, chunkWords.length * 3)
+        const maxTime = Math.max(15, fullTextWords.length * 3)
         const timeRatio = Math.min(1, timeSecs / maxTime)
         const timeBonus = timeRatio < 0.5 ? 1.0 : 1.0 - (timeRatio - 0.5) * 0.6
         score *= timeBonus
@@ -307,20 +311,21 @@ export default function MemorizationView() {
     setSessionScores(prev => [...prev, { chunk: chunkIndex, mode: drillMode, score: Math.round(score * 100) }])
   }
 
-  /** Advance: next chunk at same mode, or next mode from chunk 0, or finish. */
+  /** Advance: next chunk at same mode, or next mode from chunk 0, or finish.
+   *  Modes 3 & 4 are full-text (no chunk iteration), so skip straight to next mode. */
   const handleNext = () => {
     if (!drillItem) return
-    if (chunkIndex < drillItem.chunks.length - 1) {
+    if (!isFullTextMode && chunkIndex < drillItem.chunks.length - 1) {
       // More chunks at this mode — go to next chunk
       setChunkIndex(chunkIndex + 1)
       resetDrillState()
     } else if (drillMode < 4) {
-      // All chunks done for this mode — advance to next mode, start at chunk 0
+      // Advance to next mode, start at chunk 0
       setDrillMode(drillMode + 1)
       setChunkIndex(0)
       resetDrillState()
     } else {
-      // All modes on all chunks done
+      // All done
       setMode('results')
     }
   }
@@ -496,7 +501,8 @@ export default function MemorizationView() {
   /* ================================================================ */
   if (mode === 'drill' && drillItem) {
     const totalChunks = drillItem.chunks.length
-    const nextLabel = chunkIndex < totalChunks - 1
+    const isFullText = drillMode === 3 || drillMode === 4
+    const nextLabel = (!isFullText && chunkIndex < totalChunks - 1)
       ? `Next Chunk (${chunkIndex + 2}/${totalChunks})`
       : drillMode < 4
         ? `Next: ${DRILL_MODES[(drillMode + 1) as 0|1|2|3|4]?.label}`
@@ -630,16 +636,16 @@ export default function MemorizationView() {
           {/* Mode 3: Recall & Write */}
           {drillMode === 3 && (
             <div className="mem-drill-content">
-              <div className="mem-drill-label">Write the text entirely from memory</div>
+              <div className="mem-drill-label">Write the entire text from memory</div>
               {hintUsed && (
-                <div className="mem-hint-text">{chunkWords.slice(0, 2).join(' ')}...</div>
+                <div className="mem-hint-text">{fullTextWords.slice(0, 3).join(' ')}...</div>
               )}
               {!revealed ? (
                 <>
                   <textarea
                     className="mem-recall-textarea"
-                    rows={5}
-                    placeholder="Type from memory..."
+                    rows={10}
+                    placeholder="Type the entire text from memory..."
                     value={userInput}
                     onChange={e => setUserInput(e.target.value)}
                   />
@@ -658,7 +664,7 @@ export default function MemorizationView() {
                     ))}
                   </div>
                   <div className="mem-original-reveal">
-                    <strong>Original:</strong> {currentChunk}
+                    <strong>Original:</strong> {isFullTextMode ? fullText : currentChunk}
                   </div>
                   <div className="mem-drill-actions">
                     <div className="mem-score-display">{drillScore}%</div>
@@ -698,7 +704,7 @@ export default function MemorizationView() {
                     ))}
                   </div>
                   <div className="mem-original-reveal">
-                    <strong>Original:</strong> {currentChunk}
+                    <strong>Original:</strong> {isFullTextMode ? fullText : currentChunk}
                   </div>
                   <div className="mem-drill-actions">
                     <div className="mem-score-display">{drillScore}%</div>
