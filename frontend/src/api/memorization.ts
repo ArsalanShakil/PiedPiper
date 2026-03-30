@@ -13,7 +13,7 @@ export const fetchFolders = () =>
 export const fetchItem = (id: number) =>
   apiGet<MemorizationItem>(`/api/memorization/${id}`)
 
-export const updateItem = (id: number, data: Partial<{ title: string; original_text: string }>) =>
+export const updateItem = (id: number, data: Partial<{ title: string; folder: string; original_text: string }>) =>
   apiPut<MemorizationItem>(`/api/memorization/${id}`, data)
 
 export const deleteItem = (id: number) =>

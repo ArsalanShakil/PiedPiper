@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
-import { fetchItems, createItem, deleteItem, submitDrill, fetchDueItems, fetchFolders } from '../../api/memorization'
+import { fetchItems, createItem, updateItem, deleteItem, submitDrill, fetchDueItems, fetchFolders } from '../../api/memorization'
 import { fetchVoices, synthesize, deleteFile, getPlayUrl } from '../../api/tts'
 import { useTimer } from '../../hooks/useTimer'
 import type { MemorizationItem, DrillSubmission } from '../../types/memorization'
@@ -93,6 +93,14 @@ function wordDiff(expected: string[], actual: string[]): { word: string; status:
 }
 
 /** Generate blank positions for fill-the-blanks mode */
+/** Consistent folder color from name */
+const FOLDER_COLORS = ['#5b5fc7', '#e74c3c', '#f39c12', '#27ae60', '#8e44ad', '#2980b9', '#d35400', '#16a085', '#c0392b', '#2c3e50']
+function folderColor(name: string): string {
+  let hash = 0
+  for (let i = 0; i < name.length; i++) hash = ((hash << 5) - hash + name.charCodeAt(i)) | 0
+  return FOLDER_COLORS[Math.abs(hash) % FOLDER_COLORS.length]!
+}
+
 /** Clear feedback component for Recall & Write / Speed Round */
 function RecallFeedback({ userInput, original, diffResult, score }: {
   userInput: string; original: string;
@@ -292,6 +300,17 @@ export default function MemorizationView() {
     await deleteItem(id)
     loadItems()
     loadDue()
+  }
+
+  const handleMoveFolder = async (id: number, newFolder: string) => {
+    if (newFolder === '__new__') {
+      const name = prompt('New folder name:')
+      if (!name?.trim()) return
+      newFolder = name.trim()
+    }
+    await updateItem(id, { folder: newFolder })
+    loadItems()
+    loadFolders()
   }
 
   /* ---- Drill management ---- */
@@ -539,17 +558,29 @@ export default function MemorizationView() {
                 const isCollapsed = collapsedFolders.has(folder)
                 return (
                   <div key={folder} className="mem-folder">
-                    <div className="mem-folder-header" onClick={() => toggleFolder(folder)}>
+                    <div className="mem-folder-header" onClick={() => toggleFolder(folder)} style={{ borderLeftColor: folderColor(folder) }}>
                       <span className={`mem-folder-arrow${isCollapsed ? '' : ' open'}`}>&#x25B6;</span>
-                      <span className="mem-folder-name">{folder}</span>
+                      <span className="mem-folder-name" style={{ color: folderColor(folder) }}>{folder}</span>
                       <span className="mem-folder-count">{folderItems.length}</span>
                     </div>
                     {!isCollapsed && (
-                      <div className="mem-folder-items">
+                      <div className="mem-folder-items" style={{ borderLeftColor: folderColor(folder) }}>
                         {folderItems.map(item => (
                           <div key={item.id} className="mem-card" onClick={() => startDrill(item)}>
                             <div className="mem-card-header">
                               <div className="mem-card-title">{item.title}</div>
+                              <select
+                                className="mem-move-select"
+                                value={item.folder}
+                                onClick={e => e.stopPropagation()}
+                                onChange={e => handleMoveFolder(item.id, e.target.value)}
+                                title="Move to folder"
+                              >
+                                {['General', ...folders.filter(f => f !== 'General')].map(f => (
+                                  <option key={f} value={f}>{f}</option>
+                                ))}
+                                <option value="__new__">+ New folder...</option>
+                              </select>
                               <button className="mem-delete-btn" title="Delete" onClick={e => { e.stopPropagation(); handleDelete(item.id) }}>&times;</button>
                             </div>
                             <div className="mem-card-preview">{item.original_text.substring(0, 80)}{item.original_text.length > 80 ? '...' : ''}</div>
