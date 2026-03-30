@@ -20,32 +20,49 @@ REVIEW_INTERVALS = [
 ]
 
 
-def chunk_text(text, max_words=12):
-    """Split text into memorizable chunks."""
-    # Split on sentence boundaries (.?! followed by whitespace) or newlines
-    sentences = re.split(r'(?<=[.?!])\s+|\n+', text.strip())
-    sentences = [s.strip() for s in sentences if s.strip()]
+def chunk_text(text, max_words=20):
+    """Split text into memorizable chunks by sentence.
 
+    Keeps full sentences together. Only splits a sentence if it exceeds
+    max_words, in which case it splits at the nearest word boundary.
+    Adjacent short sentences (< 6 words) are merged with the next sentence.
+    """
+    # Split on sentence-ending punctuation followed by whitespace, or on newlines
+    raw = re.split(r'(?<=[.?!])\s+|\n+', text.strip())
+    sentences = [s.strip() for s in raw if s.strip()]
+
+    if not sentences:
+        return [text.strip()] if text.strip() else []
+
+    # Merge very short fragments with the next sentence
+    merged = []
+    buf = ""
+    for s in sentences:
+        if buf:
+            buf = buf + " " + s
+            merged.append(buf)
+            buf = ""
+        elif len(s.split()) < 6 and s != sentences[-1]:
+            buf = s
+        else:
+            merged.append(s)
+    if buf:
+        if merged:
+            merged[-1] = merged[-1] + " " + buf
+        else:
+            merged.append(buf)
+
+    # Split any sentence that's still too long
     chunks = []
-    for sentence in sentences:
+    for sentence in merged:
         words = sentence.split()
         if len(words) <= max_words:
             chunks.append(sentence)
         else:
-            # Try splitting on commas/semicolons
-            sub_parts = re.split(r'[,;]\s*', sentence)
-            sub_parts = [p.strip() for p in sub_parts if p.strip()]
-
-            for part in sub_parts:
-                part_words = part.split()
-                if len(part_words) <= max_words:
-                    chunks.append(part)
-                else:
-                    # Split by word count
-                    for i in range(0, len(part_words), max_words):
-                        chunk = ' '.join(part_words[i:i + max_words])
-                        if chunk:
-                            chunks.append(chunk)
+            for i in range(0, len(words), max_words):
+                chunk = " ".join(words[i : i + max_words])
+                if chunk:
+                    chunks.append(chunk)
 
     return chunks
 
