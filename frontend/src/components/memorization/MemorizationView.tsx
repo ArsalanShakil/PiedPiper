@@ -102,9 +102,40 @@ function RecallFeedback({ userInput, original, diffResult, score }: {
   diffResult: { word: string; status: string }[];
   score: number;
 }) {
-  const missing = diffResult.filter(d => d.status === 'missing')
-  const extra = diffResult.filter(d => d.status === 'extra')
   const isPerfect = score >= 100
+
+  // Build highlighted user answer: match user words against diff to color them
+  const userWords = userInput.trim().split(/\s+/).filter(Boolean)
+  const correctWords = original.trim().split(/\s+/).filter(Boolean)
+
+  // Map user words: which are correct vs wrong
+  // Walk diff: 'correct' and 'extra' came from user's input
+  const userHighlights: { word: string; ok: boolean }[] = []
+  const originalHighlights: { word: string; missing: boolean }[] = []
+  const missingWords: string[] = []
+
+  let ui = 0, oi = 0
+  for (const d of diffResult) {
+    if (d.status === 'correct') {
+      userHighlights.push({ word: userWords[ui] || d.word, ok: true })
+      originalHighlights.push({ word: correctWords[oi] || d.word, missing: false })
+      ui++; oi++
+    } else if (d.status === 'extra') {
+      userHighlights.push({ word: userWords[ui] || d.word, ok: false })
+      ui++
+    } else if (d.status === 'missing') {
+      originalHighlights.push({ word: correctWords[oi] || d.word, missing: true })
+      missingWords.push(d.word)
+      oi++
+    }
+  }
+  // Any remaining user words
+  while (ui < userWords.length) {
+    userHighlights.push({ word: userWords[ui]!, ok: false }); ui++
+  }
+  while (oi < correctWords.length) {
+    originalHighlights.push({ word: correctWords[oi]!, missing: true }); oi++
+  }
 
   return (
     <div className="mem-feedback">
@@ -114,28 +145,25 @@ function RecallFeedback({ userInput, original, diffResult, score }: {
         <>
           <div className="mem-feedback-section">
             <div className="mem-feedback-label">Your answer</div>
-            <div className="mem-feedback-text mem-feedback-user">{userInput || '(empty)'}</div>
+            <div className="mem-feedback-text mem-feedback-user">
+              {userHighlights.length === 0 ? <span className="mem-hw-wrong">(empty)</span> : userHighlights.map((h, i) => (
+                <span key={i} className={h.ok ? 'mem-hw-correct' : 'mem-hw-wrong'}>{h.word} </span>
+              ))}
+            </div>
           </div>
           <div className="mem-feedback-section">
             <div className="mem-feedback-label">Correct answer</div>
-            <div className="mem-feedback-text mem-feedback-correct">{original}</div>
+            <div className="mem-feedback-text mem-feedback-correct">
+              {originalHighlights.map((h, i) => (
+                <span key={i} className={h.missing ? 'mem-hw-missing' : ''}>{h.word} </span>
+              ))}
+            </div>
           </div>
-          {(missing.length > 0 || extra.length > 0) && (
+          {missingWords.length > 0 && (
             <div className="mem-feedback-section">
-              <div className="mem-feedback-label">What went wrong</div>
-              <div className="mem-feedback-errors">
-                {missing.length > 0 && (
-                  <div className="mem-feedback-error-row">
-                    <span className="mem-feedback-error-tag missing">Missing</span>
-                    <span>{missing.map(d => d.word).join(', ')}</span>
-                  </div>
-                )}
-                {extra.length > 0 && (
-                  <div className="mem-feedback-error-row">
-                    <span className="mem-feedback-error-tag extra">Extra</span>
-                    <span>{extra.map(d => d.word).join(', ')}</span>
-                  </div>
-                )}
+              <div className="mem-feedback-label">You missed</div>
+              <div className="mem-feedback-text mem-feedback-missed">
+                {missingWords.join(', ')}
               </div>
             </div>
           )}
