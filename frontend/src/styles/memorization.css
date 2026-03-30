@@ -417,12 +417,36 @@
   color: var(--primary);
 }
 
+/* Speed round ready screen */
+.mem-speed-ready {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.mem-speed-ready-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.mem-speed-ready h3 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.mem-speed-ready p {
+  color: var(--text-dim);
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
 /* Speed timer */
 .mem-speed-timer {
-  font-size: 32px;
+  font-size: 36px;
   font-weight: 700;
   text-align: center;
   font-variant-numeric: tabular-nums;
+  margin-bottom: 12px;
 }
 
 /* Results */

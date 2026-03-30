@@ -119,6 +119,9 @@ export default function MemorizationView() {
   const [hintUsed, setHintUsed] = useState(false)
   const [drillStartTime, setDrillStartTime] = useState(0)
 
+  // Speed round
+  const [speedStarted, setSpeedStarted] = useState(false)
+
   // Results state
   const [sessionScores, setSessionScores] = useState<{ chunk: number; mode: number; score: number }[]>([])
 
@@ -215,6 +218,7 @@ export default function MemorizationView() {
     setDrillScore(null)
     setDiffResult([])
     setHintUsed(false)
+    setSpeedStarted(false)
     setDrillStartTime(Date.now())
     timerExpiredRef.current = false
     timer.stop()
@@ -237,15 +241,15 @@ export default function MemorizationView() {
     }
   }, [drillMode, chunkIndex, chunkWords.length, revealed])
 
-  // Start timer for speed round
+  // Start timer for speed round only when user clicks Start
   useEffect(() => {
-    if (drillMode === 4 && mode === 'drill' && !revealed) {
+    if (drillMode === 4 && mode === 'drill' && speedStarted && !revealed) {
       const secs = Math.max(15, fullTextWords.length * 3)
       timer.reset(secs)
       timer.start()
       setDrillStartTime(Date.now())
     }
-  }, [drillMode, chunkIndex, mode])
+  }, [drillMode, mode, speedStarted])
 
   // Auto-submit on speed round timer expire
   useEffect(() => {
@@ -515,7 +519,7 @@ export default function MemorizationView() {
         <div className="mem-drill-topbar">
           <button className="btn btn-small" onClick={backToList}>&larr; Exit</button>
           <div className="mem-drill-title">{drillItem.title}</div>
-          <div className="mem-drill-counter">Chunk {chunkIndex + 1}/{totalChunks}</div>
+          {!isFullText && <div className="mem-drill-counter">Chunk {chunkIndex + 1}/{totalChunks}</div>}
         </div>
 
         {/* Mode selector */}
@@ -678,15 +682,25 @@ export default function MemorizationView() {
           {/* Mode 4: Speed Round */}
           {drillMode === 4 && (
             <div className="mem-drill-content">
-              <div className="mem-drill-label">Speed recall — type as fast as you can!</div>
-              {!revealed && (
-                <div className={`mem-speed-timer ${timer.timerClass}`}>{timer.display}</div>
-              )}
-              {!revealed ? (
+              {!speedStarted && !revealed ? (
+                <div className="mem-speed-ready">
+                  <div className="mem-speed-ready-icon">&#x26A1;</div>
+                  <h3>Speed Round</h3>
+                  <p>Write the entire text from memory as fast as you can.</p>
+                  <p style={{ fontSize: 14, color: 'var(--text-light)' }}>
+                    You'll have {Math.max(15, fullTextWords.length * 3)} seconds.
+                  </p>
+                  <button className="btn btn-primary" style={{ marginTop: 16, minWidth: 200 }} onClick={() => setSpeedStarted(true)}>
+                    Start Timer
+                  </button>
+                </div>
+              ) : !revealed ? (
                 <>
+                  <div className="mem-drill-label">Write the entire text from memory!</div>
+                  <div className={`mem-speed-timer ${timer.timerClass}`}>{timer.display}</div>
                   <textarea
                     className="mem-recall-textarea"
-                    rows={5}
+                    rows={10}
                     placeholder="Type from memory — clock is ticking!"
                     value={userInput}
                     onChange={e => setUserInput(e.target.value)}
