@@ -46,29 +46,29 @@
 }
 
 .mem-folder {
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 
 .mem-folder-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 8px;
+  gap: 10px;
+  padding: 10px 12px;
   cursor: pointer;
   user-select: none;
   border-radius: var(--radius-sm);
-  transition: background 0.1s;
+  transition: background 0.12s;
   border-left: 3px solid;
 }
 
 .mem-folder-header:hover {
-  background: var(--bg);
+  background: rgba(0,0,0,0.02);
 }
 
 .mem-folder-arrow {
-  font-size: 10px;
+  font-size: 9px;
   color: var(--text-light);
-  transition: transform 0.15s;
+  transition: transform 0.2s ease;
   display: inline-block;
 }
 
@@ -78,36 +78,52 @@
 
 .mem-folder-name {
   font-weight: 700;
-  font-size: 15px;
+  font-size: 14px;
+  letter-spacing: 0.2px;
 }
 
 .mem-folder-count {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-light);
   background: var(--bg);
-  padding: 1px 7px;
+  padding: 2px 8px;
   border-radius: 10px;
+  font-weight: 500;
 }
 
 .mem-folder-items {
-  padding-left: 12px;
+  padding-left: 16px;
   border-left: 2px solid;
-  margin-left: 10px;
+  margin-left: 13px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-top: 4px;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.mem-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.mem-card:hover .mem-card-actions {
+  opacity: 1;
 }
 
 .mem-move-select {
   font-size: 11px;
-  padding: 2px 4px;
+  padding: 3px 6px;
   border: 1px solid var(--border);
-  border-radius: 4px;
-  background: var(--surface);
+  border-radius: 6px;
+  background: var(--bg);
   color: var(--text-dim);
   cursor: pointer;
-  max-width: 100px;
+  max-width: 110px;
 }
 
 /* Grid of cards */
@@ -121,15 +137,16 @@
 .mem-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
+  border-radius: 12px;
+  padding: 16px 20px;
   cursor: pointer;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
 }
 
 .mem-card:hover {
-  border-color: var(--primary);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border-color: #d1d5db;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  transform: translateY(-1px);
 }
 
 .mem-card-due {
@@ -139,46 +156,55 @@
 .mem-card-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   gap: 8px;
+  margin-bottom: 6px;
 }
 
 .mem-card-title {
   font-weight: 600;
   font-size: 15px;
-  margin-bottom: 4px;
+  line-height: 1.3;
 }
 
 .mem-card-preview {
   font-size: 13px;
   color: var(--text-dim);
-  margin-bottom: 10px;
-  line-height: 1.4;
+  margin-bottom: 12px;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.mem-card-meta {
+.mem-card-footer {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   font-size: 12px;
 }
 
 .mem-card-chunks {
   color: var(--text-light);
+  font-size: 12px;
 }
 
 .mem-delete-btn {
   background: none;
   border: none;
-  font-size: 18px;
+  font-size: 16px;
   color: var(--text-light);
   cursor: pointer;
-  padding: 0 4px;
+  padding: 2px 6px;
   line-height: 1;
+  border-radius: 4px;
+  transition: all 0.1s;
 }
 
 .mem-delete-btn:hover {
   color: var(--danger);
+  background: rgba(220,38,38,0.08);
 }
 
 .mem-due-badge {
@@ -191,7 +217,7 @@
 .mem-mastery-bar {
   flex: 1;
   max-width: 120px;
-  height: 6px;
+  height: 5px;
   background: var(--border);
   border-radius: 3px;
   overflow: hidden;

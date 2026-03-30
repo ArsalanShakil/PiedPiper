@@ -93,13 +93,8 @@ function wordDiff(expected: string[], actual: string[]): { word: string; status:
 }
 
 /** Generate blank positions for fill-the-blanks mode */
-/** Consistent folder color from name */
-const FOLDER_COLORS = ['#5b5fc7', '#e74c3c', '#f39c12', '#27ae60', '#8e44ad', '#2980b9', '#d35400', '#16a085', '#c0392b', '#2c3e50']
-function folderColor(name: string): string {
-  let hash = 0
-  for (let i = 0; i < name.length; i++) hash = ((hash << 5) - hash + name.charCodeAt(i)) | 0
-  return FOLDER_COLORS[Math.abs(hash) % FOLDER_COLORS.length]!
-}
+/** Folder colors — index-based for guaranteed uniqueness */
+const FOLDER_COLORS = ['#5b5fc7', '#e74c3c', '#27ae60', '#f39c12', '#8e44ad', '#2980b9', '#d35400', '#16a085', '#e91e63', '#00bcd4']
 
 /** Clear feedback component for Recall & Write / Speed Round */
 function RecallFeedback({ userInput, original, diffResult, score }: {
@@ -553,39 +548,42 @@ export default function MemorizationView() {
           )
           return (
             <div className="mem-folders">
-              {sortedFolders.map(folder => {
+              {sortedFolders.map((folder, fi) => {
                 const folderItems = grouped[folder]!
                 const isCollapsed = collapsedFolders.has(folder)
+                const color = FOLDER_COLORS[fi % FOLDER_COLORS.length]!
                 return (
                   <div key={folder} className="mem-folder">
-                    <div className="mem-folder-header" onClick={() => toggleFolder(folder)} style={{ borderLeftColor: folderColor(folder) }}>
+                    <div className="mem-folder-header" onClick={() => toggleFolder(folder)} style={{ borderLeftColor: color }}>
                       <span className={`mem-folder-arrow${isCollapsed ? '' : ' open'}`}>&#x25B6;</span>
-                      <span className="mem-folder-name" style={{ color: folderColor(folder) }}>{folder}</span>
+                      <span className="mem-folder-name" style={{ color }}>{folder}</span>
                       <span className="mem-folder-count">{folderItems.length}</span>
                     </div>
                     {!isCollapsed && (
-                      <div className="mem-folder-items" style={{ borderLeftColor: folderColor(folder) }}>
+                      <div className="mem-folder-items" style={{ borderLeftColor: color }}>
                         {folderItems.map(item => (
                           <div key={item.id} className="mem-card" onClick={() => startDrill(item)}>
                             <div className="mem-card-header">
                               <div className="mem-card-title">{item.title}</div>
-                              <select
-                                className="mem-move-select"
-                                value={item.folder}
-                                onClick={e => e.stopPropagation()}
-                                onChange={e => handleMoveFolder(item.id, e.target.value)}
-                                title="Move to folder"
-                              >
-                                {['General', ...folders.filter(f => f !== 'General')].map(f => (
-                                  <option key={f} value={f}>{f}</option>
-                                ))}
-                                <option value="__new__">+ New folder...</option>
-                              </select>
-                              <button className="mem-delete-btn" title="Delete" onClick={e => { e.stopPropagation(); handleDelete(item.id) }}>&times;</button>
+                              <div className="mem-card-actions">
+                                <select
+                                  className="mem-move-select"
+                                  value={item.folder}
+                                  onClick={e => e.stopPropagation()}
+                                  onChange={e => handleMoveFolder(item.id, e.target.value)}
+                                  title="Move to folder"
+                                >
+                                  {['General', ...folders.filter(f => f !== 'General')].map(f => (
+                                    <option key={f} value={f}>{f}</option>
+                                  ))}
+                                  <option value="__new__">+ New folder...</option>
+                                </select>
+                                <button className="mem-delete-btn" title="Delete" onClick={e => { e.stopPropagation(); handleDelete(item.id) }}>&times;</button>
+                              </div>
                             </div>
-                            <div className="mem-card-preview">{item.original_text.substring(0, 80)}{item.original_text.length > 80 ? '...' : ''}</div>
-                            <div className="mem-card-meta">
-                              <div className="mem-mastery-bar"><div className="mem-mastery-fill" style={{ width: `${item.mastery_level}%` }} /></div>
+                            <div className="mem-card-preview">{item.original_text.substring(0, 100)}{item.original_text.length > 100 ? '...' : ''}</div>
+                            <div className="mem-card-footer">
+                              <div className="mem-mastery-bar"><div className="mem-mastery-fill" style={{ width: `${item.mastery_level}%`, background: item.mastery_level >= 70 ? '#16a34a' : item.mastery_level >= 30 ? '#f59e0b' : 'var(--border)' }} /></div>
                               <span className="mem-mastery-label">{item.mastery_level}%</span>
                               <span className="mem-card-chunks">{item.chunks.length} chunk{item.chunks.length !== 1 ? 's' : ''}</span>
                             </div>
