@@ -51,9 +51,9 @@ Flask serves the built output from `frontend/dist/`.
 ## Architecture
 
 ```
-piper-app/
+PiedPiper/
   app.py                Flask backend (serves API + React build)
-  blueprints/           API route modules (tts, editor, vocab, yki, etc.)
+  blueprints/           API route modules (tts, editor, vocab, yki, memorization, etc.)
   db.py, schema.sql     SQLite database
   frontend/             React + TypeScript + Vite
     src/
@@ -74,11 +74,13 @@ piper-app/
 
 - **Text to Speech** — Swedish TTS with Piper, save as WAV/MP3/OGG/FLAC
 - **Writing Editor** — Rich text editor with instant translation, vocabulary highlighting, and TTS on text selection
-- **Vocabulary Manager** — Save words, flashcard review with spaced repetition, CSV export
+- **Vocabulary Manager** — Save words, Quizlet-style flashcard review with 3D flip cards and spaced repetition, CSV export
+- **Memorization** — Paste any text and drill it through 5 scientific modes: Read & Listen, Fill the Blanks, First Letters, Recall & Write, and Speed Round. Progressive difficulty, chunk-by-chunk drilling, mastery tracking, spaced repetition scheduling, and collapsible folder organization
 - **Knowledge Base** — Upload study materials (PDF, Markdown, text) used as AI context
-- **YKI Exam Practice** — Reading, Writing, Listening, Speaking sections with AI-generated questions
-- **Full Mock Exam** — Complete timed YKI exam across all 4 sections in one sitting
+- **YKI Exam Practice** — Reading, Writing, Listening, Speaking sections with AI-generated questions and example templates
+- **Full Mock Exam** — Complete timed YKI exam across all 4 sections back-to-back in one sitting
 - **AI Powered** — Uses local Claude Code CLI for translation, exam generation, and evaluation
+- **Global Tools** — Select any text in the app to Translate, Speak (with audio player controls), or add to Vocabulary
 
 ## Requirements
 
