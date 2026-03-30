@@ -314,20 +314,21 @@ export default function MemorizationView() {
     setSessionScores(prev => [...prev, { chunk: chunkIndex, mode: drillMode, score: Math.round(score * 100) }])
   }
 
-  const handleNextChunk = () => {
+  /** Advance: next mode on same chunk, or next chunk from mode 0, or finish. */
+  const handleNext = () => {
     if (!drillItem) return
-    if (chunkIndex < drillItem.chunks.length - 1) {
-      setChunkIndex(chunkIndex + 1)
-      resetDrillState()
-    } else {
-      setMode('results')
-    }
-  }
-
-  const handleNextMode = () => {
     if (drillMode < 4) {
+      // Go to next mode on same chunk
       setDrillMode(drillMode + 1)
       resetDrillState()
+    } else if (chunkIndex < drillItem.chunks.length - 1) {
+      // Finished all modes on this chunk — move to next chunk, start at mode 0
+      setChunkIndex(chunkIndex + 1)
+      setDrillMode(0)
+      resetDrillState()
+    } else {
+      // All modes on all chunks done
+      setMode('results')
     }
   }
 
@@ -502,6 +503,9 @@ export default function MemorizationView() {
   /* ================================================================ */
   if (mode === 'drill' && drillItem) {
     const totalChunks = drillItem.chunks.length
+    const nextLabel = drillMode < 4
+      ? `Next: ${DRILL_MODES[(drillMode + 1) as 0|1|2|3|4]?.label}`
+      : chunkIndex < totalChunks - 1 ? 'Next Chunk' : 'Finish'
     const canUnlock = (modeId: number) => modeId === 0 || drillItem.highest_mode_completed >= modeId - 1
 
     return (
@@ -544,9 +548,7 @@ export default function MemorizationView() {
                 {!revealed ? (
                   <button className="btn btn-primary" onClick={handleSubmitDrill}>Mark as Read</button>
                 ) : (
-                  <button className="btn btn-primary" onClick={handleNextChunk}>
-                    {chunkIndex < totalChunks - 1 ? 'Next Chunk' : 'Finish'}
-                  </button>
+                  <button className="btn btn-primary" onClick={handleNext}>{nextLabel}</button>
                 )}
               </div>
             </div>
@@ -589,10 +591,7 @@ export default function MemorizationView() {
                 ) : (
                   <>
                     <div className="mem-score-display">{drillScore}%</div>
-                    <button className="btn" onClick={handleNextMode}>Next Mode</button>
-                    <button className="btn btn-primary" onClick={handleNextChunk}>
-                      {chunkIndex < totalChunks - 1 ? 'Next Chunk' : 'Finish'}
-                    </button>
+                    <button className="btn btn-primary" onClick={handleNext}>{nextLabel}</button>
                   </>
                 )}
               </div>
@@ -626,10 +625,7 @@ export default function MemorizationView() {
                   </div>
                   <div className="mem-drill-actions">
                     <div className="mem-score-display">{drillScore}%</div>
-                    <button className="btn" onClick={handleNextMode}>Next Mode</button>
-                    <button className="btn btn-primary" onClick={handleNextChunk}>
-                      {chunkIndex < totalChunks - 1 ? 'Next Chunk' : 'Finish'}
-                    </button>
+                    <button className="btn btn-primary" onClick={handleNext}>{nextLabel}</button>
                   </div>
                 </>
               )}
@@ -671,10 +667,7 @@ export default function MemorizationView() {
                   </div>
                   <div className="mem-drill-actions">
                     <div className="mem-score-display">{drillScore}%</div>
-                    <button className="btn" onClick={handleNextMode}>Next Mode</button>
-                    <button className="btn btn-primary" onClick={handleNextChunk}>
-                      {chunkIndex < totalChunks - 1 ? 'Next Chunk' : 'Finish'}
-                    </button>
+                    <button className="btn btn-primary" onClick={handleNext}>{nextLabel}</button>
                   </div>
                 </>
               )}
@@ -714,9 +707,7 @@ export default function MemorizationView() {
                   </div>
                   <div className="mem-drill-actions">
                     <div className="mem-score-display">{drillScore}%</div>
-                    <button className="btn btn-primary" onClick={handleNextChunk}>
-                      {chunkIndex < totalChunks - 1 ? 'Next Chunk' : 'Finish'}
-                    </button>
+                    <button className="btn btn-primary" onClick={handleNext}>{nextLabel}</button>
                   </div>
                 </>
               )}
