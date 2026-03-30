@@ -307,17 +307,17 @@ export default function MemorizationView() {
     setSessionScores(prev => [...prev, { chunk: chunkIndex, mode: drillMode, score: Math.round(score * 100) }])
   }
 
-  /** Advance: next mode on same chunk, or next chunk from mode 0, or finish. */
+  /** Advance: next chunk at same mode, or next mode from chunk 0, or finish. */
   const handleNext = () => {
     if (!drillItem) return
-    if (drillMode < 4) {
-      // Go to next mode on same chunk
-      setDrillMode(drillMode + 1)
-      resetDrillState()
-    } else if (chunkIndex < drillItem.chunks.length - 1) {
-      // Finished all modes on this chunk — move to next chunk, start at mode 0
+    if (chunkIndex < drillItem.chunks.length - 1) {
+      // More chunks at this mode — go to next chunk
       setChunkIndex(chunkIndex + 1)
-      setDrillMode(0)
+      resetDrillState()
+    } else if (drillMode < 4) {
+      // All chunks done for this mode — advance to next mode, start at chunk 0
+      setDrillMode(drillMode + 1)
+      setChunkIndex(0)
       resetDrillState()
     } else {
       // All modes on all chunks done
@@ -496,9 +496,11 @@ export default function MemorizationView() {
   /* ================================================================ */
   if (mode === 'drill' && drillItem) {
     const totalChunks = drillItem.chunks.length
-    const nextLabel = drillMode < 4
-      ? `Next: ${DRILL_MODES[(drillMode + 1) as 0|1|2|3|4]?.label}`
-      : chunkIndex < totalChunks - 1 ? 'Next Chunk' : 'Finish'
+    const nextLabel = chunkIndex < totalChunks - 1
+      ? `Next Chunk (${chunkIndex + 2}/${totalChunks})`
+      : drillMode < 4
+        ? `Next: ${DRILL_MODES[(drillMode + 1) as 0|1|2|3|4]?.label}`
+        : 'Finish'
     const canUnlock = (modeId: number) => modeId === 0 || drillItem.highest_mode_completed >= modeId - 1
 
     return (
