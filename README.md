@@ -15,13 +15,14 @@ This automatically:
 - Builds the React frontend
 - Downloads the Swedish voice model
 - Initializes the database with seed data
-- Sets up the `start-tts` and `piedpiper` shell aliases
+- Sets up the `start-pp`, `stop-pp`, and `piedpiper` shell aliases
 - Creates a macOS desktop app (on Mac)
 
 ## Usage
 
 ```bash
-start-tts
+start-pp    # start the app in browser
+stop-pp     # stop the server
 ```
 
 Opens the app at http://localhost:5123.

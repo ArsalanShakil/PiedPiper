@@ -185,17 +185,22 @@ PLIST
 fi
 
 # --- Add shell aliases ---
-ALIAS_TTS="alias start-tts='cd $APP_DIR && python3 app.py & sleep 1 && open http://localhost:5123'"
+ALIAS_TTS="alias start-pp='cd $APP_DIR && python3 app.py & sleep 1 && open http://localhost:5123'"
+ALIAS_STOP="alias stop-pp='kill \$(lsof -ti:5123) 2>/dev/null && echo \"PiedPiper stopped\" || echo \"PiedPiper not running\"'"
 ALIAS_PP="alias piedpiper='cd $APP_DIR && python3 desktop.py'"
 
 for RC_FILE in "$HOME/.zshrc" "$HOME/.bashrc"; do
     if [ -f "$RC_FILE" ]; then
-        if ! grep -q "start-tts" "$RC_FILE" 2>/dev/null; then
-            printf '\n# PiedPiper\n%s\n%s\n' "$ALIAS_TTS" "$ALIAS_PP" >> "$RC_FILE"
+        if ! grep -q "start-pp" "$RC_FILE" 2>/dev/null; then
+            printf '\n# PiedPiper\n%s\n%s\n%s\n' "$ALIAS_TTS" "$ALIAS_STOP" "$ALIAS_PP" >> "$RC_FILE"
             echo "[OK] Added aliases to $RC_FILE"
         else
-            sed -i.bak "/alias start-tts=/c\\
+            sed -i.bak "/alias start-pp=/c\\
 $ALIAS_TTS" "$RC_FILE" && rm -f "${RC_FILE}.bak"
+            if ! grep -q "alias stop-pp=" "$RC_FILE" 2>/dev/null; then
+                sed -i.bak "/alias start-pp=/a\\
+$ALIAS_STOP" "$RC_FILE" && rm -f "${RC_FILE}.bak"
+            fi
             if ! grep -q "alias piedpiper=" "$RC_FILE" 2>/dev/null; then
                 echo "$ALIAS_PP" >> "$RC_FILE"
             fi
@@ -210,7 +215,8 @@ echo ""
 echo "Launch options:"
 echo "  1. Double-click PiedPiper.app on your Desktop"
 echo "  2. Run: piedpiper     (native window)"
-echo "  3. Run: start-tts     (browser mode)"
+echo "  3. Run: start-pp     (browser mode)"
+echo "  4. Run: stop-pp      (stop the server)"
 echo ""
 echo "Development (hot reload):"
 echo "  Terminal 1: python3 app.py"
