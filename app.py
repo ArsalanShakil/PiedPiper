@@ -29,6 +29,7 @@ def create_app():
     from blueprints.reading import bp as reading_bp
     from blueprints.listening import bp as listening_bp
     from blueprints.writing import bp as writing_bp
+    from blueprints.memorization import bp as memorization_bp
     app.register_blueprint(tts_bp)
     app.register_blueprint(knowledge_bp)
     app.register_blueprint(editor_bp)
@@ -38,6 +39,7 @@ def create_app():
     app.register_blueprint(reading_bp)
     app.register_blueprint(listening_bp)
     app.register_blueprint(writing_bp)
+    app.register_blueprint(memorization_bp)
 
     # React SPA — serve built frontend
     @app.route("/", defaults={"path": ""})

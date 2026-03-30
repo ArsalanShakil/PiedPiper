@@ -10,6 +10,7 @@ const toolLinks: NavItem[] = [
   { to: '/', icon: '\u266B', label: 'Text to Speech' },
   { to: '/editor', icon: '\u270E', label: 'Writing Editor' },
   { to: '/vocabulary', icon: '\uD83D\uDCDA', label: 'Vocabulary' },
+  { to: '/memorization', icon: '\uD83E\uDDE0', label: 'Memorization' },
 ]
 
 const ykiLinks: NavItem[] = [

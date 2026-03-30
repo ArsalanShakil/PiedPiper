@@ -70,3 +70,28 @@ CREATE TABLE IF NOT EXISTS settings (
     value TEXT NOT NULL,
     updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+CREATE TABLE IF NOT EXISTS memorization_items (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL DEFAULT 'Untitled',
+    original_text TEXT NOT NULL,
+    chunks_json TEXT NOT NULL DEFAULT '[]',
+    mastery_level INTEGER DEFAULT 0,
+    highest_mode_completed INTEGER DEFAULT 0,
+    total_drill_count INTEGER DEFAULT 0,
+    last_drilled_at TEXT,
+    next_review_at TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS memorization_drill_results (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    item_id INTEGER NOT NULL REFERENCES memorization_items(id) ON DELETE CASCADE,
+    chunk_index INTEGER NOT NULL DEFAULT 0,
+    mode INTEGER NOT NULL,
+    score REAL NOT NULL,
+    time_spent_seconds INTEGER,
+    mistakes_json TEXT,
+    drilled_at TEXT NOT NULL DEFAULT (datetime('now'))
+);

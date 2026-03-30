@@ -11,6 +11,7 @@ import ReadingView from './components/reading/ReadingView'
 import WritingView from './components/writing/WritingView'
 import ListeningView from './components/listening/ListeningView'
 import SpeakingView from './components/speaking/SpeakingView'
+import MemorizationView from './components/memorization/MemorizationView'
 import EditorView from './components/editor/EditorView'
 import TranslateWidget from './components/common/TranslateWidget'
 import GlobalVocab from './components/common/GlobalVocab'
@@ -31,6 +32,7 @@ export default function App() {
               <Route path="/yki/writing" element={<WritingView />} />
               <Route path="/yki/listening" element={<ListeningView />} />
               <Route path="/yki/speaking" element={<SpeakingView />} />
+              <Route path="/memorization" element={<MemorizationView />} />
               <Route path="/knowledge" element={<KnowledgeView />} />
               <Route path="/settings" element={<SettingsView />} />
               <Route path="*" element={<Navigate to="/" replace />} />
