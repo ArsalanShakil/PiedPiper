@@ -692,17 +692,17 @@
 }
 
 .mem-hw-wrong {
-  background: #fef3c7;
-  color: #92400e;
+  background: #fee2e2;
+  color: #991b1b;
   padding: 1px 3px;
   border-radius: 3px;
   text-decoration: line-through;
-  text-decoration-color: #d97706;
+  text-decoration-color: #dc2626;
 }
 
 .mem-hw-missing {
-  background: #fee2e2;
-  color: #991b1b;
+  background: #fef3c7;
+  color: #92400e;
   padding: 1px 3px;
   border-radius: 3px;
   font-weight: 600;
