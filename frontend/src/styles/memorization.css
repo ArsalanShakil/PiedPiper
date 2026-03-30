@@ -417,6 +417,52 @@
   color: var(--primary);
 }
 
+/* Chunk progress dots */
+.mem-chunk-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.mem-chunk-dots {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.mem-chunk-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: all 0.2s;
+}
+
+.mem-chunk-dot.done {
+  background: #16a34a;
+}
+
+.mem-chunk-dot.current {
+  background: var(--primary);
+  box-shadow: 0 0 0 3px rgba(91, 95, 199, 0.25);
+  transform: scale(1.2);
+}
+
+.mem-streak {
+  font-size: 14px;
+  font-weight: 700;
+  color: #f59e0b;
+  white-space: nowrap;
+  animation: streak-pop 0.3s ease;
+}
+
+@keyframes streak-pop {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 /* Speed round ready screen */
 .mem-speed-ready {
   text-align: center;

@@ -122,6 +122,10 @@ export default function MemorizationView() {
   // Speed round
   const [speedStarted, setSpeedStarted] = useState(false)
 
+  // Gamification
+  const [streak, setStreak] = useState(0)
+  const [completedChunks, setCompletedChunks] = useState<Set<number>>(new Set())
+
   // Results state
   const [sessionScores, setSessionScores] = useState<{ chunk: number; mode: number; score: number }[]>([])
 
@@ -227,10 +231,6 @@ export default function MemorizationView() {
 
   const currentChunk = drillItem?.chunks[chunkIndex] ?? ''
   const chunkWords = useMemo(() => currentChunk.split(/\s+/).filter(Boolean), [currentChunk])
-  const fullText = drillItem?.original_text ?? ''
-  const fullTextWords = useMemo(() => fullText.split(/\s+/).filter(Boolean), [fullText])
-  // For modes 3 & 4, we use the full text instead of individual chunks
-  const isFullTextMode = drillMode === 3 || drillMode === 4
 
   // Init blanks when entering mode 1
   useEffect(() => {
@@ -244,7 +244,7 @@ export default function MemorizationView() {
   // Start timer for speed round only when user clicks Start
   useEffect(() => {
     if (drillMode === 4 && mode === 'drill' && speedStarted && !revealed) {
-      const secs = Math.max(15, fullTextWords.length * 3)
+      const secs = Math.max(15, chunkWords.length * 3)
       timer.reset(secs)
       timer.start()
       setDrillStartTime(Date.now())
@@ -285,14 +285,14 @@ export default function MemorizationView() {
       const correct = diff.filter(d => d.status === 'correct').length
       score = chunkWords.length > 0 ? correct / chunkWords.length : 1.0
     } else if (drillMode === 3 || drillMode === 4) {
-      // Recall & Write / Speed Round — compare against FULL text
+      // Recall & Write / Speed Round — compare against current chunk
       const actualWords = userInput.trim().split(/\s+/).filter(Boolean)
-      diff = wordDiff(fullTextWords, actualWords)
+      diff = wordDiff(chunkWords, actualWords)
       const correct = diff.filter(d => d.status === 'correct').length
-      score = fullTextWords.length > 0 ? correct / fullTextWords.length : 1.0
+      score = chunkWords.length > 0 ? correct / chunkWords.length : 1.0
       if (hintUsed) score = Math.max(0, score - 0.1)
       if (drillMode === 4) {
-        const maxTime = Math.max(15, fullTextWords.length * 3)
+        const maxTime = Math.max(15, chunkWords.length * 3)
         const timeRatio = Math.min(1, timeSecs / maxTime)
         const timeBonus = timeRatio < 0.5 ? 1.0 : 1.0 - (timeRatio - 0.5) * 0.6
         score *= timeBonus
@@ -300,9 +300,17 @@ export default function MemorizationView() {
     }
 
     score = Math.max(0, Math.min(1, score))
-    setDrillScore(Math.round(score * 100))
+    const pct = Math.round(score * 100)
+    setDrillScore(pct)
     setDiffResult(diff)
     setRevealed(true)
+    // Gamification: update streak and completed chunks
+    if (pct >= 80) {
+      setStreak(s => s + 1)
+      setCompletedChunks(prev => new Set(prev).add(chunkIndex))
+    } else {
+      setStreak(0)
+    }
 
     const submission: DrillSubmission = {
       chunk_index: chunkIndex,
@@ -315,21 +323,21 @@ export default function MemorizationView() {
     setSessionScores(prev => [...prev, { chunk: chunkIndex, mode: drillMode, score: Math.round(score * 100) }])
   }
 
-  /** Advance: next chunk at same mode, or next mode from chunk 0, or finish.
-   *  Modes 3 & 4 are full-text (no chunk iteration), so skip straight to next mode. */
+  /** Advance: next chunk at same mode, or next mode from chunk 0, or finish. */
   const handleNext = () => {
     if (!drillItem) return
-    if (!isFullTextMode && chunkIndex < drillItem.chunks.length - 1) {
-      // More chunks at this mode — go to next chunk
+    if (chunkIndex < drillItem.chunks.length - 1) {
+      // More chunks at this mode
       setChunkIndex(chunkIndex + 1)
       resetDrillState()
     } else if (drillMode < 4) {
       // Advance to next mode, start at chunk 0
       setDrillMode(drillMode + 1)
       setChunkIndex(0)
+      setCompletedChunks(new Set())
+      setStreak(0)
       resetDrillState()
     } else {
-      // All done
       setMode('results')
     }
   }
@@ -519,8 +527,7 @@ export default function MemorizationView() {
   /* ================================================================ */
   if (mode === 'drill' && drillItem) {
     const totalChunks = drillItem.chunks.length
-    const isFullText = drillMode === 3 || drillMode === 4
-    const nextLabel = (!isFullText && chunkIndex < totalChunks - 1)
+    const nextLabel = (chunkIndex < totalChunks - 1)
       ? `Next Chunk (${chunkIndex + 2}/${totalChunks})`
       : drillMode < 4
         ? `Next: ${DRILL_MODES[(drillMode + 1) as 0|1|2|3|4]?.label}`
@@ -533,7 +540,7 @@ export default function MemorizationView() {
         <div className="mem-drill-topbar">
           <button className="btn btn-small" onClick={backToList}>&larr; Exit</button>
           <div className="mem-drill-title">{drillItem.title}</div>
-          {!isFullText && <div className="mem-drill-counter">Chunk {chunkIndex + 1}/{totalChunks}</div>}
+          <div className="mem-drill-counter">Chunk {chunkIndex + 1}/{totalChunks}</div>
         </div>
 
         {/* Mode selector */}
@@ -552,6 +559,24 @@ export default function MemorizationView() {
             </button>
           ))}
         </div>
+
+        {/* Chunk progress dots + streak */}
+        {(drillMode === 3 || drillMode === 4) && totalChunks > 1 && (
+          <div className="mem-chunk-progress">
+            <div className="mem-chunk-dots">
+              {drillItem.chunks.map((_, i) => (
+                <div
+                  key={i}
+                  className={`mem-chunk-dot${completedChunks.has(i) ? ' done' : ''}${i === chunkIndex ? ' current' : ''}`}
+                  title={`Chunk ${i + 1}`}
+                />
+              ))}
+            </div>
+            {streak >= 2 && (
+              <div className="mem-streak">{streak} streak!</div>
+            )}
+          </div>
+        )}
 
         {/* Drill area */}
         <div className="mem-drill-area">
@@ -654,16 +679,18 @@ export default function MemorizationView() {
           {/* Mode 3: Recall & Write */}
           {drillMode === 3 && (
             <div className="mem-drill-content">
-              <div className="mem-drill-label">Write the entire text from memory</div>
+              <div className="mem-drill-label">
+                Recall chunk {chunkIndex + 1} of {totalChunks} — write it from memory
+              </div>
               {hintUsed && (
-                <div className="mem-hint-text">{fullTextWords.slice(0, 3).join(' ')}...</div>
+                <div className="mem-hint-text">{chunkWords.slice(0, 2).join(' ')}...</div>
               )}
               {!revealed ? (
                 <>
                   <textarea
                     className="mem-recall-textarea"
-                    rows={10}
-                    placeholder="Type the entire text from memory..."
+                    rows={4}
+                    placeholder={`Write chunk ${chunkIndex + 1} from memory...`}
                     value={userInput}
                     onChange={e => setUserInput(e.target.value)}
                   />
@@ -682,7 +709,7 @@ export default function MemorizationView() {
                     ))}
                   </div>
                   <div className="mem-original-reveal">
-                    <strong>Original:</strong> {isFullTextMode ? fullText : currentChunk}
+                    <strong>Original:</strong> {currentChunk}
                   </div>
                   <div className="mem-drill-actions">
                     <div className="mem-score-display">{drillScore}%</div>
@@ -700,9 +727,9 @@ export default function MemorizationView() {
                 <div className="mem-speed-ready">
                   <div className="mem-speed-ready-icon">&#x26A1;</div>
                   <h3>Speed Round</h3>
-                  <p>Write the entire text from memory as fast as you can.</p>
+                  <p>Write chunk {chunkIndex + 1} of {totalChunks} from memory — fast!</p>
                   <p style={{ fontSize: 14, color: 'var(--text-light)' }}>
-                    You'll have {Math.max(15, fullTextWords.length * 3)} seconds.
+                    You'll have {Math.max(15, chunkWords.length * 3)} seconds.
                   </p>
                   <button className="btn btn-primary" style={{ marginTop: 16, minWidth: 200 }} onClick={() => setSpeedStarted(true)}>
                     Start Timer
@@ -710,12 +737,12 @@ export default function MemorizationView() {
                 </div>
               ) : !revealed ? (
                 <>
-                  <div className="mem-drill-label">Write the entire text from memory!</div>
+                  <div className="mem-drill-label">Chunk {chunkIndex + 1} of {totalChunks} — write from memory!</div>
                   <div className={`mem-speed-timer ${timer.timerClass}`}>{timer.display}</div>
                   <textarea
                     className="mem-recall-textarea"
-                    rows={10}
-                    placeholder="Type from memory — clock is ticking!"
+                    rows={4}
+                    placeholder={`Chunk ${chunkIndex + 1} — go!`}
                     value={userInput}
                     onChange={e => setUserInput(e.target.value)}
                     autoFocus
@@ -732,7 +759,7 @@ export default function MemorizationView() {
                     ))}
                   </div>
                   <div className="mem-original-reveal">
-                    <strong>Original:</strong> {isFullTextMode ? fullText : currentChunk}
+                    <strong>Original:</strong> {currentChunk}
                   </div>
                   <div className="mem-drill-actions">
                     <div className="mem-score-display">{drillScore}%</div>
