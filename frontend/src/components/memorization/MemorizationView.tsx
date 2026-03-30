@@ -12,12 +12,19 @@ type ViewMode = 'list' | 'create' | 'drill' | 'results'
 /*  Utility functions                                                */
 /* ================================================================ */
 
-/** Fuzzy word match: case-insensitive, allow Levenshtein <= 1 for long words */
+/** Strip trailing/leading punctuation for comparison */
+function stripPunc(s: string): string {
+  return s.replace(/^[.,;:!?"'()\[\]]+|[.,;:!?"'()\[\]]+$/g, '')
+}
+
+/** Fuzzy word match: case-insensitive, strip punctuation, allow Levenshtein <= 1 for long words */
 function wordsMatch(a: string, b: string): boolean {
-  const na = a.toLowerCase().normalize('NFC')
-  const nb = b.toLowerCase().normalize('NFC')
+  const na = stripPunc(a).toLowerCase().normalize('NFC')
+  const nb = stripPunc(b).toLowerCase().normalize('NFC')
+  if (!na && !nb) return true
+  if (!na || !nb) return false
   if (na === nb) return true
-  if (na.length > 5 || nb.length > 5) return levenshtein(na, nb) <= 1
+  if (na.length > 4 || nb.length > 4) return levenshtein(na, nb) <= 1
   return false
 }
 
@@ -36,28 +43,52 @@ function levenshtein(a: string, b: string): number {
   return dp[m]![n]!
 }
 
-/** Word-by-word diff: returns array of { word, status } */
+/** LCS-based word diff: reliable even with duplicate words */
 function wordDiff(expected: string[], actual: string[]): { word: string; status: 'correct' | 'wrong' | 'missing' | 'extra' }[] {
-  const result: { word: string; status: 'correct' | 'wrong' | 'missing' | 'extra' }[] = []
-  let ei = 0, ai = 0
-  while (ei < expected.length && ai < actual.length) {
-    if (wordsMatch(expected[ei]!, actual[ai]!)) {
-      result.push({ word: expected[ei]!, status: 'correct' })
-      ei++; ai++
+  const m = expected.length, n = actual.length
+  // Build LCS table
+  const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0))
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i]![j] = wordsMatch(expected[i - 1]!, actual[j - 1]!)
+        ? dp[i - 1]![j - 1]! + 1
+        : Math.max(dp[i - 1]![j]!, dp[i]![j - 1]!)
+
+  // Backtrack to find matches
+  const matched = new Set<string>() // "ei,ai" pairs
+  let i = m, j = n
+  while (i > 0 && j > 0) {
+    if (wordsMatch(expected[i - 1]!, actual[j - 1]!)) {
+      matched.add(`${i - 1},${j - 1}`)
+      i--; j--
+    } else if (dp[i - 1]![j]! >= dp[i]![j - 1]!) {
+      i--
     } else {
-      // Check if expected word appears soon in actual (insertion)
-      const lookAhead = actual.slice(ai, ai + 3).findIndex(w => wordsMatch(expected[ei]!, w))
-      if (lookAhead > 0) {
-        for (let k = 0; k < lookAhead; k++) result.push({ word: actual[ai + k]!, status: 'extra' })
-        ai += lookAhead
-      } else {
-        result.push({ word: expected[ei]!, status: 'wrong' })
-        ei++; ai++
-      }
+      j--
     }
   }
-  while (ei < expected.length) { result.push({ word: expected[ei]!, status: 'missing' }); ei++ }
-  while (ai < actual.length) { result.push({ word: actual[ai]!, status: 'extra' }); ai++ }
+
+  // Build result by walking both arrays
+  const result: { word: string; status: 'correct' | 'wrong' | 'missing' | 'extra' }[] = []
+  let ei = 0, ai = 0
+  while (ei < m || ai < n) {
+    if (ei < m && ai < n && matched.has(`${ei},${ai}`)) {
+      result.push({ word: expected[ei]!, status: 'correct' })
+      ei++; ai++
+    } else if (ei < m && !Array.from(matched).some(k => parseInt(k) === ei)) {
+      result.push({ word: expected[ei]!, status: 'missing' })
+      ei++
+    } else if (ai < n && !Array.from(matched).some(k => parseInt(k.split(',')[1]!) === ai)) {
+      result.push({ word: actual[ai]!, status: 'extra' })
+      ai++
+    } else if (ei < m) {
+      result.push({ word: expected[ei]!, status: 'missing' })
+      ei++
+    } else {
+      result.push({ word: actual[ai]!, status: 'extra' })
+      ai++
+    }
+  }
   return result
 }
 
