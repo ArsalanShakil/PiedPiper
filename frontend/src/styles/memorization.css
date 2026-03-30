@@ -426,10 +426,11 @@
 }
 
 .mem-blank-expected {
-  font-size: 11px;
+  font-size: 16px;
   display: block;
   color: #16a34a;
-  font-weight: 400;
+  font-weight: 600;
+  margin-top: 2px;
 }
 
 /* First Letters skeleton */
