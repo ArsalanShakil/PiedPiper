@@ -17,10 +17,10 @@ function stripPunc(s: string): string {
   return s.replace(/^[.,;:!?"'()\[\]]+|[.,;:!?"'()\[\]]+$/g, '')
 }
 
-/** Fuzzy word match: case-insensitive, strip punctuation, allow Levenshtein <= 1 for long words */
+/** Exact word match: case-insensitive, strip punctuation and whitespace */
 function wordsMatch(a: string, b: string): boolean {
-  const na = stripPunc(a).toLowerCase().normalize('NFC')
-  const nb = stripPunc(b).toLowerCase().normalize('NFC')
+  const na = stripPunc(a.trim()).toLowerCase().normalize('NFC')
+  const nb = stripPunc(b.trim()).toLowerCase().normalize('NFC')
   if (!na && !nb) return true
   if (!na || !nb) return false
   return na === nb
