@@ -46,6 +46,138 @@
 
 ---
 
+### Dialog 1C — Din vän åker hem
+
+**Situation:** Det är sent och din vän ska gå hem efter ett besök hos dig.
+
+| Vän (du hör): | Du (svara): |
+|---|---|
+| Kära någon, är klockan så här mycket? Jag måste gå nu, jag har tidig väckning i morgon. | *(Reagera förvånat och försök övertala hen att stanna lite till.)* |
+| Jag har ett morgonpass i morgon, så jag måste gå och lägga mig tidigt. Men tack så mycket. Det var verkligen trevligt att träffas och maten var återigen fantastisk. Nästa gång kommer du till oss. Vad sägs om nästa lördag? | *(Tacka och säg att du gärna kommer nästa lördag.)* |
+| Det är okej. En annan gång då. Du, hur går det några bussar härifrån så här dags eller hur ska jag ta mig in till stan? | *(Berätta om busstiderna och erbjud dig att skjutsa hen.)* |
+| Verkligen? Men det är mycket besvär för dig! Jag tar en taxi om jag inte kan ta mig dit på annat sätt. | *(Insistera på att du gärna skjutsar och att det inte är något besvär.)* |
+| Herregud, du är bäst. Tack så mycket. | *(Svara och säg hejdå varmt.)* |
+
+---
+
+### Dialog 1D — Din vän har fått ett nytt jobb
+
+**Situation:** Din vän ringer dig med nyheten att hen har fått ett nytt jobb.
+
+| Vän (du hör): | Du (svara): |
+|---|---|
+| Tiina. | *(Svara i telefon och hälsa.)* |
+| Nå hej! Varför kände min telefon inte igen ditt nummer? Ja, det är sant. Det tog lång tid för mig att få jobb. | *(Gratulera din vän och fråga vilket jobb det är.)* |
+| Det är mitt drömjobb. Precis som jag trodde att det skulle bli. Ursäkta, men jag är väldigt upptagen just nu, kan jag ringa dig igen ikväll? | *(Säg att det är okej och att du ser fram emot att höra mer.)* |
+| Ja, ja, det är bra. Men det är verkligen snällt av dig att ringa och vi kan tala mer ikväll. Jag ska berätta allt om mitt nya jobb. | *(Säg att du ser fram emot det och önska lycka till.)* |
+| Bra. Hej då! | *(Avsluta samtalet artigt.)* |
+
+---
+
+### Dialog 1E — Företagsfesten
+
+**Situation:** Din vän ringer dig panikslaget inför en företagsfest med klädkod "mörk kostym".
+
+| Vän (du hör): | Du (svara): |
+|---|---|
+| Hej! Panik, hjälp! Företagsfesten... på inbjudan står det mörk kostym. Jag slog upp det på Google och det betyder att man ska klä på sig de finaste kläderna man har. Vad ska du ha på dig? | *(Berätta vad du ska ha på dig och fråga vad problemet är.)* |
+| Åh nej! Det stämmer. För kvinnor innebär det en lång aftonklänning och jag har inte ens en sådan. Jag undrar om jag kan bära den korta klänningen? | *(Ge din åsikt om den korta klänningen och föreslå ett alternativ.)* |
+| Just det, ja. Men jag skulle inte vilja vara helt underklädd. Man måste visa respekt. Jag antar att jag måste gå och handla. Som tur är finns det fortfarande tid. Men jag känner inte till den här staden. Säg mig, var kan jag köpa en sådan där aftonklänning? | *(Föreslå ett par ställen i staden där hen kan köpa klänning.)* |
+| Det låter bra! Jag ska försöka. Vill du följa med mig som en provsmakare? Du ska säga till mig om jag ser förfärlig ut i dessa kläder. | *(Acceptera gärna och säg att det ska bli roligt.)* |
+| Okej, men tack! Nu måste jag gå. | *(Avsluta samtalet och säg hejdå.)* |
+
+---
+
+### Dialog 1F — Din vän ser trött ut
+
+**Situation:** Du möter din vän på morgonen. Hen ser trött och sliten ut.
+
+| Vän (du hör): | Du (svara): |
+|---|---|
+| God morgon. | *(Hälsa och fråga om din vän är okej — hen ser trött ut.)* |
+| På sistone har jag sovit väldigt dåligt. Förmodligen beror det på stress från jobbet eller något annat. Jag vet inte vad som skulle hjälpa. | *(Ge råd om hur man kan sova bättre.)* |
+| Okej, tack, jag måste försöka. Du ser alltid så pigg ut. Har du aldrig svårt att sova? | *(Svara och berätta om dina egna sömnvanor.)* |
+| Ja, men du har rätt. Jag måste börja sova mer. Jag ser redan tio år äldre ut än jag egentligen är och min hälsa klarar inte av det. | *(Uppmuntra din vän och erbjud din hjälp.)* |
+| Tack så mycket. Det skulle vara bra. Tack och lov finns det vänner som du. | *(Svara vänligt och avsluta samtalet.)* |
+
+---
+
+### Dialog 1G — En ny bekant
+
+**Situation:** Du träffar en ny person och har en kort konversation.
+
+| Person (du hör): | Du (svara): |
+|---|---|
+| Förlåt, men jag måste säga att du ser riktigt bra ut och att det skulle vara roligt att träffa dig igen. | *(Tacka för komplimangen men svara försiktigt.)* |
+| Jag kan bjuda dig på middag. Jag vet en riktigt bra restaurang som jag tror att du skulle gilla. | *(Tacka artigt men avböj.)* |
+| Men varför? Är det något fel på mig? Jag vill bara lära känna dig bättre. | *(Förklara artigt varför du avböjer.)* |
+| Det är synd. Det här är precis som det brukar vara. Det är alltid samma sak. | *(Svara vänligt men bestämt.)* |
+| Tack, det är trevligt att höra. | *(Avsluta samtalet artigt.)* |
+
+---
+
+### Dialog 1H — Du bjuder in till fest
+
+**Situation:** Du ringer din vän för att bjuda in hen till din födelsdagsfest.
+
+| Vän (du hör): | Du (svara): |
+|---|---|
+| Hej! Det var länge sedan! Hur mår du? | *(Hälsa tillbaka och berätta att du ringer med en inbjudan.)* |
+| Oj! Wow! Tack för inbjudan, det låter kul och jag kommer naturligtvis om jag kan. Var och när ska festen hållas? | *(Berätta var och när festen är.)* |
+| Ja, nu kan jag åtminstone inte omedelbart tänka på något hinder som skulle hindra mig från att komma. När behövde du en bekräftelse på om jag kan eller inte? | *(Berätta när du behöver svar och varför.)* |
+| Okej. Och har du några önskemål om gåvor? | *(Svara och berätta vad du eventuellt önskar dig.)* |
+| Hahaha, visst! Och kan jag hjälpa dig på något sätt med festarrangemangen? | *(Tacka och berätta om du behöver hjälp.)* |
+| Tack så mycket för inbjudan igen och vi ses snart! | *(Avsluta samtalet varmt.)* |
+
+---
+
+### Dialog 1I — Köksrenovering
+
+**Situation:** Du ringer ett renoveringsföretag för att fråga om köksrenovering.
+
+| Entreprenör (du hör): | Du (svara): |
+|---|---|
+| Remont-Alexi, Anna. | *(Hälsa och berätta vad du ringer för.)* |
+| Ja, vi gör köksrenoveringar. Vilken typ av renovering har du tänkt dig? | *(Beskriv vad du vill ha gjort i köket.)* |
+| Ja, när ska renoveringen vara klar? | *(Berätta när du vill ha det klart.)* |
+| Vi skulle kunna komma dit för att uppskatta priset och planera lite. Vad sägs om fredag? Vi kan komma direkt på morgonen. | *(Svara om fredag passar eller föreslå en annan tid.)* |
+| Ja, det är nog också möjligt. Kan du säga din adress igen, så skriver jag ner den här? | *(Ge din adress.)* |
+| Allt beror på din budget. Hur mycket tänker du investera i renoveringen? | *(Berätta om din budget.)* |
+| Det är en bra början. Vi kommer att utarbeta en mer detaljerad plan på fredag. | *(Tacka och säg att du ser fram emot besöket.)* |
+| Tack, hej då! | *(Avsluta samtalet artigt.)* |
+
+---
+
+### Dialog 1J — Paketet
+
+**Situation:** Du ringer ett budföretag för att fråga om ett paket som inte levererats.
+
+| Budföretag (du hör): | Du (svara): |
+|---|---|
+| Budfirma Jokinen, hur kan jag hjälpa dig? | *(Presentera dig och berätta att du väntar på ett paket.)* |
+| Jag förstår, säg ditt namn och din adress så tittar jag här. | *(Ge ditt namn och din adress.)* |
+| Okej, ja, jag hittade den. Ja, du har ett av de där lite större paketen här och det får inte plats genom brevlådan, så du borde vara hemma för att ta emot det. När kan vi leverera paketet? | *(Berätta när du är hemma och kan ta emot paketet.)* |
+| Ja, det kan vi nog göra. Kan du nås av detta nummer före leveransen? | *(Bekräfta ditt telefonnummer.)* |
+| Okej. Låt oss skicka i väg paketet igen. | *(Tacka och avsluta samtalet.)* |
+
+---
+
+### Dialog 1K — En granne har klagat
+
+**Situation:** Disponenten ringer dig för att en granne har klagat på oljud från din lägenhet.
+
+| Disponent (du hör): | Du (svara): |
+|---|---|
+| Det är disponent Virtanen, hej. Jag ringer för att en granne har klagat på det oljud du gjorde häromdagen. Hade ni någon slags fest där? | *(Erkänn att det var en fest och be om ursäkt.)* |
+| Ja, jag förstår. När åkte gästerna hem? | *(Berätta ungefär när gästerna åkte.)* |
+| Enligt en granne hade bullret pågått fram till klockan 5 på morgonen. Vad tycker du om det? | *(Försvara dig eller erkänn och be om ursäkt.)* |
+| Ja, naturligtvis är det svårt för mig att veta vad som är sanningen. Har du haft problem med grannarna tidigare? | *(Svara ärligt.)* |
+| Ja, och hyr du eller äger du bostaden? | *(Svara.)* |
+| Så där ja. Den här gången blir det bara en varning, men nästa gång kan du sätta upp ett meddelande i hallen före festen, så att grannarnas lugn bevaras bättre. | *(Tacka för informationen och lova att följa rådet.)* |
+| Bra. Tack och ha en bra dag. | *(Avsluta samtalet artigt.)* |
+
+---
+
 ## DEL 2: REAGERA
 
 *20 sek att läsa, 20–40 sek att svara, max 3 meningar.*
