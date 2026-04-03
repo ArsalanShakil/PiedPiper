@@ -460,6 +460,12 @@ export default function MemorizationView() {
     resetDrillState()
   }
 
+  const handleBack = () => {
+    if (!drillItem || chunkIndex === 0) return
+    setChunkIndex(chunkIndex - 1)
+    resetDrillState()
+  }
+
   const selectDrillMode = (modeId: number) => {
     if (!drillItem) return
     setDrillMode(modeId)
@@ -832,6 +838,7 @@ export default function MemorizationView() {
                 ) : (
                   <>
                     <div className="mem-score-display">{drillScore}%</div>
+                    {chunkIndex > 0 && <button className="btn" onClick={handleBack}>&#x2190; Back</button>}
                     <button className="btn" onClick={handleRedo}>Redo</button>
                     <button className="btn btn-primary" onClick={handleNext}>{nextLabel}</button>
                   </>
@@ -867,6 +874,7 @@ export default function MemorizationView() {
                   </div>
                   <div className="mem-drill-actions">
                     <div className="mem-score-display">{drillScore}%</div>
+                    {chunkIndex > 0 && <button className="btn" onClick={handleBack}>&#x2190; Back</button>}
                     <button className="btn" onClick={handleRedo}>Redo</button>
                     <button className="btn btn-primary" onClick={handleNext}>{nextLabel}</button>
                   </div>
@@ -905,6 +913,7 @@ export default function MemorizationView() {
                   <RecallFeedback userInput={userInput} original={currentChunk} diffResult={diffResult} score={drillScore ?? 0} />
                   <div className="mem-drill-actions">
                     <div className="mem-score-display">{drillScore}%</div>
+                    {chunkIndex > 0 && <button className="btn" onClick={handleBack}>&#x2190; Back</button>}
                     <button className="btn" onClick={handleRedo}>Redo</button>
                     <button className="btn btn-primary" onClick={handleNext}>{nextLabel}</button>
                   </div>
@@ -949,6 +958,7 @@ export default function MemorizationView() {
                   <RecallFeedback userInput={userInput} original={currentChunk} diffResult={diffResult} score={drillScore ?? 0} />
                   <div className="mem-drill-actions">
                     <div className="mem-score-display">{drillScore}%</div>
+                    {chunkIndex > 0 && <button className="btn" onClick={handleBack}>&#x2190; Back</button>}
                     <button className="btn" onClick={handleRedo}>Redo</button>
                     <button className="btn btn-primary" onClick={handleNext}>{nextLabel}</button>
                   </div>
