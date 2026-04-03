@@ -466,6 +466,13 @@ export default function MemorizationView() {
     resetDrillState()
   }
 
+  const handleRestart = () => {
+    setChunkIndex(0)
+    setCompletedChunks(new Set())
+    setStreak(0)
+    resetDrillState()
+  }
+
   const selectDrillMode = (modeId: number) => {
     if (!drillItem) return
     setDrillMode(modeId)
@@ -838,6 +845,7 @@ export default function MemorizationView() {
                 ) : (
                   <>
                     <div className="mem-score-display">{drillScore}%</div>
+                    <button className="btn" onClick={handleRestart} title="Restart from chunk 1">&#x21BA; Restart</button>
                     {chunkIndex > 0 && <button className="btn" onClick={handleBack}>&#x2190; Back</button>}
                     <button className="btn" onClick={handleRedo}>Redo</button>
                     <button className="btn btn-primary" onClick={handleNext}>{nextLabel}</button>
@@ -874,6 +882,7 @@ export default function MemorizationView() {
                   </div>
                   <div className="mem-drill-actions">
                     <div className="mem-score-display">{drillScore}%</div>
+                    <button className="btn" onClick={handleRestart} title="Restart from chunk 1">&#x21BA; Restart</button>
                     {chunkIndex > 0 && <button className="btn" onClick={handleBack}>&#x2190; Back</button>}
                     <button className="btn" onClick={handleRedo}>Redo</button>
                     <button className="btn btn-primary" onClick={handleNext}>{nextLabel}</button>
@@ -913,6 +922,7 @@ export default function MemorizationView() {
                   <RecallFeedback userInput={userInput} original={currentChunk} diffResult={diffResult} score={drillScore ?? 0} />
                   <div className="mem-drill-actions">
                     <div className="mem-score-display">{drillScore}%</div>
+                    <button className="btn" onClick={handleRestart} title="Restart from chunk 1">&#x21BA; Restart</button>
                     {chunkIndex > 0 && <button className="btn" onClick={handleBack}>&#x2190; Back</button>}
                     <button className="btn" onClick={handleRedo}>Redo</button>
                     <button className="btn btn-primary" onClick={handleNext}>{nextLabel}</button>
@@ -958,6 +968,7 @@ export default function MemorizationView() {
                   <RecallFeedback userInput={userInput} original={currentChunk} diffResult={diffResult} score={drillScore ?? 0} />
                   <div className="mem-drill-actions">
                     <div className="mem-score-display">{drillScore}%</div>
+                    <button className="btn" onClick={handleRestart} title="Restart from chunk 1">&#x21BA; Restart</button>
                     {chunkIndex > 0 && <button className="btn" onClick={handleBack}>&#x2190; Back</button>}
                     <button className="btn" onClick={handleRedo}>Redo</button>
                     <button className="btn btn-primary" onClick={handleNext}>{nextLabel}</button>
