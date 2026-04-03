@@ -841,7 +841,10 @@ export default function MemorizationView() {
               </div>
               <div className="mem-drill-actions">
                 {!revealed ? (
-                  <button className="btn btn-primary" onClick={handleSubmitDrill}>Check Answers</button>
+                  <>
+                    <button className="btn btn-primary" onClick={handleSubmitDrill}>Check Answers</button>
+                    <button className="btn" onClick={handleNext}>Next &#x2192;</button>
+                  </>
                 ) : (
                   <>
                     <div className="mem-score-display">{drillScore}%</div>
@@ -871,6 +874,7 @@ export default function MemorizationView() {
                   />
                   <div className="mem-drill-actions">
                     <button className="btn btn-primary" onClick={handleSubmitDrill}>Check</button>
+                    <button className="btn" onClick={handleNext}>Next &#x2192;</button>
                   </div>
                 </>
               ) : (
@@ -915,6 +919,7 @@ export default function MemorizationView() {
                       <button className="btn" onClick={() => setHintUsed(true)}>Show Hint (-10%)</button>
                     )}
                     <button className="btn btn-primary" onClick={handleSubmitDrill}>Check</button>
+                    <button className="btn" onClick={handleNext}>Next &#x2192;</button>
                   </div>
                 </>
               ) : (
@@ -961,6 +966,7 @@ export default function MemorizationView() {
                   />
                   <div className="mem-drill-actions">
                     <button className="btn btn-primary" onClick={handleSubmitDrill}>Submit</button>
+                    <button className="btn" onClick={handleNext}>Next &#x2192;</button>
                   </div>
                 </>
               ) : (
