@@ -456,10 +456,12 @@ export default function MemorizationView() {
     }
   }
 
+  const handleRedo = () => {
+    resetDrillState()
+  }
+
   const selectDrillMode = (modeId: number) => {
     if (!drillItem) return
-    // Can only select if unlocked: mode 0 always, others if previous mode highest >= 80%
-    if (modeId > 0 && drillItem.highest_mode_completed < modeId - 1) return
     setDrillMode(modeId)
     resetDrillState()
   }
@@ -731,8 +733,6 @@ export default function MemorizationView() {
       : drillMode < 4
         ? `Next: ${DRILL_MODES[(drillMode + 1) as 0|1|2|3|4]?.label}`
         : 'Finish'
-    const canUnlock = (modeId: number) => modeId === 0 || drillItem.highest_mode_completed >= modeId - 1
-
     return (
       <div className="mem-page mem-drill-page">
         {/* Top bar */}
@@ -747,14 +747,12 @@ export default function MemorizationView() {
           {DRILL_MODES.map(m => (
             <button
               key={m.id}
-              className={`mem-mode-pill${drillMode === m.id ? ' active' : ''}${!canUnlock(m.id) ? ' locked' : ''}`}
-              onClick={() => canUnlock(m.id) && selectDrillMode(m.id)}
-              disabled={!canUnlock(m.id)}
-              title={canUnlock(m.id) ? m.label : 'Complete previous mode first'}
+              className={`mem-mode-pill${drillMode === m.id ? ' active' : ''}`}
+              onClick={() => selectDrillMode(m.id)}
+              title={m.label}
             >
               <span>{m.icon}</span>
               <span className="mem-mode-pill-label">{m.label}</span>
-              {!canUnlock(m.id) && <span className="mem-lock-icon">&#x1F512;</span>}
             </button>
           ))}
         </div>
@@ -834,6 +832,7 @@ export default function MemorizationView() {
                 ) : (
                   <>
                     <div className="mem-score-display">{drillScore}%</div>
+                    <button className="btn" onClick={handleRedo}>Redo</button>
                     <button className="btn btn-primary" onClick={handleNext}>{nextLabel}</button>
                   </>
                 )}
@@ -868,6 +867,7 @@ export default function MemorizationView() {
                   </div>
                   <div className="mem-drill-actions">
                     <div className="mem-score-display">{drillScore}%</div>
+                    <button className="btn" onClick={handleRedo}>Redo</button>
                     <button className="btn btn-primary" onClick={handleNext}>{nextLabel}</button>
                   </div>
                 </>
@@ -905,6 +905,7 @@ export default function MemorizationView() {
                   <RecallFeedback userInput={userInput} original={currentChunk} diffResult={diffResult} score={drillScore ?? 0} />
                   <div className="mem-drill-actions">
                     <div className="mem-score-display">{drillScore}%</div>
+                    <button className="btn" onClick={handleRedo}>Redo</button>
                     <button className="btn btn-primary" onClick={handleNext}>{nextLabel}</button>
                   </div>
                 </>
@@ -948,6 +949,7 @@ export default function MemorizationView() {
                   <RecallFeedback userInput={userInput} original={currentChunk} diffResult={diffResult} score={drillScore ?? 0} />
                   <div className="mem-drill-actions">
                     <div className="mem-score-display">{drillScore}%</div>
+                    <button className="btn" onClick={handleRedo}>Redo</button>
                     <button className="btn btn-primary" onClick={handleNext}>{nextLabel}</button>
                   </div>
                 </>
